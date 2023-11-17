@@ -1,0 +1,71 @@
+:root {
+    --font-size-1: 72px;
+    --font-size-2: 54px;
+    --font-size-3: 42px;
+    --font-size-4: 24px;
+    --font-size-5: 18px;
+
+    --bg-dark-grey: #838387;
+    --bg-light-grey: #D2D2D9;
+    --bg-white: #FAFAFD;
+    --bg-purewhite: #FEFEFF;
+
+    --light-orange: #e3a246;
+    --dark-orange: rgb(227, 136, 9);
+
+    --font-black: #2F2F30;
+    --font-light-grey: #A6A6AB;
+    --font-white: #FAFAFD;
+}
+
+* {
+    margin: 0px;
+}
+
+body {
+    font-family: 'Verdana', sans-serif;
+    color: var(--font-black);
+    font-size: var(--font-size-4);
+    background-color: var(--bg-purewhite);
+}
+
+.title1 {
+    font-size: var(--font-size-1);
+    text-align: center;
+    margin: 2%;
+}
+
+.title2 {
+    font-size: var(--font-size-2);
+    text-align: center;
+    margin: 2%;
+}
+
+.title3 {
+    font-size: var(--font-size-3);
+    text-align: center;
+    margin: 2%;
+}
+
+.container {
+    background-color: var(--bg-white);
+    border: 1px solid var(--bg-light-grey);
+    border-radius: 4px;
+}
+
+.spacer1 {
+    height: 5vh;
+}
+
+.spacer2 {
+    height: 10vh;
+}
+
+a {
+    text-decoration: none;
+    color: var(--dark-orange);
+}
+
+a:hover {
+    text-decoration: underline;
+}
