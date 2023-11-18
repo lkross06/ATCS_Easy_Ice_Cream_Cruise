@@ -7,11 +7,12 @@
 
     --bg-dark-grey: #838387;
     --bg-light-grey: #D2D2D9;
-    --bg-white: #FAFAFD;
+    --bg-white: rgb(250, 250, 255);
     --bg-purewhite: #FEFEFF;
 
     --light-orange: #e3a246;
     --dark-orange: rgb(227, 136, 9);
+    --darker-orange: rgb(200, 116, 0);
 
     --font-black: #2F2F30;
     --font-light-grey: #A6A6AB;
@@ -68,4 +69,44 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+#submit-button {
+    cursor: pointer;
+    background-color: var(--light-orange);
+    padding: 3% 20%;
+    border: none;
+    color: var(--font-white);
+    text-align: center;
+    font-size: var(--font-size4);
+    border-radius: 15px;
+}
+
+#submit-button:hover {
+    background-color: var(--dark-orange);
+}
+
+.chat-container {
+    width: 35vw;
+    height: 35vh;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid var(--bg-dark-grey);
+    border-right: 1px solid var(--bg-dark-grey);
+    background-color: var(--bg-white);
+    opacity: 0.7;
+    padding: 1%;
+    overflow-x: hidden;
+}
+
+.chat-message {
+    text-align: left;
+    display: block;
+    color: var(--font-black);
+}
+
+.chat-message-username {
+    font-weight: bolder;
+    color: var(--darker-orange);
 }
