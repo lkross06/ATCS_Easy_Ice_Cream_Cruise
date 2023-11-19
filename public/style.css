@@ -143,3 +143,24 @@ a:hover {
 #chat-send:active {
     background-color: var(--bg-light-grey);
 }
+
+.modal { /* modal has to be the first element in the body */
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(156, 156, 156, 0.7);
+    display: none;
+}
+
+.modal-content {
+    border: 1px solid var(--bg-dark-grey);
+    background-color: var(--bg-white);
+    /* this works for any element that you want centered */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25vh; /* negative half of the height to offset top: 50% */
+    margin-left: -25vw;
+    width: 50vw;
+    height: 50vh;
+}
