@@ -19,6 +19,16 @@
     --font-white: #FAFAFD;
 }
 
+@media screen and (max-width: 1000px){ /* makes all fonts smaller when window is small */
+    :root {
+        --font-size-1: 42px;
+        --font-size-2: 24px;
+        --font-size-3: 20px;
+        --font-size-4: 14px;
+        --font-size-5: 12px;
+    }
+}
+
 * {
     margin: 0px;
 }
@@ -73,7 +83,7 @@ a:hover {
 
 #submit-button {
     cursor: pointer;
-    background-color: var(--light-orange);
+    background-color: var(--dark-orange);
     padding: 3% 20%;
     border: none;
     color: var(--font-white);
@@ -83,7 +93,7 @@ a:hover {
 }
 
 #submit-button:hover {
-    background-color: var(--dark-orange);
+    background-color: var(--darker-orange);
 }
 
 .chat-container {

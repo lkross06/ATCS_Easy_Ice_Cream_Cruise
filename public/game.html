@@ -25,9 +25,13 @@
             font-family: inherit;
         }
 
+        button.game-selection-choice:active {
+            background-color: var(--bg-light-grey);
+        }
+
         #game-selection-container {
             margin: auto;
-            width: 60vw;
+            width: 50vw;
             height: 50vh;
         }
 
@@ -37,6 +41,35 @@
             display: flex;
             justify-content: space-evenly;
         }
+
+        #multiplayer-container {
+            display: none;
+        }
+
+        #singleplayer-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .track-option {
+            padding: 1%;
+            margin: 1%;
+            width: fit-content;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .track-preview {
+            border: 1px solid var(--bg-dark-grey);
+            width: 150px;
+            height: 150px;
+        }
+
+        .track-desc {
+            text-align: center;
+        }
+
     </style>
     <script src="chat.js"></script>
 </head>
@@ -66,13 +99,58 @@
 
     <div class="container" id="game-selection-container">
         <div id="singleplayer-container" class="game-selection"> 
-            <p>single</p>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 1</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 2</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 3</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 4</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 5</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 6</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 7</p>
+            </div>
+            <div class="track-option">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 8</p>
+            </div>
         </div>
 
         <div id="multiplayer-container" class="game-selection">
-            <p>multi</p>
+            <p>multiplayer game selection</p>
         </div>
     </div> 
+    <script>
+        let sp_content = document.getElementById("singleplayer-container")
+        let mp_content = document.getElementById("multiplayer-container")
 
+        document.getElementById("singleplayer-button").addEventListener("click", function(e){
+            sp_content.style.display = "flex";
+            mp_content.style.display = "none";
+            console.log("sp")
+        })
+        document.getElementById("multiplayer-button").addEventListener("click", function(e){
+            sp_content.style.display = "none";
+            mp_content.style.display = "block";
+            console.log("mp")
+        })
+    </script>
 </body>
 </html>
