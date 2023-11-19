@@ -11,14 +11,31 @@
             height: 50vh;
             margin: auto;
         }
+
+        .log-out {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.5%;
+            text-align: right;
+        }
     </style>
+    <script src="chat.js"></script>
 </head>
 <body>
     <div class="chat-container">
-        <p class="chat-message"><span class="chat-message-username">ecvil</span> monday left me broken tuesday i was through with hopin wednesday my empty arms were open thursday waiting for love waiting for love</p>
-        <p class="chat-message"><span class="chat-message-username">finn</span> im so mad u no push</p>
-        <p class="chat-message"><span class="chat-message-username">lucas</span> git easy</p>
+        <span id="chat-log">
+        </span>
+        <span class="chat-inputs">
+            <input type="text" name="chat-new" id="chat-new" maxlength="30">
+            <button id="chat-send">></button>
+        </span>
     </div>
+    <div class="log-out">
+        <h3 class="title3">ecvil</h3>
+        <p><a>Log Out</a></p>
+    </div>
+
     <div class="spacer1"></div>
     <h1 class="title1">Easy Ice Cream Cruise</h1>
     <div class="container game-selection-container">

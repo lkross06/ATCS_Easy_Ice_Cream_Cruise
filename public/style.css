@@ -11,8 +11,8 @@
     --bg-purewhite: #FEFEFF;
 
     --light-orange: #e3a246;
-    --dark-orange: rgb(227, 136, 9);
-    --darker-orange: rgb(200, 116, 0);
+    --dark-orange: rgb(227, 136, 9); /* contrasts with dark background */
+    --darker-orange: rgb(200, 116, 0); /* contrasts with light background */
 
     --font-black: #2F2F30;
     --font-light-grey: #A6A6AB;
@@ -94,10 +94,11 @@ a:hover {
     left: 0;
     border-top: 1px solid var(--bg-dark-grey);
     border-right: 1px solid var(--bg-dark-grey);
-    background-color: var(--bg-white);
-    opacity: 0.7;
+    background-color: rgba(250, 250, 255, 0.7);
     padding: 1%;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-message {
@@ -106,7 +107,39 @@ a:hover {
     color: var(--font-black);
 }
 
-.chat-message-username {
+#chat-log {
+    height: 90%;
+    overflow-y: hidden;
+}
+
+.username {
     font-weight: bolder;
     color: var(--darker-orange);
+}
+
+#chat-new {
+    position: absolute;
+    bottom: 1%;
+    left: 1%;
+    height: 10%;
+    width: 86%;
+    background-color: var(--bg-purewhite);
+    border: 1px solid var(--bg-dark-grey);
+    border-radius: 4px;
+}
+
+#chat-send {
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+    font-size: var(--font-size-4);
+    width: 10%;
+    height: 11%;
+    background-color: var(--bg-purewhite);
+    border: 1px solid var(--bg-dark-grey);
+    border-radius: 4px;
+}
+
+#chat-send:active {
+    background-color: var(--bg-light-grey);
 }
