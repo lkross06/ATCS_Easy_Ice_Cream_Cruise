@@ -6,11 +6,6 @@
     <title>Easy Ice Cream Cruise</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .game-selection-container {
-            width: 60vw;
-            height: 50vh;
-            margin: auto;
-        }
 
         .log-out {
             position: absolute;
@@ -19,6 +14,69 @@
             padding: 0.5%;
             text-align: right;
         }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input#multiplayer-button {
+            position: absolute;
+            right: 0;
+        }
+
+        #game-selection-container {
+            margin: auto;
+            width: 60vw;
+            height: 50vh;
+        }
+
+        #game-selection-container label {
+            border: 1px solid var(--bg-dark-grey);
+            background-color: var(--bg-white);
+            padding: 1%;
+            border-radius: 4px;
+            user-select: none;
+        }
+
+        /* ------------------ */
+        /* makes single/multiplayer content disappear/reappear */
+        input#multiplayer-button + label + div * {
+            display: none;
+        }
+
+        input#multiplayer-button + label + div {
+            display: none;
+        }
+
+        input#multiplayer-button:checked + label + div * {
+            display: block;
+        }
+
+        input#multiplayer-button:checked + label + div {
+            display: block;
+        }
+
+        input#singleplayer-button + label + div * {
+            display: none;
+        }
+
+        input#singleplayer-button + label + div {
+            display: none;
+        }
+
+        input#singleplayer-button:checked + label + div * {
+            display: block;
+        }
+
+        input#singleplayer-button:checked + label + div {
+            display: block;
+        }
+        
+        .game-selection {
+            position: absolute;
+            margin: 5%;
+        }
+        /* ------------------ */
     </style>
     <script src="chat.js"></script>
 </head>
@@ -38,8 +96,25 @@
 
     <div class="spacer1"></div>
     <h1 class="title1">Easy Ice Cream Cruise</h1>
-    <div class="container game-selection-container">
-        
+
+    <div class="spacer2"></div>
+
+    <!-- game selection -->
+    <div id="game-selection-container">
+        <!-- singleplayer -->
+        <input type="radio" name="game-selection" value="singleplayer" id="singleplayer-button" checked>
+        <label for="singleplayer-button" class="title3">Singleplayer</label>
+        <div id="singleplayer-container" class="game-selection container"> 
+            <p>single</p>
+        </div>
+
+        <!-- multiplayer -->
+        <input type="radio" name="game-selection" value="multiplayer" id="multiplayer-button">
+        <label for="multiplayer-button" class="title3">Multiplayer</label>
+        <div id="multiplayer-container" class="game-selection container">
+            <p>multi</p>
+        </div>
     </div>
+
 </body>
 </html>

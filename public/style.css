@@ -103,13 +103,14 @@ a:hover {
 
 .chat-message {
     text-align: left;
-    display: block;
+    display: inline;
     color: var(--font-black);
 }
 
 #chat-log {
     height: 90%;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .username {
