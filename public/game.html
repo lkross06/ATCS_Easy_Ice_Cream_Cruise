@@ -15,13 +15,14 @@
             text-align: right;
         }
 
-        input[type="radio"] {
-            display: none;
-        }
-
-        input#multiplayer-button {
-            position: absolute;
-            right: 0;
+        button.game-selection-choice {
+            border: 1px solid var(--bg-dark-grey);
+            background-color: var(--bg-white);
+            padding: 1%;
+            width: 25vw;
+            border-radius: 4px;
+            user-select: none;
+            font-family: inherit;
         }
 
         #game-selection-container {
@@ -30,53 +31,12 @@
             height: 50vh;
         }
 
-        #game-selection-container label {
-            border: 1px solid var(--bg-dark-grey);
-            background-color: var(--bg-white);
-            padding: 1%;
-            border-radius: 4px;
-            user-select: none;
+        #game-selection-buttons {
+            margin: auto;
+            width: 50vw;
+            display: flex;
+            justify-content: space-evenly;
         }
-
-        /* ------------------ */
-        /* makes single/multiplayer content disappear/reappear */
-        input#multiplayer-button + label + div * {
-            display: none;
-        }
-
-        input#multiplayer-button + label + div {
-            display: none;
-        }
-
-        input#multiplayer-button:checked + label + div * {
-            display: block;
-        }
-
-        input#multiplayer-button:checked + label + div {
-            display: block;
-        }
-
-        input#singleplayer-button + label + div * {
-            display: none;
-        }
-
-        input#singleplayer-button + label + div {
-            display: none;
-        }
-
-        input#singleplayer-button:checked + label + div * {
-            display: block;
-        }
-
-        input#singleplayer-button:checked + label + div {
-            display: block;
-        }
-        
-        .game-selection {
-            position: absolute;
-            margin: 5%;
-        }
-        /* ------------------ */
     </style>
     <script src="chat.js"></script>
 </head>
@@ -99,22 +59,20 @@
 
     <div class="spacer2"></div>
 
-    <!-- game selection -->
-    <div id="game-selection-container">
-        <!-- singleplayer -->
-        <input type="radio" name="game-selection" value="singleplayer" id="singleplayer-button" checked>
-        <label for="singleplayer-button" class="title3">Singleplayer</label>
-        <div id="singleplayer-container" class="game-selection container"> 
+    <div id="game-selection-buttons">
+        <button id="singleplayer-button" class="title3 game-selection-choice">Singleplayer</button>
+        <button id="multiplayer-button" class="title3 game-selection-choice">Multiplayer</button>
+    </div>
+
+    <div class="container" id="game-selection-container">
+        <div id="singleplayer-container" class="game-selection"> 
             <p>single</p>
         </div>
 
-        <!-- multiplayer -->
-        <input type="radio" name="game-selection" value="multiplayer" id="multiplayer-button">
-        <label for="multiplayer-button" class="title3">Multiplayer</label>
-        <div id="multiplayer-container" class="game-selection container">
+        <div id="multiplayer-container" class="game-selection">
             <p>multi</p>
         </div>
-    </div>
+    </div> 
 
 </body>
 </html>

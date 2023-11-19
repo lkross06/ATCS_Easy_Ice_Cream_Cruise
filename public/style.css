@@ -90,27 +90,26 @@ a:hover {
     width: 35vw;
     height: 35vh;
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
-    border-top: 1px solid var(--bg-dark-grey);
+    border-bottom: 1px solid var(--bg-dark-grey);
     border-right: 1px solid var(--bg-dark-grey);
     background-color: rgba(250, 250, 255, 0.7);
     padding: 1%;
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    resize: both;
+    overflow: hidden;
 }
 
 .chat-message {
     text-align: left;
-    display: inline;
+    display: block;
     color: var(--font-black);
 }
 
 #chat-log {
     height: 90%;
-    overflow-y: hidden;
-    overflow-x: hidden;
 }
 
 .username {
