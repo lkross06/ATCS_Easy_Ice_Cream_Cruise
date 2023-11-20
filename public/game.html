@@ -104,17 +104,8 @@
         }
 
         .play-track-button {
-            border: 1px solid var(--bg-dark-grey);
-            background-color: var(--bg-white);
-            padding: 1%;
             width: 15vw;
-            border-radius: 4px;
-            user-select: none;
-            font-family: inherit;
             margin: auto;
-        }
-        .play-track-button:active {
-            background-color: var(--bg-light-grey);
         }
         .track-leaderboard {
             font-size: var(--font-size-4);
@@ -241,7 +232,7 @@
             div2.appendChild(span2)
             
             let button = document.createElement("button")
-            button.setAttribute("class", "play-track-button title3")
+            button.setAttribute("class", "play-track-button submit-button title3")
             button.innerText = "Play"
             div2.appendChild(button)
 

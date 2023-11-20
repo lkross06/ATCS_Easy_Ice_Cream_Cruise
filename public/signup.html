@@ -51,12 +51,16 @@
             grid-column: 0 / 1;
             margin: auto 0;
         }
+
+        button[type="submit"]{
+            width: 20vw;
+        }
     </style>
 </head>
 <body>
     <div class="spacer1"></div>
     <h1 class="title1">Easy Ice Cream Cruise</h1>
-    <h2 class="title2">Lucas Ross, Finn Taylor, Everett Villiger</h2>
+    <h3 class="title3">Lucas Ross, Finn Taylor, Everett Villiger</h3>
     <div class="container form-container">
         <form id="signup-form" method="POST" action="/submitlogin">
             <h3 class="title3">Sign Up</h3>
@@ -67,7 +71,7 @@
             <span id="form-grid">
 
                 <label for="username">Username </label>
-                <input type="text" id="username" name="username" required>
+                <input type="text" id="username" name="username" maxlength="16" required>
                 
                 <label for="password">Password </label>
                 <input type="password" id="password" name="password" required>

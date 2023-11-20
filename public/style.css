@@ -90,6 +90,8 @@ a:hover {
     text-align: center;
     font-size: var(--font-size4);
     border-radius: 15px;
+    font-family: inherit;
+    user-select: none;
 }
 
 .submit-button:hover {
