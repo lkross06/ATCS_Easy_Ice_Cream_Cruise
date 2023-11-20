@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Three.js Car Demo</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>test game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { margin: 0; }
+      #myThreeJsCanvas {
+        width: 100vw;
+        height: 100vh;
+      }
     </style>
-</head>
-<body>
-    <script src="https://threejs.org/build/three.js"></script>
-    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
-    <script src = "../javascript/track.js">
-    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="module" src="/javascript/physics.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@latest/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/controls/PointerLockControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/loaders/MTLLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon@latest/build/cannon.min.js"></script>
+    <canvas id="myThreeJsCanvas"></canvas>
+    
 </body>
 </html>

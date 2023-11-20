@@ -33,6 +33,10 @@ app.post('/submitlogin', (req, res) => {
     });
 });
 
+app.get("/public/game.html", (req, res) =>{
+    res.sendFile(path.join(__dirname, '/public/game.html'));
+});
+
 // Start the Express server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
