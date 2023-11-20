@@ -99,8 +99,10 @@ a:hover {
 }
 
 .chat-container {
-    width: 35vw;
-    height: 35vh;
+    width: 22vw;
+    max-width: 60vw;
+    height: 40vh;
+    max-height: 65vh;
     position: absolute;
     top: 0;
     left: 0;
@@ -129,15 +131,22 @@ a:hover {
     color: var(--darker-orange);
 }
 
+.chat-inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 #chat-new {
     position: absolute;
     bottom: 1%;
     left: 1%;
-    height: 10%;
+    height: 11%;
     width: 86%;
     background-color: var(--bg-purewhite);
     border: 1px solid var(--bg-dark-grey);
     border-radius: 4px;
+    font-size: var(--font-size-4);
 }
 
 #chat-send {
@@ -146,12 +155,16 @@ a:hover {
     right: 1%;
     font-size: var(--font-size-4);
     width: 10%;
-    height: 11%;
-    background-color: var(--bg-purewhite);
-    border: 1px solid var(--bg-dark-grey);
+    height: 12%;
+    padding: 0;
     border-radius: 4px;
+    font-weight: bold;
+}
+
+#chat-send:hover {
+    background-color: var(--dark-orange);
 }
 
 #chat-send:active {
-    background-color: var(--bg-light-grey);
+    background-color: var(--darker-orange);
 }

@@ -61,6 +61,16 @@
             text-align: center;
         }
 
+        #join-code-input {
+            display: inline;
+            padding: 2%;
+            width: 30%;
+            background-color: var(--bg-purewhite);
+            border: 1px solid var(--bg-dark-grey);
+            border-radius: 4px;
+            font-size: var(--font-size-3);
+        }
+
         /* ------ track modal ------ */
 
         .modal { /* modal has to be the first element in the body */
@@ -120,7 +130,7 @@
         </span>
         <span class="chat-inputs">
             <input type="text" name="chat-new" id="chat-new" maxlength="30">
-            <button id="chat-send">></button>
+            <button id="chat-send" class="submit-button">&rarr;</button>
         </span>
     </div>
     <div class="log-out">
@@ -173,7 +183,8 @@
         </div>
 
         <div id="multiplayer-container" class="game-selection">
-            <p>multiplayer game selection</p>
+            <h3 class="title3">Join Online Game</h3>
+            <input type="text" id="join-code-input" maxlength="6">
         </div>
     </div> 
     <script>

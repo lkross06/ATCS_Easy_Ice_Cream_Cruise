@@ -23,11 +23,6 @@ function new_chat_message(message, chatlog){ //creates and returns a new chat el
 }
 
 document.getElementById("chat-send").addEventListener("click", chat_send)
-document.addEventListener("keypress", function(event) { //on enter key press
-    if (event.key == "Enter") {
-        chat_send()
-    }
-    });
 
 function chat_send(){
     let chatlog = document.getElementById("chat-log")
