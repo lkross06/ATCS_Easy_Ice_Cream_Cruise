@@ -85,6 +85,8 @@ vehicle.addWheel({
 
 vehicle.addToWorld(physicsWorld);
 
+
+
 document.addEventListener('keydown', (event) => {
     const maxSteerVal = Math.PI / 8;
     const maxForce = 10;
@@ -92,8 +94,8 @@ document.addEventListener('keydown', (event) => {
     switch (event.key) {
     case 'w':
     case 'ArrowUp':
-        vehicle.setWheelForce(maxForce, 0);
-        vehicle.setWheelForce(maxForce, 1);
+        vehicle.applyWheelForce(maxForce, 0);
+        vehicle.applyWheelForce(maxForce, 1);
         break;
 
     case 's':
@@ -123,8 +125,6 @@ document.addEventListener('keyup', (event) => {
     case 'ArrowUp':
         vehicle.setWheelForce(0, 0);
         vehicle.setWheelForce(0, 1);
-
-        console.log(vehicle)
         break;
 
     case 's':
@@ -183,6 +183,8 @@ const groundMat = new THREE.MeshBasicMaterial({
 const groundMesh = new THREE.Mesh(groundGeo, groundMat)
 test.scene.add(groundMesh)
 
+
+// CANNON gravity wasnt working so im manually adding it to the car
 const customGravity = new CANNON.Vec3(0, -9.82, 0);
 
 const applyCustomGravity = () => {
@@ -195,6 +197,7 @@ const applyCustomGravity = () => {
     wheelBody3.applyForce(customGravity.scale(wheelBody3.mass), wheelBody3.position);
     wheelBody4.applyForce(customGravity.scale(wheelBody4.mass), wheelBody4.position);
 };
+
 
 const animate = () => {
     physicsWorld.step(1/60); //60 updates to world a second
