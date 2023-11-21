@@ -47,6 +47,14 @@ let margin = 10 //amount of pixels away from border that mouse can click and res
 let chat_top = window.innerHeight - container.clientHeight
 let chat_right = container.clientWidth
 
+function in_chat_right_range(mousex){
+    return !(mousex < chat_right - margin || mousex > chat_right + margin)
+}
+
+function in_chat_top_range(mousey){
+    return !(mousey < chat_top - margin || mousey > chat_top + margin)
+}
+
 let activex = false
 let activey = false
 
@@ -61,29 +69,28 @@ window.addEventListener("mousedown", function(e) {
     start_mx = e.clientX
     start_my = e.clientY
 
-    chat_top = window.innerHeight - container.clientHeight
-    chat_right = container.clientWidth
+    start_w = container.clientWidth
+    start_h = container.clientHeight
 
-    if (!(start_mx < chat_right - margin || start_mx > chat_right + margin)){ //mouse x is close to border of chat
+    if (in_chat_right_range(start_mx)){ //mouse x is close to border of chat
         activex = true
-        start_w = container.clientWidth
     } else {
         activex = false
     }
 
-    if (!(start_my < chat_top - margin || start_my > chat_top + margin)){ //mouse y is close to border of chat
+    if (in_chat_top_range(start_my)){ //mouse y is close to border of chat
         activey = true
-        start_h = container.clientHeight
     } else {
         activey = false
     }
-
-    console.log(activex, activey)
 })
 
 window.addEventListener("mouseup", function(e){
     activex = false
     activey = false
+
+    chat_top = window.innerHeight - container.clientHeight
+    chat_right = container.clientWidth
 })
 
 window.addEventListener("mousemove", function(e) {
@@ -92,12 +99,33 @@ window.addEventListener("mousemove", function(e) {
 
     let container = document.getElementById("chat-container")
 
-    if (activex) {
-        let distx = new_mx - start_mx //normal because left of page is zerio
-        container.style.width = String(start_w + distx) + "px"
+    //update cursor
+    if (in_chat_right_range(new_mx) && in_chat_top_range(new_my)){
+        document.body.style.cursor = "nesw-resize"
+    } else if (in_chat_right_range(new_mx)){
+        document.body.style.cursor = "ew-resize"
+    } else if (in_chat_top_range(new_my)){
+        document.body.style.cursor = "ns-resize"
+    } else if (!(activex || activey)) {
+        document.body.style.cursor = "default"
     }
-    if (activey) {
+
+    if (activex && activey) {
+        let distx = new_mx - start_mx //see comments below
+        container.style.width = String(start_w + distx) + "px"
+        let disty = start_my - new_my 
+        container.style.height = String(start_h + disty) + "px"
+
+        document.body.style.cursor = "nesw-resize" //prevent other cursor
+    } else if (activex) {
+        let distx = new_mx - start_mx //normal because left of page is zero
+        container.style.width = String(start_w + distx) + "px"
+
+        document.body.style.cursor = "ew-resize" //prevent other cursor
+    } else if (activey) {
         let disty = start_my - new_my // swapped because top of page is zero
         container.style.height = String(start_h + disty) + "px"
+
+        document.body.style.cursor = "ns-resize" //prevent other cursor
     }
 })
