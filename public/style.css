@@ -31,6 +31,7 @@
 
 * {
     margin: 0px;
+    user-select: none;
 }
 
 body {
@@ -91,28 +92,26 @@ a:hover {
     font-size: var(--font-size4);
     border-radius: 15px;
     font-family: inherit;
-    user-select: none;
 }
 
 .submit-button:hover {
     background-color: var(--darker-orange);
 }
 
-.chat-container {
+#chat-container {
     width: 22vw;
     max-width: 60vw;
     height: 40vh;
     max-height: 65vh;
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
-    border-bottom: 1px solid var(--bg-dark-grey);
+    border-top: 1px solid var(--bg-dark-grey);
     border-right: 1px solid var(--bg-dark-grey);
     background-color: rgba(250, 250, 255, 0.7);
     padding: 1%;
     display: flex;
     flex-direction: column;
-    resize: both;
     overflow: hidden;
 }
 
