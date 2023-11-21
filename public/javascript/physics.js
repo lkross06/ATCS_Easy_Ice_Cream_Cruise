@@ -10,6 +10,7 @@ test.animate();
 const axesHelper = new THREE.AxesHelper(8);
 test.scene.add(axesHelper);
 
+
 const physicsWorld = new CANNON.World({
     gravity: new CANNON.Vec3(0, -9.82, 0),
 });
@@ -34,7 +35,6 @@ const vehicle = new CANNON.RigidVehicle({
     chassisBody: carBody,
 });
 
-carBody.angularDamping = 1
 
 
 const mass = 1
@@ -123,6 +123,8 @@ document.addEventListener('keyup', (event) => {
     case 'ArrowUp':
         vehicle.setWheelForce(0, 0);
         vehicle.setWheelForce(0, 1);
+
+        console.log(vehicle)
         break;
 
     case 's':
@@ -209,9 +211,16 @@ const animate = () => {
     sphereMesh3.quaternion.copy(wheelBody3.quaternion);
     sphereMesh4.position.copy(wheelBody4.position);
     sphereMesh4.quaternion.copy(wheelBody4.quaternion);
+
+    
+    // FIXES CAMERA BEHIND CAR WHEN DONE CORRECTLY
+    //const relativeCameraOffset = new THREE.Vector3(20, 8, 0).applyMatrix4(boxMesh.matrixWorld);
+    //test.camera.position.copy(relativeCameraOffset);
+    //test.camera.lookAt(boxMesh.position);
+
     window.requestAnimationFrame(animate);
 };
 
 document.addEventListener("DOMContentLoaded", function() {
-animate();
+    animate();
 });
