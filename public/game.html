@@ -33,6 +33,10 @@
             justify-content: space-evenly;
         }
 
+        .game-selection {
+            margin: auto;
+        }
+
         #multiplayer-container {
             display: none;
         }
@@ -50,6 +54,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            cursor: pointer;
         }
         .track-preview {
             border: 1px solid var(--bg-dark-grey);
@@ -124,7 +129,7 @@
     </style>
 </head>
 <body id="body">
-    <div class="chat-container">
+    <div id="chat-container">
         <span id="chat-log">
         </span>
         <span class="chat-inputs">
@@ -195,12 +200,10 @@
         document.getElementById("singleplayer-button").addEventListener("click", function(e){
             sp_content.style.display = "flex";
             mp_content.style.display = "none";
-            console.log("sp")
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){
             sp_content.style.display = "none";
             mp_content.style.display = "block";
-            console.log("mp")
         })
 
         function create_track_modal(num){
