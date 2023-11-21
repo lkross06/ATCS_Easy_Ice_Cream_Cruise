@@ -79,7 +79,6 @@ export default class initScene {
   animate() {
     requestAnimationFrame(this.animate.bind(this));
     this.render();
-    // Commenting out this.controls.update() since OrbitControls is not used anymore.
   }
 
   render() {

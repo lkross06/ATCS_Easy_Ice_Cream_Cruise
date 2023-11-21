@@ -34,6 +34,8 @@ const vehicle = new CANNON.RigidVehicle({
     chassisBody: carBody,
 });
 
+carBody.angularDamping = 1
+
 
 const mass = 1
 const axisWidth = 5;
