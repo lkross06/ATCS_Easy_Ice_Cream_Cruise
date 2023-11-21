@@ -80,8 +80,15 @@
 
             <div class="spacer2"></div>
 
-            <button type="submit" class="submit-button">Log In</button>
+            <button type="submit" id="submit-button" onclick="getUsername()">Log In</button>
         </form>
     </div>
+    <script>
+        let username = ""
+        function getUsername() {
+            username = document.getElementById("username").value
+            sessionStorage.setItem("username", username)
+        }
+    </script>
 </body>
 </html>

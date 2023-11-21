@@ -62,7 +62,7 @@
     <h1 class="title1">Easy Ice Cream Cruise</h1>
     <h3 class="title3">Lucas Ross, Finn Taylor, Everett Villiger</h3>
     <div class="container form-container">
-        <form id="signup-form" method="POST" action="/submitlogin">
+        <form id="signup-form" method="POST" action="/submitsignup">
             <h3 class="title3">Sign Up</h3>
             <p id="tip">Already have an account? <a href="login.html">Log in</a></p>
 
@@ -80,8 +80,15 @@
 
             <div class="spacer2"></div>
 
-            <button type="submit" class="submit-button">Create Account</button>
+            <button type="submit" id="submit-button" onclick="getUsername()">Create Account</button>
         </form>
     </div>
+    <script>
+        let username = ""
+        function getUsername() {
+            username = document.getElementById("username").value
+            sessionStorage.setItem("username", username)
+        }
+    </script>
 </body>
 </html>

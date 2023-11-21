@@ -121,7 +121,6 @@
             font-size: var(--font-size-4);
         }
 
-        /* ------------------------- */
     </style>
 </head>
 <body id="body">
@@ -134,7 +133,7 @@
         </span>
     </div>
     <div class="log-out">
-        <h3 class="title3">ecvil</h3>
+        <h3 class="title3" id="ecvil"></h3>
         <p><a href="login.html">Log Out</a></p>
     </div>
 
@@ -188,6 +187,8 @@
         </div>
     </div> 
     <script>
+        console.log("SESSION STORAGE USERNAME:", sessionStorage.getItem("username"))
+        document.getElementById("ecvil").innerText = sessionStorage.getItem("username")
         let sp_content = document.getElementById("singleplayer-container")
         let mp_content = document.getElementById("multiplayer-container")
 
