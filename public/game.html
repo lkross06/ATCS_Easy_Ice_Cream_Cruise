@@ -39,6 +39,22 @@
 
         #multiplayer-container {
             display: none;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #multiplayer-container span {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #multiplayer-container span * {
+            margin: 2%;
+            width: 20vw;
+            font-size: var(--font-size-4);
+            text-align: center;
         }
 
         #singleplayer-container {
@@ -138,7 +154,7 @@
         </span>
     </div>
     <div class="log-out">
-        <h3 class="title3" id="ecvil"></h3>
+        <h3 class="title3" id="ecvil">username</h3>
         <p><a href="login.html">Log Out</a></p>
     </div>
 
@@ -187,9 +203,27 @@
         </div>
 
         <div id="multiplayer-container" class="game-selection">
-            <h3 class="title3">Join Online Game</h3>
-            <input type="text" id="join-code-input" maxlength="6">
-        </div>
+          <h3 class="title3" id="host-game-title">Host Online Game</h3>
+          <span id="multiplayer-host">
+              <select name="multiplayer-host-track">
+                  <option disabled selected>-- Choose Track --</option>
+                  <option value="Track 1">Track 1</option>
+                  <option value="Track 2">Track 2</option>
+                  <option value="Track 3">Track 3</option>
+                  <option value="Track 4">Track 4</option>
+                  <option value="Track 5">Track 5</option>
+                  <option value="Track 6">Track 6</option>
+                  <option value="Track 7">Track 7</option>
+                  <option value="Track 8">Track 8</option>
+              </select>
+              <button class="submit-button">Host Game</button>
+          </span>
+          <h3 class="title3">Join Online Game</h3>
+          <span id="multiplayer-join">
+              <input type="text" id="multiplayer-join-code" name="multiplayer-join-code" maxlength="6">
+              <button class="submit-button">Join Game</button>
+          </span>
+      </div>
     </div> 
     <script>
         console.log("SESSION STORAGE USERNAME:", sessionStorage.getItem("username"))
@@ -203,7 +237,7 @@
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){
             sp_content.style.display = "none";
-            mp_content.style.display = "block";
+            mp_content.style.display = "flex";
         })
 
         function create_track_modal(num){

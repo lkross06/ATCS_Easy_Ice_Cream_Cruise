@@ -82,7 +82,7 @@ a:hover {
     text-decoration: underline;
 }
 
-#submit-button {
+.submit-button {
     cursor: pointer;
     background-color: var(--dark-orange);
     padding: 3%;
