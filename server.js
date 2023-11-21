@@ -25,15 +25,18 @@ app.get('/', (req, res) => {
 app.get("/game", (req, res) => {
     res.sendFile(__dirname+"/public/game.html")
 })
+
+app.get("/res/track.jpg", (req, res) => {
+    res.sendFile(__dirname+"/res/track.jpg")
+})
+
 // Create a route to handle the form submission
 app.post('/submitlogin', (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (username in users && pswd === users[username].password) {
-        console.log( "fah zhaou logged in", users)
         res.redirect("/game")
     } else {
-        console.log("cocksucer lied to me")
         res.redirect("/") 
     }
 });
@@ -42,11 +45,9 @@ app.post("/submitsignup", (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (username in users) {
-        console.log( "cant do that chiefetn", users, username)
         res.redirect("/")
     } else {
         users[username] = {"password": pswd, "friends": []}
-        console.log("cocksucer didnt lye to me signup", users)
         res.redirect("/game") 
     }
 })
