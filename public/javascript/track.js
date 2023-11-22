@@ -11,6 +11,8 @@ const carMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const car = new THREE.Mesh(carGeometry, carMaterial);
 scene.add(car);
 
+const wheelBody1 = new CANNON.Vector3
+
 // Set up the camera position
 const cameraOffset = new THREE.Vector3(0, 2, -5);
 camera.position.copy(car.position).add(cameraOffset);
