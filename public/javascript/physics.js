@@ -22,11 +22,11 @@ const groundBody = new CANNON.Body({
     type: CANNON.Body.STATIC
 });
 // rotate ground body by 90 degrees
-// groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 physicsWorld.addBody(groundBody);
 
 const carBody = new CANNON.Body({
-    mass: 5,
+    mass: 500,
     position: new CANNON.Vec3(0, 6, 0),
     shape: new CANNON.Box(new CANNON.Vec3(4, 0.5, 2)),
 });
@@ -43,9 +43,18 @@ const wheelShape = new CANNON.Cylinder(1, 1, 0.5, 16);
 const wheelMaterial = new CANNON.Material('wheel');
 const down = new CANNON.Vec3(0, -1, 0);
 
+// WHEEL STUFF BEGINNITH HERE
 const wheelBody1 = new CANNON.Body({ mass, material: wheelMaterial });
 wheelBody1.addShape(wheelShape);
-wheelBody1.angularDamping = 0.4;
+// Set initial rotation of the wheel to be upright
+const initialRotation = new CANNON.Quaternion();
+initialRotation.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI/2); // Rotate 180 degrees around the y-axis
+wheelBody1.quaternion.copy(initialRotation);
+
+wheelBody1.angularDamping = 1;
+
+wheelBody1.fixedRotation = true
+
 vehicle.addWheel({
   body: wheelBody1,
   position: new CANNON.Vec3(-2, 0, axisWidth / 2),
@@ -55,7 +64,15 @@ vehicle.addWheel({
 
 const wheelBody2 = new CANNON.Body({ mass, material: wheelMaterial });
 wheelBody2.addShape(wheelShape);
-wheelBody2.angularDamping = 0.4;
+
+const initialRotation2 = new CANNON.Quaternion();
+initialRotation2.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI/2);
+wheelBody2.quaternion.copy(initialRotation2);
+
+wheelBody2.angularDamping = 1;
+
+wheelBody2.fixedRotation = true
+
 vehicle.addWheel({
   body: wheelBody2,
   position: new CANNON.Vec3(-2, 0, -axisWidth / 2),
@@ -65,7 +82,15 @@ vehicle.addWheel({
 
 const wheelBody3 = new CANNON.Body({ mass, material: wheelMaterial });
 wheelBody3.addShape(wheelShape);
-wheelBody3.angularDamping = 0.4;
+
+const initialRotation3 = new CANNON.Quaternion();
+initialRotation3.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI/2);
+wheelBody3.quaternion.copy(initialRotation3);
+
+wheelBody3.angularDamping = 1;
+
+wheelBody3.fixedRotation = true
+
 vehicle.addWheel({
   body: wheelBody3,
   position: new CANNON.Vec3(2, 0, axisWidth / 2),
@@ -75,7 +100,15 @@ vehicle.addWheel({
 
 const wheelBody4 = new CANNON.Body({ mass, material: wheelMaterial });
 wheelBody4.addShape(wheelShape);
-wheelBody4.angularDamping = 0.4;
+
+const initialRotation4 = new CANNON.Quaternion();
+initialRotation4.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI/2);
+wheelBody4.quaternion.copy(initialRotation4);
+
+wheelBody4.angularDamping = 1;
+
+wheelBody4.fixedRotation = true
+
 vehicle.addWheel({
   body: wheelBody4,
   position: new CANNON.Vec3(2, 0, -axisWidth / 2),
