@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Ice Cream Cruise</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+
+        .log-out {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.5%;
+            text-align: right;
+        }
+
+        button.game-selection-choice {
+            width: 25vw;
+            font-size: var(--font-size-3);
+        }
+
+        #game-selection-container {
+            margin: auto;
+            width: 50vw;
+            height: 50vh;
+        }
+
+        #game-selection-buttons {
+            margin: auto;
+            width: 50vw;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        .game-selection {
+            margin: auto;
+        }
+
+        #multiplayer-container {
+            display: none;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #multiplayer-container span {
+            display: flex;
+            flex-direction: row;
+        }
+
+        #multiplayer-container span * {
+            margin: 2%;
+            width: 20vw;
+            font-size: var(--font-size-4);
+            text-align: center;
+        }
+
+        #singleplayer-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .track-option {
+            padding: 1%;
+            margin: 1%;
+            width: fit-content;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .track-preview {
+            border: 1px solid var(--bg-dark-grey);
+            width: 150px;
+            height: 150px;
+        }
+
+        .track-desc {
+            text-align: center;
+        }
+
+        #join-code-input {
+            display: inline;
+            padding: 2%;
+            width: 30%;
+            background-color: var(--bg-purewhite);
+            border: 1px solid var(--bg-dark-grey);
+            border-radius: 4px;
+            font-size: var(--font-size-3);
+        }
+
+        /* ------ track modal ------ */
+
+        .modal { /* modal has to be the first element in the body */
+            position: absolute;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 99;
+        }
+
+        .modal-content {
+            border: 1px solid var(--bg-dark-grey);
+            background-color: var(--bg-white);
+            /* this works for any element that you want centered */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -25vh; /* negative half of the height to offset top: 50% */
+            margin-left: -25vw;
+            width: 50vw;
+            height: 50vh;
+        }
+
+        .track-modal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 3fr 1fr;
+            padding: 2%;
+        }
+        
+        .modal-preview {
+            margin: 0 5% 5% 0;
+            width: 90%;
+            height: 90%;
+            border: 1px solid var(--bg-dark-grey);
+        }
+
+        .track-pb {
+            text-align: center;
+        }
+
+        .play-track-button {
+            width: 15vw;
+            margin: auto;
+        }
+        .track-leaderboard {
+            font-size: var(--font-size-4);
+        }
+
+    </style>
+</head>
+<body id="body">
+    <div id="chat-container">
+        <span id="chat-log">
+        </span>
+        <span class="chat-inputs">
+            <input type="text" name="chat-new" id="chat-new" maxlength="30">
+            <button id="chat-send" class="submit-button">&rarr;</button>
+        </span>
+    </div>
+    <div class="log-out">
+        <h3 class="title3" id="ecvil">username</h3>
+        <p><a href="login.html">Log Out</a></p>
+    </div>
+
+    <div class="spacer1"></div>
+    <h1 class="title1">Easy Ice Cream Cruise</h1>
+
+    <div id="game-selection-buttons">
+        <button id="singleplayer-button" class="title3 game-selection-choice submit-button">Singleplayer</button>
+        <button id="multiplayer-button" class="title3 game-selection-choice submit-button">Multiplayer</button>
+    </div>
+
+    <div class="container" id="game-selection-container">
+        <div id="singleplayer-container" class="game-selection"> 
+            <div class="track-option" id="track-1">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 1</p>
+            </div>
+            <div class="track-option" id="track-2">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 2</p>
+            </div>
+            <div class="track-option" id="track-3">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 3</p>
+            </div>
+            <div class="track-option" id="track-4">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 4</p>
+            </div>
+            <div class="track-option" id="track-5">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 5</p>
+            </div>
+            <div class="track-option" id="track-6">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 6</p>
+            </div>
+            <div class="track-option" id="track-7">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 7</p>
+            </div>
+            <div class="track-option" id="track-8">
+                <img src="../res/track.jpg" class="track-preview">
+                <p class="track-desc">Track 8</p>
+            </div>
+        </div>
+
+        <div id="multiplayer-container" class="game-selection">
+          <h3 class="title3" id="host-game-title">Host Online Game</h3>
+          <span id="multiplayer-host">
+              <select name="multiplayer-host-track">
+                  <option disabled selected>-- Choose Track --</option>
+                  <option value="Track 1">Track 1</option>
+                  <option value="Track 2">Track 2</option>
+                  <option value="Track 3">Track 3</option>
+                  <option value="Track 4">Track 4</option>
+                  <option value="Track 5">Track 5</option>
+                  <option value="Track 6">Track 6</option>
+                  <option value="Track 7">Track 7</option>
+                  <option value="Track 8">Track 8</option>
+              </select>
+              <button class="submit-button">Host Game</button>
+          </span>
+          <h3 class="title3">Join Online Game</h3>
+          <span id="multiplayer-join">
+              <input type="text" id="multiplayer-join-code" name="multiplayer-join-code" maxlength="6">
+              <button class="submit-button">Join Game</button>
+          </span>
+      </div>
+    </div> 
+    <script>
+        console.log("SESSION STORAGE USERNAME:", sessionStorage.getItem("username"))
+        document.getElementById("ecvil").innerText = sessionStorage.getItem("username")
+        let sp_content = document.getElementById("singleplayer-container")
+        let mp_content = document.getElementById("multiplayer-container")
+
+        document.getElementById("singleplayer-button").addEventListener("click", function(e){
+            sp_content.style.display = "flex";
+            mp_content.style.display = "none";
+        })
+        document.getElementById("multiplayer-button").addEventListener("click", function(e){
+            sp_content.style.display = "none";
+            mp_content.style.display = "flex";
+        })
+
+        function create_track_modal(num){
+            leaderboard = [ //TODO: get this from server
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"},
+                {"username":"--","time":"--"}
+            ]
+            pb = "--" //TODO: get this user's pb from server
+
+            //level 1
+            let div1 = document.createElement("div")
+            div1.setAttribute("class", "modal")
+            div1.setAttribute("id", "modal")
+
+            //level 2
+            let div2 = document.createElement("div")
+            div2.setAttribute("class", "modal-content track-modal")
+            div1.appendChild(div2)
+
+            //level 3
+            let img = document.createElement("img")
+            img.setAttribute("src", "../res/track.jpg")
+            img.setAttribute("class", "modal-preview")
+            div2.appendChild(img)
+
+            let span1 = document.createElement("span")
+            span1.setAttribute("class", "track-leaderboard")
+            div2.appendChild(span1)
+
+            let span2 = document.createElement("span")
+            span2.setAttribute("class", "track-pb title3")
+            span2.innerText = pb
+            div2.appendChild(span2)
+            
+            let button = document.createElement("button")
+            button.setAttribute("class", "play-track-button submit-button title3")
+            button.innerText = "Play"
+            div2.appendChild(button)
+
+            //level 4
+            let h3 = document.createElement("h3")
+            h3.setAttribute("class", "title2 track-title")
+            h3.innerText = "Track " + num
+            span1.appendChild(h3)
+
+            let ol = document.createElement("ol")
+            ol.setAttribute("class", "track-leaderboard")
+            span1.appendChild(ol)
+
+            //level 5
+            for (let i = 0; i < 8; i++){
+                let li = document.createElement("li")
+                ol.appendChild(li)
+
+                let span3 = document.createElement("span")
+                span3.setAttribute("class", "username")
+                span3.innerText = leaderboard[i]["username"]
+                li.appendChild(span3)
+
+                let span4 = document.createElement("span")
+                span4.innerText = " " + leaderboard[i]["time"]
+                li.appendChild(span4)
+            }
+
+            let body = document.getElementById("body")
+            body.insertBefore(div1, body.firstChild)
+            div1.style.display = "block"
+        }
+
+        for (let track of document.getElementsByClassName("track-option")){
+            track.addEventListener("click", function(e){
+                id = String(this.id)
+                number = Number(id.substring(id.length - 1))
+                create_track_modal(number)
+            })
+        }
+
+        window.addEventListener("click", function(e){
+            let modal = document.getElementById("modal")
+            if (e.target == modal) {
+                modal.remove()
+            }
+        })
+        
+    </script>
+    <script src="chat.js"></script>
+</body>
+</html>
