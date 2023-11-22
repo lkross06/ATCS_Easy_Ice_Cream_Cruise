@@ -39,7 +39,7 @@ const vehicle = new CANNON.RigidVehicle({
 
 const mass = 1
 const axisWidth = 5;
-const wheelShape = new CANNON.Sphere(1);
+const wheelShape = new CANNON.Cylinder(1, 1, 0.5, 16);
 const wheelMaterial = new CANNON.Material('wheel');
 const down = new CANNON.Vec3(0, -1, 0);
 
@@ -89,7 +89,7 @@ vehicle.addToWorld(physicsWorld);
 
 document.addEventListener('keydown', (event) => {
     const maxSteerVal = Math.PI / 8;
-    const maxForce = 10;
+    const maxForce = 20;
 
     switch (event.key) {
     case 'w':
@@ -153,22 +153,22 @@ const boxMaterial = new THREE.MeshNormalMaterial();
 const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
 test.scene.add(boxMesh);
 
-const sphereGeometry1 = new THREE.SphereGeometry(1);
+const sphereGeometry1 = new THREE.CylinderGeometry(1, 1, 0.5, 16);
 const sphereMaterial1 = new THREE.MeshNormalMaterial();
 const sphereMesh1 = new THREE.Mesh(sphereGeometry1, sphereMaterial1);
 test.scene.add(sphereMesh1);
 
-const sphereGeometry2 = new THREE.SphereGeometry(1);
+const sphereGeometry2 = new THREE.CylinderGeometry(1, 1, 0.5, 16);
 const sphereMaterial2 = new THREE.MeshNormalMaterial();
 const sphereMesh2 = new THREE.Mesh(sphereGeometry2, sphereMaterial2);
 test.scene.add(sphereMesh2);
 
-const sphereGeometry3 = new THREE.SphereGeometry(1);
+const sphereGeometry3 = new THREE.CylinderGeometry(1, 1, 0.5, 16);
 const sphereMaterial3 = new THREE.MeshNormalMaterial();
 const sphereMesh3 = new THREE.Mesh(sphereGeometry3, sphereMaterial3);
 test.scene.add(sphereMesh3);
 
-const sphereGeometry4 = new THREE.SphereGeometry(1);
+const sphereGeometry4 = new THREE.CylinderGeometry(1, 1, 0.5, 16);
 const sphereMaterial4 = new THREE.MeshNormalMaterial();
 const sphereMesh4 = new THREE.Mesh(sphereGeometry4, sphereMaterial4);
 test.scene.add(sphereMesh4);
@@ -197,6 +197,13 @@ const applyCustomGravity = () => {
     wheelBody3.applyForce(customGravity.scale(wheelBody3.mass), wheelBody3.position);
     wheelBody4.applyForce(customGravity.scale(wheelBody4.mass), wheelBody4.position);
 };
+
+
+const wheelGroundContactMaterial = new CANNON.ContactMaterial(groundMat, wheelMaterial, {
+    friction: 0.8,
+    restitution: 0.3,
+  })
+  physicsWorld.addContactMaterial(wheelGroundContactMaterial)
 
 
 const animate = () => {
