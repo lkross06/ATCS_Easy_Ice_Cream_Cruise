@@ -22,8 +22,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/login.html'));
 });
-app.get("/game", (req, res) => {
-    res.sendFile(__dirname+"/public/game.html")
+app.get("/menu", (req, res) => {
+    res.sendFile(__dirname+"/public/menu.html")
 })
 
 app.get("/res/track.jpg", (req, res) => {
@@ -35,7 +35,7 @@ app.post('/submitlogin', (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (username in users && pswd === users[username].password) {
-        res.redirect("/game")
+        res.redirect("/menu")
     } else {
         res.redirect("/") 
     }
@@ -48,7 +48,7 @@ app.post("/submitsignup", (req, res) => {
         res.redirect("/")
     } else {
         users[username] = {"password": pswd, "friends": []}
-        res.redirect("/game") 
+        res.redirect("/menu") 
     }
 })
 
@@ -68,7 +68,7 @@ socket.on('connection', (ws) => {
          * }
          */
         let msg = JSON.parse(message)
-        console.log(msg)
+        // console.log(msg) // sorry finn -lucas
         if (msg.method === "chat") {
             let packet = {
                 "method": "chat",
