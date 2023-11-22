@@ -5,13 +5,13 @@ var container = document.querySelector('body'),
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 let renderConfig = {antialias: true, alpha: true},
 renderer = new THREE.WebGLRenderer(renderConfig);
-const cameraOffset = new THREE.Vector3(0, 2, -5);
+const cameraOffset = new THREE.Vector3(0, 4, -10);
 
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
 var chassisBody = new CANNON.Body({mass: 50});
 chassisBody.addShape(chassisShape);
-chassisBody.position.set(0, 0.2, 0);
+chassisBody.position.set(0, 1, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 
 // car visual body
@@ -20,16 +20,12 @@ var material = new THREE.MeshBasicMaterial({color: 0xffff00, side: THREE.DoubleS
 var box = new THREE.Mesh(cargeometry, material);
 scene.add(box);
 
-
-
-
 camera.position.copy(box.position).add(cameraOffset);
 camera.lookAt(box.position);
 scene.add(camera);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
-
 
 
 
@@ -64,7 +60,7 @@ var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
 var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
     friction: 1,
-    restitution: 0,
+    restitution: 0.05,
     contactEquationStiffness: 1000,
 });
 
@@ -85,7 +81,7 @@ var options = {
   directionLocal: new CANNON.Vec3(0, -1, 0),
   suspensionStiffness: 75,
   suspensionRestLength: 0.4,
-  frictionSlip: 5,
+  frictionSlip: 10000,
   dampingRelaxation: 2.3,
   dampingCompression: 4.5,
   maxSuspensionForce: 200000,
@@ -171,6 +167,7 @@ function updatePhysics() {
 
 }
 
+
 function render() {
   requestAnimationFrame(render);
   const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
@@ -178,7 +175,6 @@ function render() {
   camera.lookAt(box.position);
   renderer.render(scene, camera);
   updatePhysics();
-
 }
 
 function navigate(e) {
@@ -194,13 +190,13 @@ function navigate(e) {
   switch(e.keyCode) {
 
     case 87: // forward
-      vehicle.applyEngineForce(keyup ? 0 : -engineForce/3, 2);
-      vehicle.applyEngineForce(keyup ? 0 : -engineForce/3, 3);
+      vehicle.applyEngineForce(keyup ? 0 : -engineForce, 2);
+      vehicle.applyEngineForce(keyup ? 0 : -engineForce, 3);
       break;
 
     case 83: // backward
-      vehicle.applyEngineForce(keyup ? 0 : engineForce, 2);
-      vehicle.applyEngineForce(keyup ? 0 : engineForce, 3);
+      vehicle.applyEngineForce(keyup ? 0 : engineForce/3, 2);
+      vehicle.applyEngineForce(keyup ? 0 : engineForce/3, 3);
       break;
 
     case 68: // right
