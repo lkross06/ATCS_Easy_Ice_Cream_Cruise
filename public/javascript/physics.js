@@ -53,12 +53,10 @@ wheelBody1.quaternion.copy(initialRotation);
 
 wheelBody1.angularDamping = 1;
 
-wheelBody1.fixedRotation = true
-
 vehicle.addWheel({
   body: wheelBody1,
   position: new CANNON.Vec3(-2, 0, axisWidth / 2),
-  axis: new CANNON.Vec3(0, 0, 1),
+  axis: new CANNON.Vec3(0, 1, 0),
   direction: down,
 });
 
@@ -71,12 +69,10 @@ wheelBody2.quaternion.copy(initialRotation2);
 
 wheelBody2.angularDamping = 1;
 
-wheelBody2.fixedRotation = true
-
 vehicle.addWheel({
   body: wheelBody2,
   position: new CANNON.Vec3(-2, 0, -axisWidth / 2),
-  axis: new CANNON.Vec3(0, 0, 1),
+  axis: new CANNON.Vec3(0, 1, 0),
   direction: down,
 });
 
@@ -89,12 +85,10 @@ wheelBody3.quaternion.copy(initialRotation3);
 
 wheelBody3.angularDamping = 1;
 
-wheelBody3.fixedRotation = true
-
 vehicle.addWheel({
   body: wheelBody3,
   position: new CANNON.Vec3(2, 0, axisWidth / 2),
-  axis: new CANNON.Vec3(0, 0, 1),
+  axis: new CANNON.Vec3(1, 1, 0),
   direction: down,
 });
 
@@ -107,12 +101,10 @@ wheelBody4.quaternion.copy(initialRotation4);
 
 wheelBody4.angularDamping = 1;
 
-wheelBody4.fixedRotation = true
-
 vehicle.addWheel({
   body: wheelBody4,
   position: new CANNON.Vec3(2, 0, -axisWidth / 2),
-  axis: new CANNON.Vec3(0, 0, 1),
+  axis: new CANNON.Vec3(0, 1, 0),
   direction: down,
 });
 
