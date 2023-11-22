@@ -35,7 +35,7 @@ app.post('/submitlogin', (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (username in users && pswd === users[username].password) {
-        res.redirect("/me")
+        res.redirect("/menu")
     } else {
         res.redirect("/") 
     }
@@ -48,7 +48,7 @@ app.post("/submitsignup", (req, res) => {
         res.redirect("/")
     } else {
         users[username] = {"password": pswd, "friends": []}
-        res.redirect("/game") 
+        res.redirect("/menu") 
     }
 })
 
