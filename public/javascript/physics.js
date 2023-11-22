@@ -195,8 +195,8 @@ function navigate(e) {
       break;
 
     case 83: // backward
-      vehicle.applyEngineForce(keyup ? 0 : engineForce/3, 2);
-      vehicle.applyEngineForce(keyup ? 0 : engineForce/3, 3);
+      vehicle.applyEngineForce(keyup ? 0 : engineForce/2, 2);
+      vehicle.applyEngineForce(keyup ? 0 : engineForce/2, 3);
       break;
 
     case 68: // right
