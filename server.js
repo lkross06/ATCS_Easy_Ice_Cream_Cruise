@@ -34,6 +34,10 @@ app.get("/res/track.jpg", (req, res) => {
     res.sendFile(__dirname+"/public/res/track.jpg")
 })
 
+app.get("/globalVars.js", (req, res) => {
+    res.sendFile(__dirname+"/globalVars.js")
+})
+
 // Create a route to handle the form submission
 app.post('/submitlogin', (req, res) => {
     let username = req.body.username

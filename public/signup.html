@@ -71,7 +71,7 @@
             <span id="form-grid">
 
                 <label for="username">Username </label>
-                <input type="text" id="username" name="username" maxlength="16" required>
+                <input type="text" id="username" name="username" maxlength="16" oninput="validateInput()" required>
                 
                 <label for="password">Password </label>
                 <input type="password" id="password" name="password" required>
@@ -85,6 +85,21 @@
     </div>
     <script>
         let username = ""
+        function validateInput() {
+            var inputField = document.getElementById('username')
+            var inputValue = inputField.value
+
+            // removes characters that are not a-z, A-Z, or 0-9
+            // i love regex
+            inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, '')
+
+            inputField.value = inputValue
+
+            if (inputField.value !== inputValue) {
+                alert('Only a-z, A-Z, and 0-9 are allowed.')
+            }
+        }
+
         function getUsername() {
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)

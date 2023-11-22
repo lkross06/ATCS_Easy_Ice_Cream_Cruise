@@ -27,8 +27,18 @@
     <div id="root"></div>
 
     <script type="module" src="/javascript/physics.js"></script>
+    <script type="module">
+      import {domainName} from "../globalVars.js"
+      if(sessionStorage.getItem("username") === null) {
+        console.log("COCKSUEERS")
+        // Ensure the redirect URL is correctly formed
+        const redirectUrl = "http://" + domainName + ":3000";
+        // Redirect the user
+        window.location.href = redirectUrl;    
+      }
+    </script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js'></script>
-    
+
 </body>
 </html>

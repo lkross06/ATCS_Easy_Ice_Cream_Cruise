@@ -225,8 +225,21 @@
           </span>
       </div>
     </div> 
+    <script type="module">
+        import {domainName} from "../globalVars.js"
+        // websocket that will be used in chat.js
+        let ws = new WebSocket("ws://"+domainName+":8008")
+        // womp womp the user tried to hack the system and bypass login
+        if(sessionStorage.getItem("username") === null) {
+            console.log("COCKSUEERS")
+            // Ensure the redirect URL is correctly formed
+            const redirectUrl = "http://" + domainName + ":3000";
+            
+            // Redirect the user
+            window.location.href = redirectUrl;    
+        }
+    </script>
     <script>
-        console.log("SESSION STORAGE USERNAME:", sessionStorage.getItem("username"))
         document.getElementById("ecvil").innerText = sessionStorage.getItem("username")
         let sp_content = document.getElementById("singleplayer-container")
         let mp_content = document.getElementById("multiplayer-container")
@@ -331,6 +344,6 @@
         })
         
     </script>
-    <script src="javascript/chat.js"></script>
+    <script src="javascript/chat.js" type="module"></script>
 </body>
 </html>

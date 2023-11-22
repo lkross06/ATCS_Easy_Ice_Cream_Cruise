@@ -1,3 +1,5 @@
+import {domainName} from "../globalVars.js"
+
 // the local user's username
 let username = sessionStorage.getItem("username") 
 
@@ -27,8 +29,7 @@ function new_chat_message(message, chatlog, username){ //creates and returns a n
 }
 
 document.getElementById("chat-send").addEventListener("click", chat_send)
-// TODO: hardcoded url really sucks
-let ws = new WebSocket("ws://localhost:8008")
+let ws = new WebSocket("ws://"+domainName+":8008")
 
 document.addEventListener("keypress", function(event) { //on enter key press
     if (event.key == "Enter") {
