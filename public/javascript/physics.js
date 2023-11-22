@@ -22,7 +22,7 @@ const groundBody = new CANNON.Body({
     type: CANNON.Body.STATIC
 });
 // rotate ground body by 90 degrees
-groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+// groundBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
 physicsWorld.addBody(groundBody);
 
 const carBody = new CANNON.Body({
