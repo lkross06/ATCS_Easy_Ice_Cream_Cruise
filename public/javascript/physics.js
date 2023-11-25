@@ -29,6 +29,8 @@ container.appendChild(renderer.domElement);
 
 
 
+
+
 window.addEventListener('resize', function() {
   w = container.clientWidth;
   h = container.clientHeight;
@@ -169,12 +171,12 @@ function updatePhysics() {
 
 
 function render() {
-  requestAnimationFrame(render);
-  const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
-  camera.position.copy(relativeCameraOffset);
-  camera.lookAt(box.position);
-  renderer.render(scene, camera);
-  updatePhysics();
+    requestAnimationFrame(render);
+    const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
+    camera.position.copy(relativeCameraOffset);
+    camera.lookAt(box.position);
+    renderer.render(scene, camera);
+    updatePhysics();
 }
 
 function navigate(e) {
