@@ -9,10 +9,13 @@ const cameraOffset = new THREE.Vector3(0, 4, -10);
 
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
-var chassisBody = new CANNON.Body({mass: 50});
+var chassisBody = new CANNON.Body({mass: 100});
 chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 1, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
+//speed tings
+var engineForce = 600
+var maxSteerVal = Math.PI/32;
 
 // car visual body
 var cargeometry = new THREE.BoxGeometry(2, 0.6, 4); // double chasis shape
@@ -27,9 +30,32 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
 
+var objLoader = new THREE.OBJLoader()
+var map = THREE.TextureLoader()
+var handMaterial = new THREE.MeshPhongMaterial({map: map});
 
 
+objLoader.load(
+    '../res/track.obj', object => {
+        console.log(object)
 
+        object.traverse(node => {
+            
+            node.material = handMaterial
+        })
+        object.name = "track"
+
+        object.rotation.y = Math.PI/2
+
+        scene.add(object);
+        object.position.set(0, 0, 0);
+        
+    }, xhr => {
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' )
+    }, error => {
+        console.log(error)
+    }
+)
 
 window.addEventListener('resize', function() {
   w = container.clientWidth;
@@ -115,7 +141,7 @@ var wheelBodies = [],
     wheelVisuals = [];
 vehicle.wheelInfos.forEach(function(wheel) {
   var shape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
-  var body = new CANNON.Body({mass: 1, material: wheelMaterial});
+  var body = new CANNON.Body({mass: 11.5, material: wheelMaterial});
   var q = new CANNON.Quaternion();
   q.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
   body.addShape(shape, new CANNON.Vec3(), q);
@@ -162,7 +188,9 @@ world.add(planeBody)
 **/
 
 function updatePhysics() {
-  world.step(1/60);
+  world.step(1
+    
+    /60);
   // update the chassis position
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
@@ -186,31 +214,30 @@ function navigate(e) {
   vehicle.setBrake(0, 1);
   vehicle.setBrake(0, 2);
   vehicle.setBrake(0, 3);
+  
+  let speed = vehicle.currentVehicleSpeedKmHour
+  console.log(speed)
 
-  var engineForce = 400,
-      maxSteerVal = Math.PI/8;
-  switch(e.keyCode) {
+  //y = -4x + 600 but absolute value
+  //at speed = 0, eF = 600
+  //at speed = 150 or -150, eF = 0
+  engineForce = (-4 * Math.abs(speed)) + 600
+  console.log("ENGINE FORCE", engineForce)
 
-    case 87: // forward
+  if(e.keyCode == 87) { //forward
       vehicle.applyEngineForce(keyup ? 0 : -engineForce, 2);
       vehicle.applyEngineForce(keyup ? 0 : -engineForce, 3);
-      break;
-
-    case 83: // backward
+  } else if (e.keyCode == 83) { //backward
       vehicle.applyEngineForce(keyup ? 0 : engineForce/2, 2);
       vehicle.applyEngineForce(keyup ? 0 : engineForce/2, 3);
-      break;
-
-    case 68: // right
+  } else if (e.keyCode == 68){ //right
       vehicle.setSteeringValue(keyup ? 0 : -maxSteerVal, 2);
       vehicle.setSteeringValue(keyup ? 0 : -maxSteerVal, 3);
-      break;
-
-    case 65: // left
+  } else if (e.keyCode == 65){ //left
       vehicle.setSteeringValue(keyup ? 0 : maxSteerVal, 2);
       vehicle.setSteeringValue(keyup ? 0 : maxSteerVal, 3);
-      break;
   }
+
 }
 
 window.addEventListener('keydown', navigate)
