@@ -15,7 +15,7 @@ chassisBody.position.set(0, 1, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
 var engineForce = 600
-var maxSteerVal = Math.PI/16;
+var maxSteerVal = Math.PI/32;
 
 // car visual body
 var cargeometry = new THREE.BoxGeometry(2, 0.6, 4); // double chasis shape
@@ -215,12 +215,13 @@ function handleKeyPress(e){
 }
 
 function navigate() {
-  vehicle.setBrake(0, 0);
-  vehicle.setBrake(0, 1);
-  vehicle.setBrake(0, 2);
-  vehicle.setBrake(0, 3);
+  if (!keys_pressed[32]){
+    vehicle.setBrake(0, 0);
+    vehicle.setBrake(0, 1);
+    vehicle.setBrake(0, 2);
+    vehicle.setBrake(0, 3);
+  }
 
-  console.log(keys_pressed)
   
   let speed = vehicle.currentVehicleSpeedKmHour
 
@@ -229,37 +230,33 @@ function navigate() {
   //at speed = 150 or -150, eF = 0
   engineForce = (-4 * Math.abs(speed)) + 600
 
+  console.log(speed)
+
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
-      vehicle.setBrake(8, 2)
-      vehicle.setBrake(8, 3)
+    vehicle.setBrake(8, 2);
+    vehicle.setBrake(8, 3);
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
-      console.log("apply forward")
       vehicle.applyEngineForce(-engineForce, 2);
       vehicle.applyEngineForce(-engineForce, 3);
   } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
-      console.log("apply backward")
-      vehicle.applyEngineForce(engineForce/2, 2);
-      vehicle.applyEngineForce(engineForce/2, 3);
+      vehicle.applyEngineForce(engineForce / 2, 2);
+      vehicle.applyEngineForce(engineForce / 2, 3);
   } else {
       vehicle.applyEngineForce(0, 2);
       vehicle.applyEngineForce(0, 3);
   }
 
-  if (keys_pressed[68] && keys_pressed[65]){ //both
-      steeringValue = 0
-  } else if (keys_pressed[65]){ //left
-      steeringValue += maxSteerVal / 8
-  } else if (keys_pressed[68]){ //right
-      steeringValue -= maxSteerVal / 8
+  if (keys_pressed[65] && !keys_pressed[68]){ //left
+      steeringValue += 0.003
+  } else if (keys_pressed[68] && !keys_pressed[65]){ //right
+      steeringValue -= 0.003
   } else {
-      steeringValue += -steeringValue / 2
+      steeringValue += -steeringValue / 8
   }
 
   if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
   if (steeringValue < -maxSteerVal) steeringValue = -maxSteerVal
-  
-  console.log(steeringValue)
 
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
