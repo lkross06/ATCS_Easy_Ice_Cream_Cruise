@@ -15,7 +15,7 @@ chassisBody.position.set(0, 1, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
 var engineForce = 600
-var maxSteerVal = Math.PI/32;
+var maxSteerVal = Math.PI/16;
 
 // car visual body
 var cargeometry = new THREE.BoxGeometry(2, 0.6, 4); // double chasis shape
@@ -192,7 +192,7 @@ function updatePhysics() {
   // update the chassis position
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
-
+  navigate()
 }
 
 
@@ -202,16 +202,19 @@ function render() {
     camera.position.copy(relativeCameraOffset);
     camera.lookAt(box.position);
     renderer.render(scene, camera);
-    updatePhysics();
+    updatePhysics()
 }
 
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
+var steeringValue = 0
 
-function navigate(e) {
+function handleKeyPress(e){
   if (e.type != 'keydown' && e.type != 'keyup') return;
 
   keys_pressed[e.keyCode] = e.type == 'keydown'; //runs for every key to keep track of multiple
+}
 
+function navigate() {
   vehicle.setBrake(0, 0);
   vehicle.setBrake(0, 1);
   vehicle.setBrake(0, 2);
@@ -244,21 +247,25 @@ function navigate(e) {
   }
 
   if (keys_pressed[68] && keys_pressed[65]){ //both
-      vehicle.setSteeringValue(0, 2);
-      vehicle.setSteeringValue(0, 3);
+      steeringValue = 0
   } else if (keys_pressed[65]){ //left
-      vehicle.setSteeringValue(maxSteerVal, 2);
-      vehicle.setSteeringValue(maxSteerVal, 3);
+      steeringValue += maxSteerVal / 8
   } else if (keys_pressed[68]){ //right
-      vehicle.setSteeringValue(-maxSteerVal, 2);
-      vehicle.setSteeringValue(-maxSteerVal, 3);
+      steeringValue -= maxSteerVal / 8
   } else {
-      vehicle.setSteeringValue(0, 2);
-      vehicle.setSteeringValue(0, 3);
+      steeringValue += -steeringValue / 2
   }
+
+  if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
+  if (steeringValue < -maxSteerVal) steeringValue = -maxSteerVal
+  
+  console.log(steeringValue)
+
+  vehicle.setSteeringValue(steeringValue, 2);
+  vehicle.setSteeringValue(steeringValue, 3);
 }
 
-window.addEventListener('keydown', navigate)
-window.addEventListener('keyup', navigate)
+window.addEventListener('keydown', handleKeyPress)
+window.addEventListener('keyup', handleKeyPress)
 
 render();
