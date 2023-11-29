@@ -188,9 +188,7 @@ world.add(planeBody)
 **/
 
 function updatePhysics() {
-  world.step(1
-    
-    /60);
+  world.step(1/60);
   // update the chassis position
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
@@ -207,37 +205,57 @@ function render() {
     updatePhysics();
 }
 
+var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
+
 function navigate(e) {
   if (e.type != 'keydown' && e.type != 'keyup') return;
-  var keyup = e.type == 'keyup';
+
+  keys_pressed[e.keyCode] = e.type == 'keydown'; //runs for every key to keep track of multiple
+
   vehicle.setBrake(0, 0);
   vehicle.setBrake(0, 1);
   vehicle.setBrake(0, 2);
   vehicle.setBrake(0, 3);
+
+  console.log(keys_pressed)
   
   let speed = vehicle.currentVehicleSpeedKmHour
-  console.log(speed)
 
   //y = -4x + 600 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
   engineForce = (-4 * Math.abs(speed)) + 600
-  console.log("ENGINE FORCE", engineForce)
 
-  if(e.keyCode == 87) { //forward
-      vehicle.applyEngineForce(keyup ? 0 : -engineForce, 2);
-      vehicle.applyEngineForce(keyup ? 0 : -engineForce, 3);
-  } else if (e.keyCode == 83) { //backward
-      vehicle.applyEngineForce(keyup ? 0 : engineForce/2, 2);
-      vehicle.applyEngineForce(keyup ? 0 : engineForce/2, 3);
-  } else if (e.keyCode == 68){ //right
-      vehicle.setSteeringValue(keyup ? 0 : -maxSteerVal, 2);
-      vehicle.setSteeringValue(keyup ? 0 : -maxSteerVal, 3);
-  } else if (e.keyCode == 65){ //left
-      vehicle.setSteeringValue(keyup ? 0 : maxSteerVal, 2);
-      vehicle.setSteeringValue(keyup ? 0 : maxSteerVal, 3);
+  if (keys_pressed[32]){ //brake
+      //brake has priority over movement
+      vehicle.setBrake(8, 2)
+      vehicle.setBrake(8, 3)
+  } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
+      console.log("apply forward")
+      vehicle.applyEngineForce(-engineForce, 2);
+      vehicle.applyEngineForce(-engineForce, 3);
+  } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
+      console.log("apply backward")
+      vehicle.applyEngineForce(engineForce/2, 2);
+      vehicle.applyEngineForce(engineForce/2, 3);
+  } else {
+      vehicle.applyEngineForce(0, 2);
+      vehicle.applyEngineForce(0, 3);
   }
 
+  if (keys_pressed[68] && keys_pressed[65]){ //both
+      vehicle.setSteeringValue(0, 2);
+      vehicle.setSteeringValue(0, 3);
+  } else if (keys_pressed[65]){ //left
+      vehicle.setSteeringValue(maxSteerVal, 2);
+      vehicle.setSteeringValue(maxSteerVal, 3);
+  } else if (keys_pressed[68]){ //right
+      vehicle.setSteeringValue(-maxSteerVal, 2);
+      vehicle.setSteeringValue(-maxSteerVal, 3);
+  } else {
+      vehicle.setSteeringValue(0, 2);
+      vehicle.setSteeringValue(0, 3);
+  }
 }
 
 window.addEventListener('keydown', navigate)
