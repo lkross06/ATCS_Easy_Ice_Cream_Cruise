@@ -11,14 +11,14 @@ const cameraOffset = new THREE.Vector3(0, 4, -10);
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
 var chassisBody = new CANNON.Body({mass: 100});
 chassisBody.addShape(chassisShape);
-chassisBody.position.set(0, 1, 0);
+chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
 var engineForce = 600
 var maxSteerVal = Math.PI/16;
 
 // car visual body
-var cargeometry = new THREE.BoxGeometry(2, 0.6, 4); // double chasis shape
+var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
 var material = new THREE.MeshBasicMaterial({color: 0xffff00, side: THREE.DoubleSide});
 var box = new THREE.Mesh(cargeometry, material);
 scene.add(box);
@@ -37,7 +37,6 @@ var handMaterial = new THREE.MeshPhongMaterial({map: map});
 
 objLoader.load(
     '../res/track.obj', object => {
-        console.log(object)
 
         object.traverse(node => {
             
@@ -219,26 +218,22 @@ function navigate() {
   vehicle.setBrake(0, 1);
   vehicle.setBrake(0, 2);
   vehicle.setBrake(0, 3);
-
-  console.log(keys_pressed)
   
   let speed = vehicle.currentVehicleSpeedKmHour
-
+  console.log(speed)
   //y = -4x + 600 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
-  engineForce = (-4 * Math.abs(speed)) + 600
+  engineForce = (-2 * Math.abs(speed)) + 700
 
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
       vehicle.setBrake(8, 2)
       vehicle.setBrake(8, 3)
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
-      console.log("apply forward")
       vehicle.applyEngineForce(-engineForce, 2);
       vehicle.applyEngineForce(-engineForce, 3);
   } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
-      console.log("apply backward")
       vehicle.applyEngineForce(engineForce/2, 2);
       vehicle.applyEngineForce(engineForce/2, 3);
   } else {
@@ -259,7 +254,6 @@ function navigate() {
   if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
   if (steeringValue < -maxSteerVal) steeringValue = -maxSteerVal
   
-  console.log(steeringValue)
 
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
