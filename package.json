@@ -10,6 +10,7 @@
     "express": "^4.18.2",
     "three": "^0.158.0",
     "three-orbitcontrols": "^2.110.3",
+    "three-to-cannon": "^4.3.0",
     "ws": "^8.14.2"
   }
 }

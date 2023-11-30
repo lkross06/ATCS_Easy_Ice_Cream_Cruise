@@ -43,6 +43,13 @@ objLoader.load(
             
             node.material = handMaterial
         })
+
+        const cannonBody = threeToCannon(object, {type: ShapeType.MESH});
+;
+
+      // Add the Cannon.js body to the world
+      world.addBody(cannonBody);
+
         object.name = "track"
 
         object.rotation.y = Math.PI/2

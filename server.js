@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const { threeToCannon, ShapeType } = require('three-to-cannon');
 
 const app = express();
 app.use(express.static('public'))
@@ -27,8 +28,11 @@ app.get("/menu", (req, res) => {
 })
 
 app.get("/game", (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/game.html'));
-})
+    res.sendFile(path.join(__dirname, '/public/game.html'), {
+        threeToCannon: threeToCannon,
+        ShapeType: ShapeType
+    });
+});
 
 app.get("/res/track.jpg", (req, res) => {
     res.sendFile(__dirname+"/public/res/track.jpg")
