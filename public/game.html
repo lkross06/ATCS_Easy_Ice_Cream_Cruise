@@ -25,12 +25,12 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="speed"></div>
 
     <script type="module" src="/javascript/physics.js"></script>
     <script type="module">
       import {domainName} from "../globalVars.js"
       if(sessionStorage.getItem("username") === null) {
-        console.log("COCKSUEERS")
         // Ensure the redirect URL is correctly formed
         const redirectUrl = "http://" + domainName + ":3000";
         // Redirect the user

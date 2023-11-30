@@ -203,6 +203,7 @@ function render() {
     camera.lookAt(box.position);
     renderer.render(scene, camera);
     updatePhysics()
+    document.getElementById("speed").innerText = Math.round(vehicle.currentVehicleSpeedKmHour).toString() + "KPH" 
 }
 
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
@@ -272,8 +273,8 @@ function engineForceUpdater(direction) {
     if (carGear === 4) {
       let minSpeed = 140;
       let maxSpeed = 250;
-      let minEF = 70;
-      let maxEF = 100;
+      let minEF = 150;
+      let maxEF = 160;
       
       // calculate eF based on relative speed. 
       eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
