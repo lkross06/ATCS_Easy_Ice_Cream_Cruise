@@ -23,6 +23,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/signup.html'));
 });
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, "/public/login.html"))
+})
 app.get("/menu", (req, res) => {
     res.sendFile(__dirname+"/public/menu.html")
 })
@@ -49,19 +52,17 @@ app.post('/submitlogin', (req, res) => {
     if (username in users && pswd === users[username].password) {
         res.redirect("/menu")
     } else {
-        res.redirect("/") 
+        res.redirect("/login") 
     }
 });
 
 app.post("/submitsignup", (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
-    if (username in users) {
-        res.redirect("/")
-    } else {
-        users[username] = {"password": pswd, "friends": []}
-        res.redirect("/menu") 
+    if (!(username in users)) {
+        users[username] = {"password": pswd, "friends": []} 
     }
+    res.redirect("/menu")
 })
 
 // Start the Express server
