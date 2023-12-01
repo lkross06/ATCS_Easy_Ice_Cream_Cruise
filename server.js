@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve the login page at the root path ('/')
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/login.html'));
+    res.sendFile(path.join(__dirname, '/public/signup.html'));
 });
 app.get("/menu", (req, res) => {
     res.sendFile(__dirname+"/public/menu.html")
