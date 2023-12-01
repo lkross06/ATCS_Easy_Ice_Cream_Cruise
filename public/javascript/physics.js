@@ -20,7 +20,7 @@ chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
 var maxSteerVal = Math.PI/32;
-let carGear = 1
+let engineForce = 600
 
 // car visual body
 var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
@@ -228,101 +228,6 @@ function handleKeyPress(e){
 
   keys_pressed[e.keyCode] = e.type == 'keydown'; //runs for every key to keep track of multiple
 }
-// function to change engineForce based on gear. add sounds here?
-function engineForceUpdater(direction) {
-  let speed = vehicle.currentVehicleSpeedKmHour
-  let eF = 0
-  if (direction === "for") {
-    if (speed <= 30) {
-      carGear = 1
-    } else if (speed <= 75) {
-      carGear = 2
-    } else if (speed <= 140) {
-      carGear = 3
-    } else if (speed <= 250) {
-      carGear = 4
-    } else if (speed <= 300) {
-      carGear = 5
-    } else {
-      carGear = 6
-    }
-    // gear one: eF goes from 900-1000, speeds 0-30 kmh
-    if (carGear === 1) {
-      let minSpeed = 0;
-      let maxSpeed = 30;
-      let minEF = 400;
-      let maxEF = 700;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-
-    // gear two: eF goes from 700-1200, speeds 30-75
-    if (carGear === 2) {
-      let minSpeed = 30;
-      let maxSpeed = 75;
-      let minEF = 500;
-      let maxEF = 900;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-    // gear three: eF goes from 600-900, speeds 75-120
-    if (carGear === 3) {
-      let minSpeed = 75;
-      let maxSpeed = 140;
-      let minEF = 200;
-      let maxEF = 300;
-
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-    // gear four: eF goes from 400-900, speeds 120-170
-    if (carGear === 4) {
-      let minSpeed = 140;
-      let maxSpeed = 250;
-      let minEF = 150;
-      let maxEF = 160;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    } 
-    if (carGear === 5) {
-      let minSpeed = 250;
-      let maxSpeed = 300;
-      let minEF = 10;
-      let maxEF = 20;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-    if (carGear === 6) {
-      return 0
-    }
-  } else if (direction === "rev") {
-    let minSpeed = 0
-    let maxSpeed = 30
-    let minEF = 2000
-    let maxEF = 2500
-    eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-    if (speed < -30) {
-      return 100
-    } else if (speed < -50) {
-      return 0
-    }
-    return eF;
-  }
-}
 function navigate() {
   if (!keys_pressed[32]){
     vehicle.setBrake(0, 0);
@@ -331,20 +236,26 @@ function navigate() {
     vehicle.setBrake(0, 3);
   }
 
+  
+  let speed = vehicle.currentVehicleSpeedKmHour
+
   //y = -4x + 600 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
+  engineForce = (-4 * Math.abs(speed)) + 600
+
+  console.log(speed)
 
   if (keys_pressed[32]){ //brake
-    //brake has priority over movement
+      //brake has priority over movement
     vehicle.setBrake(8, 2);
     vehicle.setBrake(8, 3);
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
-      vehicle.applyEngineForce(-engineForceUpdater("for"), 2);
-      vehicle.applyEngineForce(-engineForceUpdater("for"), 3);
-  } else if (!keys_pressed[87] && keys_pressed[83]) { //reverse
-      vehicle.applyEngineForce(engineForceUpdater("rev") / 8, 2);
-      vehicle.applyEngineForce(engineForceUpdater("rev") / 8, 3);
+      vehicle.applyEngineForce(-engineForce, 2);
+      vehicle.applyEngineForce(-engineForce, 3);
+  } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
+      vehicle.applyEngineForce(engineForce / 2, 2);
+      vehicle.applyEngineForce(engineForce / 2, 3);
   } else {
       vehicle.applyEngineForce(0, 2);
       vehicle.applyEngineForce(0, 3);
@@ -364,8 +275,10 @@ function navigate() {
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
 }
-
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
+
+var then = Date.now();
+var fpsInterval = 1000 / 60;
 
 render();
