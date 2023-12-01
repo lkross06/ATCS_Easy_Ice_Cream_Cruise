@@ -122,15 +122,15 @@ var options = {
   radius: 0.5,
   directionLocal: new CANNON.Vec3(0, -1, 0),
   suspensionStiffness: 75,
-  suspensionRestLength: 0.4,
+  suspensionRestLength: 0.2,
   frictionSlip: 10000,
   dampingRelaxation: 2.3,
   dampingCompression: 4.5,
   maxSuspensionForce: 200000,
-  rollInfluence:  0.01,
+  rollInfluence:  0.5,
   axleLocal: new CANNON.Vec3(-1, 0, 0),
   chassisConnectionPointLocal: new CANNON.Vec3(1, 1, 0),
-  maxSuspensionTravel: 0.5,
+  maxSuspensionTravel: 10,
   customSlidingRotationalSpeed: -30,
   useCustomSlidingRotationalSpeed: true,
 };
@@ -210,14 +210,22 @@ function updatePhysics() {
 }
 
 
-function render() {
-    requestAnimationFrame(render);
-    const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
-    camera.position.copy(relativeCameraOffset);
-    camera.lookAt(box.position);
-    renderer.render(scene, camera);
-    updatePhysics()
-    document.getElementById("speed").innerText = Math.round(vehicle.currentVehicleSpeedKmHour).toString() + "KPH" 
+function render(timestamp) {
+  // timestamp should == the refresh rate 
+  // add up diff of timestamps
+  // then do a game tick - increase accell, move car, etc
+  // everyone moves foreward on game tick time, even tho animate is faster. 
+  // gametick -> send timestamp, send position, speed, etc
+  // server keeps ^ and tells all other clients the location of x client
+  // gametick = slowest refresh of the person. tie it to a var
+  // render takes timestamp of last render, and the new timestamp, and the difference = 1 refresh rate. 
+  const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
+  camera.position.copy(relativeCameraOffset);
+  camera.lookAt(box.position);
+  renderer.render(scene, camera);
+  updatePhysics()
+  document.getElementById("speed").innerText = Math.round(vehicle.currentVehicleSpeedKmHour).toString() + "KPH" 
+  requestAnimationFrame(render);
 }
 
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
