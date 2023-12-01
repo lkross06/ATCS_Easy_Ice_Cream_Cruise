@@ -71,7 +71,7 @@
             <span id="form-grid">
 
                 <label for="username">Username </label>
-                <input type="text" id="username" name="username" maxlength="16" oninput="validateInput()" required>
+                <input type="text" id="username" name="username" maxlength="12" oninput="validateInput()" required>
                 
                 <label for="password">Password </label>
                 <input type="password" id="password" name="password" required>
@@ -92,6 +92,14 @@
             // removes characters that are not a-z, A-Z, or 0-9
             // i love regex
             inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, '')
+
+            if (inputValue.length > 12){ //keep it ≤ 12 characters
+                temp = inputValue
+                inputValue = ""
+                for (let i = 0; i < 12; i++){
+                    inputValue += temp[i]
+                }
+            }
 
             inputField.value = inputValue
 
