@@ -1,3 +1,6 @@
+import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
+import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
+
 var container = document.querySelector('body'),
     w = container.clientWidth,
     h = container.clientHeight,
@@ -9,12 +12,13 @@ const cameraOffset = new THREE.Vector3(0, 4, -10);
 
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
-var chassisBody = new CANNON.Body({mass: 100});
+// did u know F1 cars are only 100 kg
+var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
+
 chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
-var engineForce = 600
 var maxSteerVal = Math.PI/32;
 let carGear = 1
 
@@ -36,33 +40,7 @@ var map = THREE.TextureLoader()
 var handMaterial = new THREE.MeshPhongMaterial({map: map});
 
 
-objLoader.load(
-    '../res/track.obj', object => {
 
-        object.traverse(node => {
-            
-            node.material = handMaterial
-        })
-
-        const cannonBody = threeToCannon(object, {type: ShapeType.MESH});
-;
-
-      // Add the Cannon.js body to the world
-      world.addBody(cannonBody);
-
-        object.name = "track"
-
-        object.rotation.y = Math.PI/2
-
-        scene.add(object);
-        object.position.set(0, 0, 0);
-        
-    }, xhr => {
-        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' )
-    }, error => {
-        console.log(error)
-    }
-)
 
 window.addEventListener('resize', function() {
   w = container.clientWidth;
@@ -101,6 +79,35 @@ var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groun
 
 world.addContactMaterial(wheelGroundContactMaterial);
 
+// ok time to bring in the track
+// body of el track
+let trackBody = new CANNON.Body({mass: 0})
+objLoader.load(
+    '../res/track.obj', object => {
+
+        object.traverse(node => {
+            node.material = handMaterial
+        });
+        const result = threeToCannon(object, {type: ShapeType.MESH});
+        console.log(result)
+        const {shape} = result;
+        console.log(shape)
+        trackBody.addShape(shape);
+
+        world.add(trackBody)
+
+        object.name = "track"
+
+        object.rotation.y = Math.PI/2
+
+        scene.add(object);
+        object.position.set(0, -2, 0);
+    }, xhr => {
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' )
+    }, error => {
+        console.log(error)
+    }
+)
 
 // parent vehicle object
 let vehicle = new CANNON.RaycastVehicle({
@@ -180,8 +187,8 @@ world.addEventListener('postStep', function() {
     wheelVisuals[i].quaternion.copy(t.quaternion);
   }
 });
-
 var q = plane.quaternion;
+
 var planeBody = new CANNON.Body({
   mass: 0, // mass = 0 makes the body static
   material: groundMaterial,
@@ -243,8 +250,8 @@ function engineForceUpdater(direction) {
     if (carGear === 1) {
       let minSpeed = 0;
       let maxSpeed = 30;
-      let minEF = 900;
-      let maxEF = 1000;
+      let minEF = 400;
+      let maxEF = 700;
       
       // calculate eF based on relative speed. 
       eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
@@ -324,15 +331,12 @@ function navigate() {
     vehicle.setBrake(0, 3);
   }
 
-  
-  let speed = vehicle.currentVehicleSpeedKmHour
-  console.log(speed)
   //y = -4x + 600 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
 
   if (keys_pressed[32]){ //brake
-      //brake has priority over movement
+    //brake has priority over movement
     vehicle.setBrake(8, 2);
     vehicle.setBrake(8, 3);
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
