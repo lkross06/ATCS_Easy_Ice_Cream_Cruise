@@ -127,7 +127,7 @@ var options = {
   dampingRelaxation: 2.3,
   dampingCompression: 4.5,
   maxSuspensionForce: 200000,
-  rollInfluence:  0.5,
+  rollInfluence:  0,
   axleLocal: new CANNON.Vec3(-1, 0, 0),
   chassisConnectionPointLocal: new CANNON.Vec3(1, 1, 0),
   maxSuspensionTravel: 10,
@@ -251,8 +251,6 @@ function navigate() {
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
   engineForce = (-4 * Math.abs(speed)) + 600
-
-  console.log(speed)
 
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
