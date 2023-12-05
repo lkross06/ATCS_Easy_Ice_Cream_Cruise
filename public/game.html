@@ -29,6 +29,7 @@
 
     <script type="module">
       import {domainName} from "../globalVars.js"
+
       if(sessionStorage.getItem("username") === null) {
         // Ensure the redirect URL is correctly formed
         const redirectUrl = "http://" + domainName + ":3000";
