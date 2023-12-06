@@ -1,6 +1,6 @@
 import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
 import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
-import { Block, StraightZ, StraightX, LeftTurn, RightTurn, Checkpoint } from './track.js';
+import { StraightZ, StraightX, LeftTurn, RightTurn, CheckpointX, CheckpointZ } from './track.js';
 
 var container = document.querySelector('body'),
     w = container.clientWidth,
@@ -76,7 +76,7 @@ world.defaultContactMaterial.friction = 0;
 var p = new StraightZ(0, 0, 15)
 p.makeBlock(scene, world)
 
-var p2 = new StraightX(0, 0, 50)
+var p2 = new CheckpointZ(0, 0, 15 + 10 + 2.5)
 p2.makeBlock(scene, world)
 
 

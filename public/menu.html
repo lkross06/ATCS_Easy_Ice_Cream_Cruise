@@ -350,5 +350,10 @@
         
     </script>
     <script src="javascript/chat.js" type="module"></script>
+    <script type="module">
+        import {domainName} from "../globalVars.js"
+        ws = new WebSocket("ws://"+domainName+":8008")
+
+    </script>
 </body>
 </html>
