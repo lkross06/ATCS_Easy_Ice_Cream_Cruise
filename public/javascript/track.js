@@ -3,6 +3,8 @@ export class Block{
         this.x = x
         this.y = y
         this.z = z
+        this.color = 0xd6D5cd
+        this.railColor = 0xFF0000
         this.width = width
         this.height = height
         this.length = length
@@ -18,7 +20,32 @@ export class Block{
 
 export class StraightX extends Block{
     makeBlock(scene, world) {
-        return
+
+        //physics
+        let body = new CANNON.Body({mass: 0})
+        let shape = new CANNON.Box(new CANNON.Vec3(this.length, this.height, this.width))
+        
+        body.position.set(this.x, this.y, this.z)
+
+        body.addShape(shape)
+
+        world.add(body)
+
+        //visuals
+        let geo = new THREE.BoxGeometry(this.length *2, this.height*2, this.width * 2)
+
+        let material = new THREE.MeshPhongMaterial({
+            color: this.color,
+            emissive: this.color,     
+            side: THREE.DoubleSide,
+            flatShading: true,
+        })
+        
+        let mesh = new THREE.Mesh(geo, material)
+
+        mesh.position.set(this.x, this.y, this.z)
+
+        scene.add(mesh)
     }
 }
 
@@ -39,8 +66,8 @@ export class StraightZ extends Block{
         let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
 
         let material = new THREE.MeshPhongMaterial({
-            color: 0xd0901d,
-            emissive: 0xaa0000,     
+            color: this.color,
+            emissive: this.color,     
             side: THREE.DoubleSide,
             flatShading: true,
         })

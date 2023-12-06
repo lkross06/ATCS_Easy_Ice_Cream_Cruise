@@ -24,8 +24,10 @@ var maxSteerVal = Math.PI/32;
 let engineForce = 600
 
 // car visual body
+let chassisColor = 0xB30E16
+let wheelColor = 0x43464B
 var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
-var material = new THREE.MeshBasicMaterial({color: 0xffff00, side: THREE.DoubleSide});
+var material = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.DoubleSide});
 var box = new THREE.Mesh(cargeometry, material);
 scene.add(box);
 
@@ -36,7 +38,6 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
 
-var objLoader = new THREE.OBJLoader()
 var map = THREE.TextureLoader()
 var handMaterial = new THREE.MeshPhongMaterial({map: map});
 
@@ -74,6 +75,9 @@ world.defaultContactMaterial.friction = 0;
 //test track piece
 var p = new StraightZ(0, 0, 15)
 p.makeBlock(scene, world)
+
+var p2 = new StraightX(0, 0, 50)
+p2.makeBlock(scene, world)
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
@@ -139,8 +143,8 @@ vehicle.wheelInfos.forEach(function(wheel) {
   // wheel visual body
   var geometry = new THREE.CylinderGeometry( wheel.radius, wheel.radius, 0.4, 32 );
   var material = new THREE.MeshPhongMaterial({
-    color: 0xd0901d,
-    emissive: 0xaa0000,
+    color: wheelColor,
+    emissive: wheelColor,
     side: THREE.DoubleSide,
     flatShading: true,
   });
