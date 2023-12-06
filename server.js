@@ -31,10 +31,7 @@ app.get("/menu", (req, res) => {
 })
 
 app.get("/game", (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/game.html'), {
-        threeToCannon: threeToCannon,
-        ShapeType: ShapeType
-    });
+    res.sendFile(path.join(__dirname, '/public/game.html'));
 });
 
 app.get("/res/track.jpg", (req, res) => {
@@ -44,6 +41,7 @@ app.get("/res/track.jpg", (req, res) => {
 app.get("/globalVars.js", (req, res) => {
     res.sendFile(__dirname+"/globalVars.js")
 })
+
 
 // Create a route to handle the form submission
 app.post('/submitlogin', (req, res) => {

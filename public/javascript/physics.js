@@ -1,3 +1,6 @@
+import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
+import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
+
 var container = document.querySelector('body'),
     w = container.clientWidth,
     h = container.clientHeight,
@@ -9,14 +12,15 @@ const cameraOffset = new THREE.Vector3(0, 4, -10);
 
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
-var chassisBody = new CANNON.Body({mass: 100});
+// did u know F1 cars are only 100 kg
+var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
+
 chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
-var engineForce = 600
 var maxSteerVal = Math.PI/32;
-let carGear = 1
+let engineForce = 600
 
 // car visual body
 var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
@@ -36,33 +40,7 @@ var map = THREE.TextureLoader()
 var handMaterial = new THREE.MeshPhongMaterial({map: map});
 
 
-objLoader.load(
-    '../res/track.obj', object => {
 
-        object.traverse(node => {
-            
-            node.material = handMaterial
-        })
-
-        const cannonBody = threeToCannon(object, {type: ShapeType.MESH});
-;
-
-      // Add the Cannon.js body to the world
-      world.addBody(cannonBody);
-
-        object.name = "track"
-
-        object.rotation.y = Math.PI/2
-
-        scene.add(object);
-        object.position.set(0, 0, 0);
-        
-    }, xhr => {
-        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' )
-    }, error => {
-        console.log(error)
-    }
-)
 
 window.addEventListener('resize', function() {
   w = container.clientWidth;
@@ -101,6 +79,35 @@ var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groun
 
 world.addContactMaterial(wheelGroundContactMaterial);
 
+// ok time to bring in the track
+// body of el track
+let trackBody = new CANNON.Body({mass: 0})
+objLoader.load(
+    '../res/track.obj', object => {
+
+        object.traverse(node => {
+            node.material = handMaterial
+        });
+        const result = threeToCannon(object, {type: ShapeType.MESH});
+        console.log(result)
+        const {shape} = result;
+        console.log(shape)
+        trackBody.addShape(shape);
+
+        world.add(trackBody)
+
+        object.name = "track"
+
+        object.rotation.y = Math.PI/2
+
+        scene.add(object);
+        object.position.set(0, -2, 0);
+    }, xhr => {
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' )
+    }, error => {
+        console.log(error)
+    }
+)
 
 // parent vehicle object
 let vehicle = new CANNON.RaycastVehicle({
@@ -115,15 +122,15 @@ var options = {
   radius: 0.5,
   directionLocal: new CANNON.Vec3(0, -1, 0),
   suspensionStiffness: 75,
-  suspensionRestLength: 0.4,
+  suspensionRestLength: 0.2,
   frictionSlip: 10000,
   dampingRelaxation: 2.3,
   dampingCompression: 4.5,
   maxSuspensionForce: 200000,
-  rollInfluence:  0.01,
+  rollInfluence:  0,
   axleLocal: new CANNON.Vec3(-1, 0, 0),
   chassisConnectionPointLocal: new CANNON.Vec3(1, 1, 0),
-  maxSuspensionTravel: 0.5,
+  maxSuspensionTravel: 10,
   customSlidingRotationalSpeed: -30,
   useCustomSlidingRotationalSpeed: true,
 };
@@ -180,8 +187,8 @@ world.addEventListener('postStep', function() {
     wheelVisuals[i].quaternion.copy(t.quaternion);
   }
 });
-
 var q = plane.quaternion;
+
 var planeBody = new CANNON.Body({
   mass: 0, // mass = 0 makes the body static
   material: groundMaterial,
@@ -203,14 +210,22 @@ function updatePhysics() {
 }
 
 
-function render() {
-    requestAnimationFrame(render);
-    const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
-    camera.position.copy(relativeCameraOffset);
-    camera.lookAt(box.position);
-    renderer.render(scene, camera);
-    updatePhysics()
-    document.getElementById("speed").innerText = Math.round(vehicle.currentVehicleSpeedKmHour).toString() + "KPH" 
+function render(timestamp) {
+  // timestamp should == the refresh rate 
+  // add up diff of timestamps
+  // then do a game tick - increase accell, move car, etc
+  // everyone moves foreward on game tick time, even tho animate is faster. 
+  // gametick -> send timestamp, send position, speed, etc
+  // server keeps ^ and tells all other clients the location of x client
+  // gametick = slowest refresh of the person. tie it to a var
+  // render takes timestamp of last render, and the new timestamp, and the difference = 1 refresh rate. 
+  const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
+  camera.position.copy(relativeCameraOffset);
+  camera.lookAt(box.position);
+  renderer.render(scene, camera);
+  updatePhysics()
+  document.getElementById("speed").innerText = Math.round(vehicle.currentVehicleSpeedKmHour).toString() + "KPH" 
+  requestAnimationFrame(render);
 }
 
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
@@ -220,101 +235,6 @@ function handleKeyPress(e){
   if (e.type != 'keydown' && e.type != 'keyup') return;
 
   keys_pressed[e.keyCode] = e.type == 'keydown'; //runs for every key to keep track of multiple
-}
-// function to change engineForce based on gear. add sounds here?
-function engineForceUpdater(direction) {
-  let speed = vehicle.currentVehicleSpeedKmHour
-  let eF = 0
-  if (direction === "for") {
-    if (speed <= 30) {
-      carGear = 1
-    } else if (speed <= 75) {
-      carGear = 2
-    } else if (speed <= 140) {
-      carGear = 3
-    } else if (speed <= 250) {
-      carGear = 4
-    } else if (speed <= 300) {
-      carGear = 5
-    } else {
-      carGear = 6
-    }
-    // gear one: eF goes from 900-1000, speeds 0-30 kmh
-    if (carGear === 1) {
-      let minSpeed = 0;
-      let maxSpeed = 30;
-      let minEF = 900;
-      let maxEF = 1000;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-
-    // gear two: eF goes from 700-1200, speeds 30-75
-    if (carGear === 2) {
-      let minSpeed = 30;
-      let maxSpeed = 75;
-      let minEF = 500;
-      let maxEF = 900;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-    // gear three: eF goes from 600-900, speeds 75-120
-    if (carGear === 3) {
-      let minSpeed = 75;
-      let maxSpeed = 140;
-      let minEF = 200;
-      let maxEF = 300;
-
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-    // gear four: eF goes from 400-900, speeds 120-170
-    if (carGear === 4) {
-      let minSpeed = 140;
-      let maxSpeed = 250;
-      let minEF = 150;
-      let maxEF = 160;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    } 
-    if (carGear === 5) {
-      let minSpeed = 250;
-      let maxSpeed = 300;
-      let minEF = 10;
-      let maxEF = 20;
-      
-      // calculate eF based on relative speed. 
-      eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-      
-      return eF;
-    }
-    if (carGear === 6) {
-      return 0
-    }
-  } else if (direction === "rev") {
-    let minSpeed = 0
-    let maxSpeed = 30
-    let minEF = 2000
-    let maxEF = 2500
-    eF = minEF + ((maxEF - minEF) / (maxSpeed - minSpeed)) * (speed - minSpeed);
-    if (speed < -30) {
-      return 100
-    } else if (speed < -50) {
-      return 0
-    }
-    return eF;
-  }
 }
 function navigate() {
   if (!keys_pressed[32]){
@@ -326,21 +246,22 @@ function navigate() {
 
   
   let speed = vehicle.currentVehicleSpeedKmHour
-  console.log(speed)
+
   //y = -4x + 600 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
+  engineForce = (-4 * Math.abs(speed)) + 600
 
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
     vehicle.setBrake(8, 2);
     vehicle.setBrake(8, 3);
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
-      vehicle.applyEngineForce(-engineForceUpdater("for"), 2);
-      vehicle.applyEngineForce(-engineForceUpdater("for"), 3);
-  } else if (!keys_pressed[87] && keys_pressed[83]) { //reverse
-      vehicle.applyEngineForce(engineForceUpdater("rev") / 8, 2);
-      vehicle.applyEngineForce(engineForceUpdater("rev") / 8, 3);
+      vehicle.applyEngineForce(-engineForce, 2);
+      vehicle.applyEngineForce(-engineForce, 3);
+  } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
+      vehicle.applyEngineForce(engineForce / 2, 2);
+      vehicle.applyEngineForce(engineForce / 2, 3);
   } else {
       vehicle.applyEngineForce(0, 2);
       vehicle.applyEngineForce(0, 3);
@@ -360,8 +281,10 @@ function navigate() {
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
 }
-
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
+
+var then = Date.now();
+var fpsInterval = 1000 / 60;
 
 render();

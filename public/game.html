@@ -27,9 +27,9 @@
     <div id="root"></div>
     <div id="speed"></div>
 
-    <script type="module" src="/javascript/physics.js"></script>
     <script type="module">
       import {domainName} from "../globalVars.js"
+
       if(sessionStorage.getItem("username") === null) {
         // Ensure the redirect URL is correctly formed
         const redirectUrl = "http://" + domainName + ":3000";
@@ -37,10 +37,8 @@
         window.location.href = redirectUrl;    
       }
     </script>
-    <script type = "module">
-      const threeToCannon = window.threeToCannon;
-      const ShapeType = window.ShapeType;
-   </script>
+    <script type="module" src="/javascript/physics.js"></script>
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js'></script>
     <script src="http://mamboleoo.be/learnThree/demos/OBJLoader.js"></script>
