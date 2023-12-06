@@ -1,5 +1,6 @@
 import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
 import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
+import { Block, StraightZ, StraightX, LeftTurn, RightTurn, Checkpoint } from './track.js';
 
 var container = document.querySelector('body'),
     w = container.clientWidth,
@@ -66,8 +67,14 @@ scene.add(sunlight)
 
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
-world.gravity.set(0, -10, 0);
+world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0;
+
+
+//test track piece
+var p = new StraightZ(0, 0, 15)
+p.makeBlock(scene, world)
+
 
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
@@ -78,37 +85,6 @@ var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groun
 });
 
 world.addContactMaterial(wheelGroundContactMaterial);
-
-// ok time to bring in the track
-// body of el track
-let trackBody = new CANNON.Body({mass: 0})
-objLoader.load(
-    '../res/track.obj', object => {
-
-        object.traverse(node => {
-            node.material = handMaterial
-        });
-        const result = threeToCannon(object, {type: ShapeType.MESH});
-        console.log(result)
-        const {shape} = result;
-        console.log(shape)
-        trackBody.addShape(shape);
-
-        world.add(trackBody)
-
-        object.name = "track"
-
-        object.rotation.y = Math.PI/2
-
-        scene.add(object);
-        object.position.set(0, -2, 0);
-    }, xhr => {
-        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' )
-    }, error => {
-        console.log(error)
-    }
-)
-
 // parent vehicle object
 let vehicle = new CANNON.RaycastVehicle({
   chassisBody: chassisBody,
