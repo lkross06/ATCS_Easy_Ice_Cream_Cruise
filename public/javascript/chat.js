@@ -59,14 +59,46 @@ function chat_send(){
     }
 }
 
+function createGame() {
+    let packet = {
+        method: "create",
+        username: sessionStorage.getItem("username"),
+        track: document.getElementById("tracks").value
+    }            
+    ws.send(JSON.stringify(packet))
+}
+let createButton = document.getElementById("createGame")
+createButton.addEventListener("click", createGame)
+
+function joinGame() {
+    let packet = {
+        method: "join",
+        username: sessionStorage.getItem("username"),
+        code: document.getElementById("multiplayer-join-code").value
+    }
+    ws.send(JSON.stringify(packet))
+}
+let joinButton = document.getElementById("joinGame")
+joinButton.addEventListener("click", joinGame)
 // websocket stuff for when the client recieves a message from the server
 ws.onmessage = message => {
     let res = JSON.parse(message.data)
-
-    if (res.method = "chat") {
+    if (res.method === "chat") {
         let usr = res.username
         let msg = res.message
         new_chat_message(msg, chatlog, usr)
+    } else if (res.method === "create") {
+        // get that code brother
+        if (res.username === sessionStorage.getItem("username")) {
+            console.log('cockuscke')
+            // dingdingding we gotchu fam
+            let codeDiv = document.getElementById("gameCode")
+            codeDiv.style.display = "block"
+            codeDiv.innerText = res.code
+        }
+    } else if (res.method === "join") {
+        // confirm that user has actually put in a good code. 
+        // then redir. 
     }
 }
 

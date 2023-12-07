@@ -1,6 +1,9 @@
 import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
 import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
 import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
+import {domainName} from "../globalVars.js"
+
+let ws = new WebSocket("ws://"+domainName+":8008")
 
 var container = document.querySelector('body'),
     w = container.clientWidth,
@@ -10,8 +13,6 @@ var container = document.querySelector('body'),
 let renderConfig = {antialias: true, alpha: true},
 renderer = new THREE.WebGLRenderer(renderConfig);
 const cameraOffset = new THREE.Vector3(0, 4, -10);
-
-  
 
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
@@ -40,14 +41,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
 
-
-
-
 var map = THREE.TextureLoader()
 var handMaterial = new THREE.MeshPhongMaterial({map: map});
-
-
-
 
 window.addEventListener('resize', function() {
   w = container.clientWidth;
