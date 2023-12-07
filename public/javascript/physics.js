@@ -1,5 +1,3 @@
-import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
-import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
 import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
 import {domainName} from "../globalVars.js"
 
@@ -69,67 +67,64 @@ scene.add(sunlight)
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
 world.gravity.set(0, -9.8, 0);
-world.defaultContactMaterial.friction = 0;
-
-
+world.defaultContactMaterial.friction = 0.01;
 
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
 
-let s = new Straight(0, 0, 0, "X")
-s.makeBlock(scene, world)
+let s1 = new Straight(5)
+s1.makeBlock(scene, world)
 
-let s2 = new Checkpoint(0, 0, 0, "X")
+let s2 = new Straight(5)
 s2.makeBlock(scene, world)
-s2.snapTo(s, "E")
-checkpoints.push(s2)
+s2.snapTo(s1, "E")
 
-s = new Straight(0, 0, 0, "X")
-s.makeBlock(scene, world)
-s.snapTo(s2, "E")
+let s3 = new Straight()
+s3.hasRails = false
+s3.makeBlock(scene, world)
+s3.snapTo(s1, "S")
 
-s2 = new Checkpoint(0, 0, 0, "X", true, 0, 0, false)
+let s4 = new Straight()
+s4.hasRails = false
+s4.makeBlock(scene, world)
+s4.snapTo(s2, "S")
+
+let c1 = new Checkpoint()
+c1.makeBlock(scene, world)
+checkpoints.push(c1)
+c1.snapTo(s1, "N")
+
+let c2 = new Checkpoint()
+c2.makeBlock(scene, world)
+checkpoints.push(c2)
+c2.snapTo(c1, "E")
+
+s1 = new Straight(5)
+s1.makeBlock(scene, world)
+s1.snapTo(c1, "N")
+
+s2 = new Straight(5)
 s2.makeBlock(scene, world)
-s2.snapTo(s, "E")
-checkpoints.push(s2)
+s2.snapTo(c2, "N")
 
-s = new Straight()
-s.makeBlock(scene, world)
-s.snapTo(s2, "N")
+s3 = new Straight()
+s3.hasRails = false
+s3.makeBlock(scene, world)
+s3.snapTo(s1, "N")
 
-s2 = new Checkpoint()
-s2.makeBlock(scene, world)
-s2.snapTo(s, "N")
-checkpoints.push(s2)
-
-s = new Straight()
-s.makeBlock(scene, world)
-s.snapTo(s2, "N")
-
-// let cp = new CheckpointZ()
-// cp.makeBlock(scene, world)
-// checkpoints.push(cp)
-// cp.snapTo(s, "N")
-
-// s = new StraightZ()
-// let temp = s.width
-// s.width = s.length
-// s.length = temp
-// s.makeBlock(scene, world)
-// s.snapTo(cp, "N")
+s4 = new Straight()
+s4.hasRails = false
+s4.makeBlock(scene, world)
+s4.snapTo(s2, "N")
 
 
-// let t = new RightTurn()
-// t.color = 0x0000FF
-// t.makeBlock(scene, world)
-// t.snapTo(s, "N")
 
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
 var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
-    friction: 1,
-    restitution: 0.05,
-    contactEquationStiffness: 1000,
+  friction: 1,
+  restitution: 0.05,
+  contactEquationStiffness: 1000,
 });
 
 world.addContactMaterial(wheelGroundContactMaterial);
@@ -249,7 +244,7 @@ function render(timestamp) {
   camera.lookAt(box.position);
   renderer.render(scene, camera);
   updatePhysics()
-  document.getElementById("speed").innerText = Math.round(vehicle.currentVehicleSpeedKmHour).toString() + "KPH" 
+  document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() + "mph" //1km = 0.621371mi 
   requestAnimationFrame(render);
 }
 
@@ -301,11 +296,14 @@ function navigate() {
   }
   if (engineForce > 800) engineForce = 800 //cap
 
-
   if (keys_pressed[32]){ //brake
-      //brake has priority over movement
-    vehicle.setBrake(10, 2);
-    vehicle.setBrake(10, 3);
+    //brake has priority over movement
+    let brakePower = (speed / 10 > 5)? (speed / 10) : 5;
+    vehicle.setBrake(brakePower, 0);
+    vehicle.setBrake(brakePower, 1);
+    vehicle.setBrake(brakePower, 2);
+    vehicle.setBrake(brakePower, 3);
+
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
       vehicle.applyEngineForce(-engineForce, 2);
       vehicle.applyEngineForce(-engineForce, 3);
