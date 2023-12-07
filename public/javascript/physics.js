@@ -242,6 +242,12 @@ function render(timestamp) {
   const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
   camera.position.copy(relativeCameraOffset);
   camera.lookAt(box.position);
+  // here should go the ws stuff i belive
+  // this packet is this client's data. x, y, z, quaterion(?) etc.
+  let packet = {
+    method: "render",
+    username: sessionStorage.getItem("username")
+  } 
   renderer.render(scene, camera);
   updatePhysics()
   document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() + "mph" //1km = 0.621371mi 
