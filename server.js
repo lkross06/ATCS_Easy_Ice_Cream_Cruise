@@ -31,8 +31,8 @@ app.get("/menu", (req, res) => {
     res.sendFile(__dirname+"/public/menu.html")
 })
 
-app.get("/game", (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/game.html'));
+app.get("/track1", (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/track1.html'));
 });
 
 app.get("/res/track.jpg", (req, res) => {
@@ -120,13 +120,56 @@ socket.on('connection', (ws) => {
                 "code": code,
                 "track": msg.track
             }
+            /*
+            games object should be like
+            {
+                D0f2fF: {
+                    track: track 1
+                    users: [lucas, everett] // if finn isnt in the room yet
+                    host: finn
+                }
+            }
+            */
+            games[code] = {
+                "track": msg.track.replace(/\s/g, ""), // clear spaces
+                "users": [],
+                "host": msg.username
+            }
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify(packet))
                 }
             })
         } else if (msg.method === "join") {
-            
+            // do we have that code?
+
+            if (games.hasOwnProperty(msg.code)) { // yes we do
+                if (!games[msg.code].users.includes(msg.username)) {
+                    games[msg.code].users.push(msg.username)
+                }
+                console.log(games)
+                packet = {
+                    method: "join",
+                    username: msg.username,
+                    track: games[msg.code].track
+                }
+                socket.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(packet))
+                    }
+                })
+            } else { // no we dont
+                packet = {
+                    method: "join",
+                    username: msg.username,
+                    track: "ERROR"
+                }
+                socket.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(packet))
+                    }
+                })
+            }
         }
 
     })

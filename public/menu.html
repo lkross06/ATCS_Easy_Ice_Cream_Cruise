@@ -238,7 +238,6 @@
 
         // womp womp the user tried to hack the system and bypass login
         if(sessionStorage.getItem("username") === null) {
-            console.log("no usernamemem")
             // Ensure the redirect URL is correctly formed
             const redirectUrl = "http://" + domainName + ":3000";
             

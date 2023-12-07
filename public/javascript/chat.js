@@ -90,15 +90,23 @@ ws.onmessage = message => {
     } else if (res.method === "create") {
         // get that code brother
         if (res.username === sessionStorage.getItem("username")) {
-            console.log('cockuscke')
             // dingdingding we gotchu fam
             let codeDiv = document.getElementById("gameCode")
             codeDiv.style.display = "block"
             codeDiv.innerText = res.code
         }
     } else if (res.method === "join") {
-        // confirm that user has actually put in a good code. 
-        // then redir. 
+        // confirm that user has actually put in a good code, 
+        // then redir. (look at that enjambment!)
+        if (res.username === sessionStorage.getItem("username")) {
+            // dingdingding we gotchu fam
+            if (res.track === "ERROR") {
+                console.log("WRONG CODE BUDDY TRY AGAIN")
+                // TODO: add some HTML error thingy here
+            } else {
+                location.replace(res.track)
+            }
+        }
     }
 }
 
