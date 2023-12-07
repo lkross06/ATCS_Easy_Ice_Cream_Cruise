@@ -463,3 +463,217 @@ export class Checkpoint extends Block {
         }
     }
 }
+
+
+export class rightTurn extends Block{
+   //if the checkpoint isnt activated, it just looks like a straight piece
+    //good for making symmetrical tracks with checkpoints
+    constructor(orient, hasRails){
+        super(10, 1, 10, orient, hasRails)
+
+        this.color = 0x00FF00
+        this.checked = false //true when car goes over it
+        this.checkedColor = 0x0000FF
+
+        if (this.orient == "X") {
+            //swap len and width
+            let temp = this.width
+            this.width = this.length
+            this.length = temp
+
+            this.railLength = this.length
+        }
+        this.name = "rightTurn"
+    }
+
+    makeBlock(scene, world) {
+        
+        //physics
+        let body = new CANNON.Body({mass: 0})
+        let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.height, this.length))
+        
+        body.position.set(this.x, this.y, this.z)
+
+        body.addShape(shape)
+
+        world.add(body)
+        this.body = body
+
+        //visuals
+        let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
+
+        let material = new THREE.MeshPhongMaterial({
+            color: this.color,
+            emissive: this.color,     
+            side: THREE.DoubleSide,
+            flatShading: true,
+        })
+        
+        let mesh = new THREE.Mesh(geo, material)
+
+        mesh.position.set(this.x, this.y, this.z)
+
+        scene.add(mesh)
+        this.mesh = mesh
+
+        if (this.hasRails){
+            this.makeRails(scene, world)
+        }
+    }
+
+    makeRails(scene, world) {
+        // Assuming this.orient is either "Z" or "X"
+    
+        // Left rail
+        let lbody = new CANNON.Body({ mass: 0 });
+        let lshape;
+        let geo;
+    
+        if (this.orient == "Z") {
+            lbody.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z);
+            lshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength));
+            geo = new THREE.BoxGeometry(this.railWidth * 2, this.railHeight * 2, this.railLength * 2);
+        } else if (this.orient == "X") {
+            lbody.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth);
+            lshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railWidth));
+            geo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railWidth * 2);
+        }
+    
+        lbody.addShape(lshape);
+        world.add(lbody);
+        this.lbody = lbody;
+    
+        let material = new THREE.MeshPhongMaterial({
+            color: this.railColor,
+            emissive: this.railColor,
+            side: THREE.DoubleSide,
+            flatShading: true,
+        });
+    
+        let lmesh = new THREE.Mesh(geo, material);
+    
+        if (this.orient == "Z") {
+            lmesh.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z);
+        } else if (this.orient == "X") {
+            lmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth);
+        }
+    
+        scene.add(lmesh);
+        this.lmesh = lmesh;
+    
+        // Front rail
+        let fbody = new CANNON.Body({ mass: 0 });
+        let fshape;
+    
+        if (this.orient == "Z") {
+            fbody.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.railLength);
+            fshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railWidth));
+        } else if (this.orient == "X") {
+            fbody.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z);
+            fshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength));
+        }
+    
+        fbody.addShape(fshape);
+        world.add(fbody);
+        this.fbody = fbody;
+    
+        let fmesh = new THREE.Mesh(geo, material);
+    
+        if (this.orient == "Z") {
+            fmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.railLength);
+        } else if (this.orient == "X") {
+            fmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z);
+        }
+    
+        scene.add(fmesh);
+        this.fmesh = fmesh;
+    }    
+}
+
+export class leftTurn extends Block {
+    constructor(orient, hasRails) {
+        super(10, 1, 10, orient, hasRails);
+
+        this.color = 0x00FF00;
+        this.checked = false; // true when car goes over it
+        this.checkedColor = 0x0000FF;
+
+        if (this.orient == "X") {
+            // swap len and width
+            let temp = this.width;
+            this.width = this.length;
+            this.length = temp;
+
+            this.railLength = this.length;
+        }
+        this.name = "leftTurn";
+    }
+
+    makeRails(scene, world) {
+        // Assuming this.orient is either "Z" or "X"
+
+        // Left rail
+        let lbody = new CANNON.Body({ mass: 0 });
+        let lshape;
+        let geo;
+
+        if (this.orient == "Z") {
+            lbody.position.set(this.x - this.railWidth, this.y + this.height + this.railHeight, this.z);
+            lshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength));
+            geo = new THREE.BoxGeometry(this.railWidth * 2, this.railHeight * 2, this.railLength * 2);
+        } else if (this.orient == "X") {
+            lbody.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.railWidth);
+            lshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railWidth));
+            geo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railWidth * 2);
+        }
+
+        lbody.addShape(lshape);
+        world.add(lbody);
+        this.lbody = lbody;
+
+        let material = new THREE.MeshPhongMaterial({
+            color: this.railColor,
+            emissive: this.railColor,
+            side: THREE.DoubleSide,
+            flatShading: true,
+        });
+
+        let lmesh = new THREE.Mesh(geo, material);
+
+        if (this.orient == "Z") {
+            lmesh.position.set(this.x - this.railWidth, this.y + this.height + this.railHeight, this.z);
+        } else if (this.orient == "X") {
+            lmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.railWidth);
+        }
+
+        scene.add(lmesh);
+        this.lmesh = lmesh;
+
+        // Front rail
+        let fbody = new CANNON.Body({ mass: 0 });
+        let fshape;
+
+        if (this.orient == "Z") {
+            fbody.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.railLength);
+            fshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railWidth));
+        } else if (this.orient == "X") {
+            fbody.position.set(this.x - this.railLength, this.y + this.height + this.railHeight, this.z);
+            fshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength));
+        }
+
+        fbody.addShape(fshape);
+        world.add(fbody);
+        this.fbody = fbody;
+
+        let fmesh = new THREE.Mesh(geo, material);
+
+        if (this.orient == "Z") {
+            fmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.railLength);
+        } else if (this.orient == "X") {
+            fmesh.position.set(this.x - this.railLength, this.y + this.height + this.railHeight, this.z);
+        }
+
+        scene.add(fmesh);
+        this.fmesh = fmesh;
+    }
+}

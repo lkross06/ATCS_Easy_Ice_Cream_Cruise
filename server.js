@@ -4,7 +4,6 @@ const path = require('path');
 const app = express();
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }));
-
 // setting up the WebSocket!
 const WebSocket = require('ws')
 const socket = new WebSocket.Server({ port: 8008 })
@@ -142,7 +141,6 @@ socket.on('connection', (ws) => {
             })
         } else if (msg.method === "join") {
             // do we have that code?
-
             if (games.hasOwnProperty(msg.code)) { // yes we do
                 if (!games[msg.code].users.includes(msg.username)) {
                     games[msg.code].users.push(msg.username)
@@ -150,7 +148,8 @@ socket.on('connection', (ws) => {
                 packet = {
                     method: "join",
                     username: msg.username,
-                    track: games[msg.code].track
+                    track: games[msg.code].track,
+                    code: msg.code
                 }
                 socket.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN) {
@@ -169,6 +168,21 @@ socket.on('connection', (ws) => {
                     }
                 })
             }
+        } else if (msg.method === "render") {
+            // send to each user with the code the position of the player who just send their thingamabob.
+            let packet = {
+                method: "render",
+                username: msg.username,
+                code: msg.code,
+                x: msg.x,
+                y: msg.y,
+                z: msg.z
+            }
+            socket.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(packet))
+                }
+            })
         }
 
     })

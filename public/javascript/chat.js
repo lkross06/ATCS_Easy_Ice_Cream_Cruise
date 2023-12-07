@@ -104,6 +104,7 @@ ws.onmessage = message => {
                 console.log("WRONG CODE BUDDY TRY AGAIN")
                 // TODO: add some HTML error thingy here
             } else {
+                sessionStorage.setItem("code", res.code)
                 location.replace(res.track)
             }
         }
