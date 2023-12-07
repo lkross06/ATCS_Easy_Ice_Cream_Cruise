@@ -187,6 +187,17 @@ function updatePhysics() {
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
   navigate()
+
+  var result = [];
+  let a = []
+  let b = []
+  for (let i of wheelBodies){
+    a.push(i)
+    b.push(p2.body)
+  }
+  world.narrowphase.getContacts(a, b, world, result, [], [], []);
+  var overlaps = result.length > 0;
+  p2.setChecked(overlaps)
 }
 
 

@@ -12,6 +12,9 @@ class Block{
         this.yaw = yaw // along the x-z axis
         this.hasRails = hasRails
         this.name = "Block"
+
+        this.body; //for later definition
+        this.mesh;
     }
     
     makeBlock() {
@@ -37,6 +40,7 @@ export class StraightX extends Block{
         body.addShape(shape)
 
         world.add(body)
+        this.body = body
 
         //visuals
         let geo = new THREE.BoxGeometry(this.length *2, this.height*2, this.width * 2)
@@ -74,6 +78,7 @@ export class StraightZ extends Block{
         body.addShape(shape)
 
         world.add(body)
+        this.body = body
 
         //visuals
         let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
@@ -110,6 +115,7 @@ export class CheckpointX extends Block {
     constructor(x, y , z, pitch, yaw, hasRails){
         super(x, y + 0.01, z, 10, 1, 5, pitch, yaw, hasRails, color=0x00FF00)
         this.name = "CheckpointX"
+        this.checked = false //true when car goes over it
     }
 
     makeBlock(scene, world) {
@@ -122,6 +128,7 @@ export class CheckpointX extends Block {
         body.addShape(shape)
 
         world.add(body)
+        this.body = body
 
         //visuals
         let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
@@ -138,6 +145,18 @@ export class CheckpointX extends Block {
         mesh.position.set(this.x, this.y, this.z)
 
         scene.add(mesh)
+    }
+
+    setChecked(checked){
+        this.checked = checked
+        if (this.checked){
+            this.mesh.material.color = new THREE.Color(this.checkedColor)
+            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
+        }
+        //else {
+        //     this.mesh.material.color = new THREE.Color(this.color)
+        //     this.mesh.material.emissive = new THREE.Color(this.color)
+        //   }
     }
 }
 
@@ -147,6 +166,8 @@ export class CheckpointZ extends Block {
         //y += 0.01 so its above straightX and straightZ
         super(x, y + 0.01, z, 10, 1, 5, pitch, yaw, hasRails, 0x00FF00, 0x00FF00)
         this.name = "CheckpointZ"
+        this.checked = false //true when car goes over it
+        this.checkedColor = 0xFF00FF //color after being checked
     }
 
     makeBlock(scene, world) {
@@ -159,6 +180,7 @@ export class CheckpointZ extends Block {
         body.addShape(shape)
 
         world.add(body)
+        this.body = body
 
         //visuals
         let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
@@ -175,5 +197,19 @@ export class CheckpointZ extends Block {
         mesh.position.set(this.x, this.y, this.z)
 
         scene.add(mesh)
+        this.mesh = mesh
+
+    }
+
+    setChecked(checked){
+        this.checked = checked
+        if (this.checked){
+            this.mesh.material.color = new THREE.Color(this.checkedColor)
+            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
+        }
+        //else {
+        //     this.mesh.material.color = new THREE.Color(this.color)
+        //     this.mesh.material.emissive = new THREE.Color(this.color)
+        //   }
     }
 }
