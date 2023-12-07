@@ -147,7 +147,6 @@ socket.on('connection', (ws) => {
                 if (!games[msg.code].users.includes(msg.username)) {
                     games[msg.code].users.push(msg.username)
                 }
-                console.log(games)
                 packet = {
                     method: "join",
                     username: msg.username,
