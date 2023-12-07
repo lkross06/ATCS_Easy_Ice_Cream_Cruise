@@ -126,8 +126,8 @@ class Block{
  */
 
 export class Straight extends Block{
-    constructor(orient, hasRails){
-        super(10, 1, 20, orient, hasRails)
+    constructor(len = 1, orient, hasRails){ //len = multiplyier for 10x10 length
+        super(10, 1, 10 * len, orient, hasRails)
         this.name = "Straight"
 
         if (this.orient == "X") {
@@ -314,15 +314,13 @@ export class RightTurn extends Block {
 export class Checkpoint extends Block {
     //if the checkpoint isnt activated, it just looks like a straight piece
     //good for making symmetrical tracks with checkpoints
-    constructor(orient, activated = true, hasRails){
+    constructor(orient, hasRails){
         super(10, 1, 5, orient, hasRails)
 
-        this.activated = activated
-        if (this.activated){
-            this.color = 0x00FF00
-            this.checked = false //true when car goes over it
-            this.checkedColor = 0x0000FF
-        }
+        this.color = 0x00FF00
+        this.checked = false //true when car goes over it
+        this.checkedColor = 0x0000FF
+
         if (this.orient == "X") {
             //swap len and width
             let temp = this.width
@@ -458,12 +456,10 @@ export class Checkpoint extends Block {
     }
 
     setChecked(checked){
-        if (this.activated) {
-            this.checked = checked
-            if (this.checked){
-                this.mesh.material.color = new THREE.Color(this.checkedColor)
-                this.mesh.material.emissive = new THREE.Color(this.checkedColor)
-            }
+        this.checked = checked
+        if (this.checked){
+            this.mesh.material.color = new THREE.Color(this.checkedColor)
+            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
         }
     }
 }

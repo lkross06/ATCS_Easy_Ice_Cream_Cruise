@@ -1,12 +1,11 @@
 // handle escape menu logic
 let isEscapeMenuVisible = false;
 
-// Function to handle key press events
+//handle key press events
 function handleKeyPress(e) {
-    // Check if the "Esc" key is pressed
     if (e.keyCode === 27) { 
         isEscapeMenuVisible = !isEscapeMenuVisible
-        // Call a function to show or hide the escape menu based on its visibility
+        // call a function to show or hide the escape menu based on its visibility
         if (isEscapeMenuVisible) {
             showEscapeMenu();
         } else {
@@ -30,9 +29,9 @@ function hideEscapeMenu() {
 window.addEventListener('keydown', handleKeyPress)
 
 function goToHome() {
-// Add logic to navigate to the home page
+
 }
 
 function goToSettings() {
-// Add logic to navigate to the settings page
+
 }
