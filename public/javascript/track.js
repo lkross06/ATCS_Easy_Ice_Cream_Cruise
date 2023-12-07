@@ -1,15 +1,15 @@
 class Block{
-    constructor(x = 0, y = 0, z = 0, width, height, length, orient = "Z", pitch = 0, yaw = 0, hasRails = true, color = 0xd6D5cd, railColor = 0xFF0000) {
-        this.x = x
-        this.y = y
-        this.z = z
+    constructor(width, height, length, orient = "Z", hasRails = true, color = 0xd6D5cd, railColor = 0xFF0000) {
+        this.x = 0
+        this.y = 0
+        this.z = 0
         this.color = color
         this.railColor = railColor
         this.width = width
         this.height = height
         this.length = length
-        this.pitch = pitch
-        this.yaw = yaw // along the x-z axis
+        this.pitch = 0
+        this.yaw = 0 // along the x-z axis
         this.hasRails = hasRails
         this.name = "Block"
         this.railWidth = 0.2
@@ -27,6 +27,11 @@ class Block{
         this.rmesh
     }
 
+    setRotation(pitch, yaw){
+        this.pitch = pitch
+        this.yaw = yaw
+    }
+
     setPosition(x, y, z){
         this.x = x
         this.y = y
@@ -34,6 +39,30 @@ class Block{
         
         this.body.position.set(x, y, z) //update physics
         this.mesh.position.set(x, y, z) //update graphics
+
+        if (this.hasRails){
+            if (this.orient == "Z"){
+                let leftx = x - this.width + this.railWidth
+                let rightx = x + this.width - this.railWidth
+                y += this.height + this.railHeight
+
+                this.lbody.position.set(leftx, y, z)
+                this.lmesh.position.set(leftx, y, z)
+
+                this.rbody.position.set(rightx, y, z)
+                this.rmesh.position.set(rightx, y, z)
+            } else if (this.orient == "X"){
+                let leftz = z - this.length + this.railWidth
+                let rightz = z + this.length - this.railWidth
+                y += this.height + this.railHeight
+
+                this.lbody.position.set(x, y, leftz)
+                this.lmesh.position.set(x, y, leftz)
+
+                this.rbody.position.set(x, y, rightz)
+                this.rmesh.position.set(x, y, rightz)
+            }
+        }
     }
     
     makeBlock(scene, world) {
@@ -97,8 +126,8 @@ class Block{
  */
 
 export class Straight extends Block{
-    constructor(x, y, z, o, pitch, yaw, hasRails){
-        super(x, y, z, 10, 1, 20, o, pitch, yaw, hasRails)
+    constructor(orient, hasRails){
+        super(10, 1, 20, orient, hasRails)
         this.name = "Straight"
 
         if (this.orient == "X") {
@@ -232,46 +261,11 @@ export class Straight extends Block{
        scene.add(rmesh)
        this.rmesh = rmesh
     }
-
-    setPosition(x, y, z){
-        super.setPosition(x, y, z)
-
-        if (this.hasRails){
-            if (this.orient == "Z"){
-                let leftx = x - this.width + this.railWidth
-                let rightx = x + this.width - this.railWidth
-                y += this.height + this.railHeight
-
-                this.lbody.position.set(leftx, y, z)
-                this.lmesh.position.set(leftx, y, z)
-
-                this.rbody.position.set(rightx, y, z)
-                this.rmesh.position.set(rightx, y, z)
-            } else if (this.orient == "X"){
-                let leftz = z - this.length + this.railWidth
-                let rightz = z + this.length - this.railWidth
-                y += this.height + this.railHeight
-
-                this.lbody.position.set(x, y, leftz)
-                this.lmesh.position.set(x, y, leftz)
-
-                this.rbody.position.set(x, y, rightz)
-                this.rmesh.position.set(x, y, rightz)
-            }
-        }
-    }
 }
 
-class Turn extends Block{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, 10, 1, 10, pitch, yaw, hasRails)
-        this.name = "Turn"
-    }
-}
-
-export class LeftTurn extends Turn{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
+export class LeftTurn extends Block{
+    constructor(orient, hasRails){
+        super(orient, hasRails)
         this.name = "LeftTurn"
     }
 
@@ -280,9 +274,9 @@ export class LeftTurn extends Turn{
     }
 }
 
-export class RightTurn extends Turn {
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
+export class RightTurn extends Block {
+    constructor(orient, hasRails){
+        super(orient, hasRails)
         this.name = "RightTurn"
     }
 
@@ -320,8 +314,8 @@ export class RightTurn extends Turn {
 export class Checkpoint extends Block {
     //if the checkpoint isnt activated, it just looks like a straight piece
     //good for making symmetrical tracks with checkpoints
-    constructor(x, y, z, o, activated = true, pitch, yaw, hasRails){
-        super(x, y, z, 10, 1, 5, o, pitch, yaw, hasRails)
+    constructor(orient, activated = true, hasRails){
+        super(10, 1, 5, orient, hasRails)
 
         this.activated = activated
         if (this.activated){
@@ -463,34 +457,6 @@ export class Checkpoint extends Block {
        this.rmesh = rmesh
     }
 
-    setPosition(x, y, z){
-        super.setPosition(x, y, z)
-
-        if (this.hasRails){
-            if (this.orient == "Z"){
-                let leftx = x - this.width + this.railWidth
-                let rightx = x + this.width - this.railWidth
-                y += this.height + this.railHeight
-
-                this.lbody.position.set(leftx, y, z)
-                this.lmesh.position.set(leftx, y, z)
-
-                this.rbody.position.set(rightx, y, z)
-                this.rmesh.position.set(rightx, y, z)
-            } else if (this.orient == "X"){
-                let leftz = z - this.length + this.railWidth
-                let rightz = z + this.length - this.railWidth
-                y += this.height + this.railHeight
-
-                this.lbody.position.set(x, y, leftz)
-                this.lmesh.position.set(x, y, leftz)
-
-                this.rbody.position.set(x, y, rightz)
-                this.rmesh.position.set(x, y, rightz)
-            }
-        }
-    }
-
     setChecked(checked){
         if (this.activated) {
             this.checked = checked
@@ -499,56 +465,5 @@ export class Checkpoint extends Block {
                 this.mesh.material.emissive = new THREE.Color(this.checkedColor)
             }
         }
-    }
-}
-
-class Ramp extends Block{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, 10, 10, 10, pitch, yaw, hasRails)
-        this.name = "Ramp"
-    }
-}
-
-class RampUpX extends Ramp{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
-        this.name = "RampUpX"
-    }
-
-    makeBlock(scene, world){
-
-    }
-}
-
-class RampDownX extends Ramp{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
-        this.name = "RampDownX"
-    }
-
-    makeBlock(scene, world){
-        
-    }
-}
-
-class RampUpZ extends Ramp{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
-        this.name = "RampUpZ"
-    }
-
-    makeBlock(scene, world){
-        
-    }
-}
-
-class RampDownZ extends Ramp{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
-        this.name = "RampDownZ"
-    }
-
-    makeBlock(scene, world){
-        
     }
 }

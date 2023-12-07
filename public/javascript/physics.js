@@ -81,28 +81,10 @@ world.defaultContactMaterial.friction = 0;
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
 
-let s = new Straight(0, 0, 0, "X")
+let s = new Straight()
 s.makeBlock(scene, world)
 
-let s2 = new Checkpoint(0, 0, 0, "X")
-s2.makeBlock(scene, world)
-s2.snapTo(s, "E")
-checkpoints.push(s2)
-
-s = new Straight(0, 0, 0, "X")
-s.makeBlock(scene, world)
-s.snapTo(s2, "E")
-
-s2 = new Checkpoint(0, 0, 0, "X", true, 0, 0, false)
-s2.makeBlock(scene, world)
-s2.snapTo(s, "E")
-checkpoints.push(s2)
-
-s = new Straight()
-s.makeBlock(scene, world)
-s.snapTo(s2, "N")
-
-s2 = new Checkpoint()
+let s2 = new Checkpoint()
 s2.makeBlock(scene, world)
 s2.snapTo(s, "N")
 checkpoints.push(s2)
@@ -111,23 +93,7 @@ s = new Straight()
 s.makeBlock(scene, world)
 s.snapTo(s2, "N")
 
-// let cp = new CheckpointZ()
-// cp.makeBlock(scene, world)
-// checkpoints.push(cp)
-// cp.snapTo(s, "N")
 
-// s = new StraightZ()
-// let temp = s.width
-// s.width = s.length
-// s.length = temp
-// s.makeBlock(scene, world)
-// s.snapTo(cp, "N")
-
-
-// let t = new RightTurn()
-// t.color = 0x0000FF
-// t.makeBlock(scene, world)
-// t.snapTo(s, "N")
 
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
