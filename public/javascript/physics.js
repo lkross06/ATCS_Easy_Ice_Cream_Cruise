@@ -271,8 +271,8 @@ function navigate() {
 
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
-    vehicle.setBrake(12, 2);
-    vehicle.setBrake(12, 3);
+    vehicle.setBrake(10, 2);
+    vehicle.setBrake(10, 3);
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
       vehicle.applyEngineForce(-engineForce, 2);
       vehicle.applyEngineForce(-engineForce, 3);
