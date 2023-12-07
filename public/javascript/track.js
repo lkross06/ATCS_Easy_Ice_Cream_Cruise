@@ -1,5 +1,5 @@
 class Block{
-    constructor(x, y, z, width, height, length, pitch = 0, yaw = 0, hasRails = true, color = 0xd6D5cd, railColor = 0xFF0000) {
+    constructor(x = 0, y = 0, z = 0, width, height, length, pitch = 0, yaw = 0, hasRails = true, color = 0xd6D5cd, railColor = 0xFF0000) {
         this.x = x
         this.y = y
         this.z = z
@@ -16,9 +16,42 @@ class Block{
         this.body; //for later definition
         this.mesh;
     }
+
+    setPosition(x, y, z){
+        this.x = x
+        this.y = y
+        this.z = z
+
+        this.body.position.set(x, y, z) //update physics
+        this.mesh.position.set(x, y, z) //update graphics
+    }
     
     makeBlock(scene, world) {
         return
+    }
+
+    /**
+     * set position to be adjacent to "other" in given direction "dir" (N/S/E/W)
+     * 
+     * N --> positive z
+     * S --> negative z
+     * E --> negative x
+     * W --> positive x
+     * 
+     * (car spawns facing north with east on right and west on left)
+     * 
+     * @param {Block} other other block to snap to
+     */
+    snapTo(other, dir){
+        if (dir == "N"){ //use other for opposite axis to center
+            this.setPosition(other.x, this.y, other.z + other.length + this.length)
+        } else if (dir == "S"){
+            this.setPosition(other.x, this.y, other.z - other.length - this.length)
+        } else if (dir == "W"){
+            this.setPosition(other.x + other.width + this.width, this.y, other.z)
+        } else if (dir == "E"){
+            this.setPosition(other.x - other.width - this.width, this.y, other.z)
+        }
     }
 }
 
@@ -71,6 +104,7 @@ export class StraightX extends Straight{
         mesh.position.set(this.x, this.y, this.z)
 
         scene.add(mesh)
+        this.mesh = mesh
     }
 }
 
@@ -109,7 +143,7 @@ export class StraightZ extends Straight{
         mesh.position.set(this.x, this.y, this.z)
 
         scene.add(mesh)
-
+        this.mesh = mesh
     }
 }
 
@@ -143,26 +177,35 @@ export class RightTurn extends Turn {
 }
 
 class Checkpoint extends Block {
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y + 0.01, z, 10, 1, 5, pitch, yaw, hasRails, 0x00FF00)
+    //if the checkpoint isnt activated, it just looks like a straight piece
+    //good for making symmetrical tracks with checkpoints
+    constructor(x, y, z, activated = true, pitch, yaw, hasRails){
+        super(x, y, z, 10, 1, 5, pitch, yaw, hasRails)
+
+        this.activated = activated
+        if (this.activated){
+            this.color = 0x00FF00
+            this.checked = false //true when car goes over it
+            this.checkedColor = 0x0000FF
+        }
         this.name = "Checkpoint"
-        this.checked = false //true when car goes over it
-        this.checkedColor = 0x0000FF
     }
 
     setChecked(checked){
-        this.checked = checked
-        if (this.checked){
-            this.mesh.material.color = new THREE.Color(this.checkedColor)
-            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
+        if (this.activated) {
+            this.checked = checked
+            if (this.checked){
+                this.mesh.material.color = new THREE.Color(this.checkedColor)
+                this.mesh.material.emissive = new THREE.Color(this.checkedColor)
+            }
         }
     }
 }
 
 export class CheckpointX extends Checkpoint {
 
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
+    constructor(x, y, z, actiavted, pitch, yaw, hasRails){
+        super(x, y, z, actiavted, pitch, yaw, hasRails)
         this.name = "CheckpointX"
     }
 
@@ -193,13 +236,14 @@ export class CheckpointX extends Checkpoint {
         mesh.position.set(this.x, this.y, this.z)
 
         scene.add(mesh)
+        this.mesh = mesh
     }
 }
 
 export class CheckpointZ extends Checkpoint {
 
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
+    constructor(x, y, z, activated, pitch, yaw, hasRails){
+        super(x, y, z, activated, pitch, yaw, hasRails)
         this.name = "CheckpointZ"
     }
 

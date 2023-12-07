@@ -75,13 +75,21 @@ world.defaultContactMaterial.friction = 0;
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
 
-var p = new StraightZ(0, 0, 15)
-p.makeBlock(scene, world)
+let s = new StraightZ(0, 0, 15)
+s.makeBlock(scene, world)
 
-var p2 = new CheckpointZ(0, 0, 15 + 10 + 2.5)
-p2.makeBlock(scene, world)
-checkpoints.push(p2)
+for (let i = 0; i < 15; i++){
+  let cp = new CheckpointZ()
+  cp.makeBlock(scene, world)
+  checkpoints.push(cp)
 
+  cp.snapTo(s, "N")
+
+  s = new StraightZ()
+  s.makeBlock(scene, world)
+
+  s.snapTo(cp, "N")
+}
 
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
@@ -190,19 +198,7 @@ function updatePhysics() {
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
   navigate()
-
-  for (let cp of checkpoints){
-    let result = [];
-    let a = []
-    let b = []
-    for (let i of wheelBodies){
-      a.push(i)
-      b.push(cp.body)
-    }
-    world.narrowphase.getContacts(a, b, world, result, [], [], []);
-    var overlaps = result.length > 0;
-    cp.setChecked(overlaps)
-  }
+  updateCheckpoints()
 }
 
 
@@ -232,6 +228,22 @@ function handleKeyPress(e){
 
   keys_pressed[e.keyCode] = e.type == 'keydown'; //runs for every key to keep track of multiple
 }
+
+function updateCheckpoints(){
+  for (let cp of checkpoints){
+    let result = [];
+    let a = []
+    let b = []
+    for (let i of wheelBodies){
+      a.push(i)
+      b.push(cp.body)
+    }
+    world.narrowphase.getContacts(a, b, world, result, [], [], []);
+    var overlaps = result.length > 0;
+    cp.setChecked(overlaps)
+  }
+}
+
 function navigate() {
   if (!keys_pressed[32]){
     vehicle.setBrake(0, 0);
