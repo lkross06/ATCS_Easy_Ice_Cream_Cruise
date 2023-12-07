@@ -1,5 +1,5 @@
 class Block{
-    constructor(x = 0, y = 0, z = 0, width, height, length, pitch = 0, yaw = 0, hasRails = true, color = 0xd6D5cd, railColor = 0xFF0000, railWidth = 0.2, railHeight = 0.4) {
+    constructor(x = 0, y = 0, z = 0, width, height, length, orient = "Z", pitch = 0, yaw = 0, hasRails = true, color = 0xd6D5cd, railColor = 0xFF0000) {
         this.x = x
         this.y = y
         this.z = z
@@ -12,8 +12,10 @@ class Block{
         this.yaw = yaw // along the x-z axis
         this.hasRails = hasRails
         this.name = "Block"
-        this.railWidth = railWidth
-        this.railHeight = railHeight
+        this.railWidth = 0.2
+        this.railHeight = 0.4
+        this.railLength = this.length //default for z axis
+        this.orient = orient
 
         this.body; //for later definition
         this.mesh;
@@ -51,15 +53,38 @@ class Block{
      * @param {Block} other other block to snap to
      */
     snapTo(other, dir){
-        if (dir == "N"){ //use other for opposite axis to center
-            this.setPosition(other.x, this.y, other.z + other.length + this.length)
-        } else if (dir == "S"){
-            this.setPosition(other.x, this.y, other.z - other.length - this.length)
-        } else if (dir == "W"){
-            this.setPosition(other.x + other.width + this.width, this.y, other.z)
-        } else if (dir == "E"){
-            this.setPosition(other.x - other.width - other.width - this.width, this.y, other.z)
+        let ol = other.length
+        let ow = other.width
+
+        let ox = other.x
+        let oz = other.z
+
+        if (other.orient == "Z"){
+            if (dir == "N"){ //use other for opposite axis to center
+                this.setPosition(ox, this.y, oz + ol + this.length)
+            } else if (dir == "S"){
+                this.setPosition(ox, this.y, oz - ol - this.length)
+            } else if (dir == "W"){
+                this.setPosition(ox + ow + this.width, this.y, oz)
+            } else if (dir == "E"){
+                this.setPosition(ox - ow - this.width, this.y, oz)
+            }
+        } else if (other.orient == "X"){
+            if (dir == "N"){ //use other for opposite axis to center
+                
+                this.setPosition(ox, this.y, oz + ol + this.length)
+            } else if (dir == "S"){
+                
+                this.setPosition(ox, this.y, oz - ol - this.length)
+            } else if (dir == "E"){
+                
+                this.setPosition(ox - ow - this.width, this.y, oz)
+            } else if (dir == "W"){
+                this.setPosition(ox + ow + this.width, this.y, oz)
+            }
         }
+
+        
     }
 }
 
@@ -71,58 +96,20 @@ class Block{
  * ramp -- 10x10x10 90 degree triangle ramp (ramp up and ramp down)
  */
 
-class Straight extends Block{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, 10, 1, 20, pitch, yaw, hasRails)
+export class Straight extends Block{
+    constructor(x, y, z, o, pitch, yaw, hasRails){
+        super(x, y, z, 10, 1, 20, o, pitch, yaw, hasRails)
         this.name = "Straight"
-    }
-}
+        this.orient = o //"Z" or "X", depending on which axis to run along
 
-export class StraightX extends Straight{
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
-        this.name = "StraightX"
-    }
+        if (this.orient == "X") {
+            //swap len and width
+            let temp = this.width
+            this.width = this.length
+            this.length = temp
 
-    makeBlock(scene, world) {
-
-        //physics
-        let body = new CANNON.Body({mass: 0})
-        let shape = new CANNON.Box(new CANNON.Vec3(this.length, this.height, this.width))
-        
-        body.position.set(this.x, this.y, this.z)
-
-        body.addShape(shape)
-
-        world.add(body)
-        this.body = body
-
-        //visuals
-        let geo = new THREE.BoxGeometry(this.length *2, this.height*2, this.width * 2)
-
-        let material = new THREE.MeshPhongMaterial({
-            color: this.color,
-            emissive: this.color,     
-            side: THREE.DoubleSide,
-            flatShading: true,
-        })
-        
-        let mesh = new THREE.Mesh(geo, material)
-
-        mesh.position.set(this.x, this.y, this.z)
-
-        scene.add(mesh)
-        this.mesh = mesh
-    }
-
-
-}
-
-export class StraightZ extends Straight{
-
-    constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, pitch, yaw, hasRails)
-        this.name = "StraightX"
+            this.railLength = this.length
+        }
     }
 
     makeBlock(scene, world) {
@@ -161,29 +148,36 @@ export class StraightZ extends Straight{
     }
 
     makeRails(scene, world){
-        /**
-        east (neg x)
 
-        x = this.x - this.width + this.railwidth
+        /**
+        left side
+
+        x = this.x + this.width - this.railwidth
         length = this.length
         width = this.railwidth
         height = this.railheight
         */
         //physics
         let lbody = new CANNON.Body({mass: 0})
-        let lshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.length))
+        let lshape;
+        let geo;
         
-        lbody.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z)
-        // lbody.position.set(5, 5, 5)
-
+        if (this.orient == "Z"){
+            lbody.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z)
+            lshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength))
+            geo = new THREE.BoxGeometry(this.railWidth * 2, this.railHeight * 2, this.railLength * 2)
+        } 
+        else if (this.orient == "X"){
+            lbody.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth)
+            lshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, 0.2))
+            geo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, 0.2 * 2)
+        }
         lbody.addShape(lshape)
 
         world.add(lbody)
         this.lbody = lbody
 
         //visuals
-        let geo = new THREE.BoxGeometry(this.railWidth * 2, this.railHeight * 2, this.length * 2)
-
         let material = new THREE.MeshPhongMaterial({
             color: this.railColor,
             emissive: this.railColor,     
@@ -193,36 +187,49 @@ export class StraightZ extends Straight{
         
         let lmesh = new THREE.Mesh(geo, material)
 
-        lmesh.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z)
-
+        if (this.orient == "Z"){
+            lmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z)
+        } 
+        else if (this.orient == "X"){
+            lmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth)
+        }
         scene.add(lmesh)
         this.lmesh = lmesh
 
         /**
-        west (pos x)
+        right
 
-        x = this.x + this.width - this.railwidth
+        x = this.x - this.width + this.railwidth
         length = this.length
         width = this.railWidth
         height = this.railHeight
         */
        //physics
        let rbody = new CANNON.Body({mass: 0})
-       let rshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.length))
-       
-       rbody.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z)
+        let rshape;
+        
+        if (this.orient == "Z"){
+            rbody.position.set(this.x - this.length + this.railWidth, this.y + this.height + this.railHeight, this.z)
+            rshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength))
+        } 
+        else if (this.orient == "X"){
+            rbody.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.length + this.railWidth)
+            rshape = new CANNON.Box(new CANNON.Vec3(this.railLength, this.railHeight, this.railWidth))
+        }
+        rbody.addShape(rshape)
 
-       rbody.addShape(rshape)
-
-       world.add(rbody)
-       this.rbody = rbody
+        world.add(rbody)
+        this.rbody = rbody
 
        //visuals
        
        let rmesh = new THREE.Mesh(geo, material)
 
-       rmesh.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z)
-
+        if (this.orient == "Z"){
+            rmesh.position.set(this.x - this.length + this.railWidth, this.y + this.height + this.railHeight, this.z)
+        } else if (this.orient == "X"){
+            rmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.length + this.railWidth)
+        }
        scene.add(rmesh)
        this.rmesh = rmesh
     }
@@ -231,15 +238,27 @@ export class StraightZ extends Straight{
         super.setPosition(x, y, z)
 
         if (this.hasRails){
-            let leftx = x - this.width + this.railWidth
-            let rightx = x + this.width - this.railWidth
-            y += this.height + this.railHeight
+            if (this.orient == "Z"){
+                let leftx = x - this.width + this.railWidth
+                let rightx = x + this.width - this.railWidth
+                y += this.height + this.railHeight
 
-            this.lbody.position.set(leftx, y, z)
-            this.lmesh.position.set(leftx, y, z)
+                this.lbody.position.set(leftx, y, z)
+                this.lmesh.position.set(leftx, y, z)
 
-            this.rbody.position.set(rightx, y, z)
-            this.rmesh.position.set(rightx, y, z)
+                this.rbody.position.set(rightx, y, z)
+                this.rmesh.position.set(rightx, y, z)
+            } else if (this.orient == "X"){
+                let leftz = z - this.length + this.railWidth
+                let rightz = z + this.length - this.railWidth
+                y += this.height + this.railHeight
+
+                this.lbody.position.set(x, y, leftz)
+                this.lmesh.position.set(x, y, leftz)
+
+                this.rbody.position.set(x, y, rightz)
+                this.rmesh.position.set(x, y, rightz)
+            }
         }
     }
 }
