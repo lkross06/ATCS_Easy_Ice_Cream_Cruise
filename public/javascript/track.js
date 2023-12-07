@@ -100,7 +100,6 @@ export class Straight extends Block{
     constructor(x, y, z, o, pitch, yaw, hasRails){
         super(x, y, z, 10, 1, 20, o, pitch, yaw, hasRails)
         this.name = "Straight"
-        this.orient = o //"Z" or "X", depending on which axis to run along
 
         if (this.orient == "X") {
             //swap len and width
@@ -163,14 +162,14 @@ export class Straight extends Block{
         let geo;
         
         if (this.orient == "Z"){
-            lbody.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z)
+            lbody.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z)
             lshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength))
             geo = new THREE.BoxGeometry(this.railWidth * 2, this.railHeight * 2, this.railLength * 2)
         } 
         else if (this.orient == "X"){
             lbody.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth)
-            lshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, 0.2))
-            geo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, 0.2 * 2)
+            lshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railWidth))
+            geo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railWidth * 2)
         }
         lbody.addShape(lshape)
 
@@ -188,7 +187,7 @@ export class Straight extends Block{
         let lmesh = new THREE.Mesh(geo, material)
 
         if (this.orient == "Z"){
-            lmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z)
+            lmesh.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z)
         } 
         else if (this.orient == "X"){
             lmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth)
@@ -209,7 +208,7 @@ export class Straight extends Block{
         let rshape;
         
         if (this.orient == "Z"){
-            rbody.position.set(this.x - this.length + this.railWidth, this.y + this.height + this.railHeight, this.z)
+            rbody.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z)
             rshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength))
         } 
         else if (this.orient == "X"){
@@ -226,7 +225,7 @@ export class Straight extends Block{
        let rmesh = new THREE.Mesh(geo, material)
 
         if (this.orient == "Z"){
-            rmesh.position.set(this.x - this.length + this.railWidth, this.y + this.height + this.railHeight, this.z)
+            rmesh.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z)
         } else if (this.orient == "X"){
             rmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.length + this.railWidth)
         }
@@ -318,11 +317,11 @@ export class RightTurn extends Turn {
     }
 }
 
-class Checkpoint extends Block {
+export class Checkpoint extends Block {
     //if the checkpoint isnt activated, it just looks like a straight piece
     //good for making symmetrical tracks with checkpoints
-    constructor(x, y, z, activated = true, pitch, yaw, hasRails){
-        super(x, y, z, 10, 1, 5, pitch, yaw, hasRails)
+    constructor(x, y, z, o, activated = true, pitch, yaw, hasRails){
+        super(x, y, z, 10, 1, 5, o, pitch, yaw, hasRails)
 
         this.activated = activated
         if (this.activated){
@@ -330,7 +329,166 @@ class Checkpoint extends Block {
             this.checked = false //true when car goes over it
             this.checkedColor = 0x0000FF
         }
+        if (this.orient == "X") {
+            //swap len and width
+            let temp = this.width
+            this.width = this.length
+            this.length = temp
+
+            this.railLength = this.length
+        }
         this.name = "Checkpoint"
+    }
+
+    makeBlock(scene, world) {
+        
+        //physics
+        let body = new CANNON.Body({mass: 0})
+        let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.height, this.length))
+        
+        body.position.set(this.x, this.y, this.z)
+
+        body.addShape(shape)
+
+        world.add(body)
+        this.body = body
+
+        //visuals
+        let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
+
+        let material = new THREE.MeshPhongMaterial({
+            color: this.color,
+            emissive: this.color,     
+            side: THREE.DoubleSide,
+            flatShading: true,
+        })
+        
+        let mesh = new THREE.Mesh(geo, material)
+
+        mesh.position.set(this.x, this.y, this.z)
+
+        scene.add(mesh)
+        this.mesh = mesh
+
+        if (this.hasRails){
+            this.makeRails(scene, world)
+        }
+    }
+
+    makeRails(scene, world){
+
+        /**
+        left side
+
+        x = this.x + this.width - this.railwidth
+        length = this.length
+        width = this.railwidth
+        height = this.railheight
+        */
+        //physics
+        let lbody = new CANNON.Body({mass: 0})
+        let lshape;
+        let geo;
+        
+        if (this.orient == "Z"){
+            lbody.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z)
+            lshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength))
+            geo = new THREE.BoxGeometry(this.railWidth * 2, this.railHeight * 2, this.railLength * 2)
+        } 
+        else if (this.orient == "X"){
+            lbody.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth)
+            lshape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railWidth))
+            geo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railWidth * 2)
+        }
+
+        lbody.addShape(lshape)
+
+        world.add(lbody)
+        this.lbody = lbody
+
+        //visuals
+        let material = new THREE.MeshPhongMaterial({
+            color: this.railColor,
+            emissive: this.railColor,     
+            side: THREE.DoubleSide,
+            flatShading: true,
+        })
+        
+        let lmesh = new THREE.Mesh(geo, material)
+
+        if (this.orient == "Z"){
+            lmesh.position.set(this.x + this.width - this.railWidth, this.y + this.height + this.railHeight, this.z)
+        } 
+        else if (this.orient == "X"){
+            lmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.length - this.railWidth)
+        }
+        scene.add(lmesh)
+        this.lmesh = lmesh
+
+        /**
+        right
+
+        x = this.x - this.width + this.railwidth
+        length = this.length
+        width = this.railWidth
+        height = this.railHeight
+        */
+       //physics
+       let rbody = new CANNON.Body({mass: 0})
+        let rshape;
+        
+        if (this.orient == "Z"){
+            rbody.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z)
+            rshape = new CANNON.Box(new CANNON.Vec3(this.railWidth, this.railHeight, this.railLength))
+        } 
+        else if (this.orient == "X"){
+            rbody.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.length + this.railWidth)
+            rshape = new CANNON.Box(new CANNON.Vec3(this.railLength, this.railHeight, this.railWidth))
+        }
+        rbody.addShape(rshape)
+
+        world.add(rbody)
+        this.rbody = rbody
+
+       //visuals
+       
+       let rmesh = new THREE.Mesh(geo, material)
+
+        if (this.orient == "Z"){
+            rmesh.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z)
+        } else if (this.orient == "X"){
+            rmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z - this.length + this.railWidth)
+        }
+       scene.add(rmesh)
+       this.rmesh = rmesh
+    }
+
+    setPosition(x, y, z){
+        super.setPosition(x, y, z)
+
+        if (this.hasRails){
+            if (this.orient == "Z"){
+                let leftx = x - this.width + this.railWidth
+                let rightx = x + this.width - this.railWidth
+                y += this.height + this.railHeight
+
+                this.lbody.position.set(leftx, y, z)
+                this.lmesh.position.set(leftx, y, z)
+
+                this.rbody.position.set(rightx, y, z)
+                this.rmesh.position.set(rightx, y, z)
+            } else if (this.orient == "X"){
+                let leftz = z - this.length + this.railWidth
+                let rightz = z + this.length - this.railWidth
+                y += this.height + this.railHeight
+
+                this.lbody.position.set(x, y, leftz)
+                this.lmesh.position.set(x, y, leftz)
+
+                this.rbody.position.set(x, y, rightz)
+                this.rmesh.position.set(x, y, rightz)
+            }
+        }
     }
 
     setChecked(checked){

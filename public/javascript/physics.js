@@ -1,6 +1,6 @@
 import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
 import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
-import { Straight, LeftTurn, RightTurn, CheckpointZ } from './track.js';
+import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
 
 var container = document.querySelector('body'),
     w = container.clientWidth,
@@ -81,12 +81,13 @@ world.defaultContactMaterial.friction = 0;
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
 
-let s = new Straight(0, 0, 0, "X")
+let s = new Straight()
 s.makeBlock(scene, world)
 
-let s2 = new Straight(0, 0, 0, "X")
+let s2 = new Checkpoint()
 s2.makeBlock(scene, world)
-s2.snapTo(s, "S")
+s2.snapTo(s, "N")
+checkpoints.push(s2)
 
 // let cp = new CheckpointZ()
 // cp.makeBlock(scene, world)
