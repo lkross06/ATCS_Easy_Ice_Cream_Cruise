@@ -1,6 +1,6 @@
 import { threeToCannon } from 'https://cdn.skypack.dev/three-to-cannon';
 import { ShapeType } from 'https://cdn.skypack.dev/three-to-cannon';
-import { StraightZ, StraightX, LeftTurn, RightTurn, CheckpointX, CheckpointZ } from './track.js';
+import { Straight, LeftTurn, RightTurn, CheckpointZ } from './track.js';
 
 var container = document.querySelector('body'),
     w = container.clientWidth,
@@ -11,6 +11,8 @@ let renderConfig = {antialias: true, alpha: true},
 renderer = new THREE.WebGLRenderer(renderConfig);
 const cameraOffset = new THREE.Vector3(0, 4, -10);
 
+  
+
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
 // did u know F1 cars are only 100 kg
@@ -20,7 +22,7 @@ chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
-var maxSteerVal = Math.PI/32;
+var maxSteerVal = Math.PI/16;
 let engineForce = 600
 
 // car visual body
@@ -37,6 +39,9 @@ scene.add(camera);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
+
+
+
 
 var map = THREE.TextureLoader()
 var handMaterial = new THREE.MeshPhongMaterial({map: map});
@@ -72,28 +77,34 @@ world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0;
 
 
+
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
 
-let s = new StraightZ(0, 0, 15)
+let s = new Straight(0, 0, 0, "X")
 s.makeBlock(scene, world)
 
-let cp = new CheckpointZ()
-cp.makeBlock(scene, world)
-checkpoints.push(cp)
+let s2 = new Straight(0, 0, 0, "X")
+s2.makeBlock(scene, world)
+s2.snapTo(s, "S")
 
-cp.snapTo(s, "N")
+// let cp = new CheckpointZ()
+// cp.makeBlock(scene, world)
+// checkpoints.push(cp)
+// cp.snapTo(s, "N")
 
-s = new StraightZ()
-s.makeBlock(scene, world)
+// s = new StraightZ()
+// let temp = s.width
+// s.width = s.length
+// s.length = temp
+// s.makeBlock(scene, world)
+// s.snapTo(cp, "N")
 
-s.snapTo(cp, "N")
 
-let t = new RightTurn()
-t.color = 0x0000FF
-t.makeBlock(scene, world)
-
-t.snapTo(s, "N")
+// let t = new RightTurn()
+// t.color = 0x0000FF
+// t.makeBlock(scene, world)
+// t.snapTo(s, "N")
 
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
@@ -227,11 +238,15 @@ function render(timestamp) {
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
 var steeringValue = 0
 
-function handleKeyPress(e){
-  if (e.type != 'keydown' && e.type != 'keyup') return;
 
-  keys_pressed[e.keyCode] = e.type == 'keydown'; //runs for every key to keep track of multiple
+// Function to handle key press events
+function handleKeyPress(e) {
+    if (e.type !== 'keydown' && e.type !== 'keyup') return;
+
+    keys_pressed[e.keyCode] = e.type === 'keydown';
+
 }
+
 
 function updateCheckpoints(){
   for (let cp of checkpoints){
@@ -256,7 +271,7 @@ function navigate() {
     vehicle.setBrake(0, 3);
   }
 
-  
+
   let speed = vehicle.currentVehicleSpeedKmHour
 
   //y = -4x + 600 but absolute value
@@ -267,7 +282,7 @@ function navigate() {
     engineForce = (-4 * -speed) + 600
   }
   if (engineForce > 800) engineForce = 800 //cap
- 
+
 
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
@@ -297,6 +312,8 @@ function navigate() {
 
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
+  
+  
 }
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)

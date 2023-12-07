@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>test game</title>    
     <style>
+      :root {
+        --font-size-1: 72px;
+        --font-size-2: 54px;
+        --font-size-3: 42px;
+        --font-size-4: 24px;
+        --font-size-5: 18px;
+    
+        --bg-dark-grey: #838387;
+        --bg-light-grey: #D2D2D9;
+        --bg-white: rgb(250, 250, 255);
+        --bg-purewhite: #FEFEFF;
+    
+        --light-orange: #e3a246;
+        --dark-orange: rgb(227, 136, 9); /* contrasts with dark background */
+        --darker-orange: rgb(200, 116, 0); /* contrasts with light background */
+    
+        --font-black: #2F2F30;
+        --font-light-grey: #A6A6AB;
+        --font-white: #FAFAFD;
+    }
+    
       #myThreeJsCanvas {
         width: 100vw;
         height: 100vh;
@@ -19,7 +40,60 @@
       canvas {
         width: 100%;
         height: 100%;
-        background: #aaa;
+        background-color: gray;
+        margin: 0;
+        overflow: hidden; 
+        font-family: Arial, sans-serif;
+        color: var(--font-white);
+      }
+
+      #escape-menu {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--bg-white);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        width: 500px; 
+        height: auto;
+      }
+  
+      .menu-content {
+        text-align: center;
+      }
+  
+      h2 {
+        font-size: var(--font-size-2);
+        color: var(--dark-orange);
+      }
+  
+      p {
+        font-size: var(--font-size-4);
+      }
+  
+      button {
+        display: block; 
+        background-color: var(--dark-orange);
+        color: var(--font-white);
+        padding: 10px 20px;
+        font-size: var(--font-size-3);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 20px auto; 
+        text-align: center; 
+      }
+      
+  
+      button:hover {
+        background-color: var(--darker-orange);
+      }
+      
+      .hidden {
+        display: none;
       }
     </style>
   </head>
@@ -28,19 +102,30 @@
     <div id="speed"></div>
 
     <script type="module">
-      import {domainName} from "../globalVars.js"
+      import { domainName } from "../globalVars.js"
 
-      if(sessionStorage.getItem("username") === null) {
+      if (sessionStorage.getItem("username") === null) {
         // Ensure the redirect URL is correctly formed
         const redirectUrl = "http://" + domainName + ":3000";
         // Redirect the user
-        window.location.href = redirectUrl;    
+        window.location.href = redirectUrl;
       }
     </script>
-    <script type="module" src="/javascript/physics.js"></script>
-    
+
+    <script defer src="/javascript/esc.js"></script>
+    <script defer type="module" src="/javascript/physics.js"></script>
+
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js'></script>
 
-</body>
+    <div id="escape-menu" class="hidden">
+      <div class="menu-content">
+        <h2>Easy Ice Cream Cruise</h2>
+        <button onclick="hideEscapeMenu()">Resume</button>
+        <button onclick="goToHome()">Home</button>
+        <button onclick="goToSettings()">Settings</button>
+      </div>
+    </div>
+
+  </body>
 </html>
