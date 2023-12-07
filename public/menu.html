@@ -167,7 +167,7 @@
     <h1 class="title1">Easy Ice Cream Cruise</h1>
 
     <div id="game-selection-buttons">
-        <button id="singleplayer-button" class="title3 game-selection-choice submit-button"><a id="tempgamebutton" href = "./track1.html">Singleplayer</a></button>
+        <button id="singleplayer-button" class="title3 game-selection-choice submit-button" onclick="resetCode()"><a id="tempgamebutton" href = "./track1.html">Singleplayer</a></button>
         <button id="multiplayer-button" class="title3 game-selection-choice submit-button">Multiplayer</button>
     </div>
 
@@ -246,6 +246,9 @@
         }
     </script>
     <script>
+        function resetCode() {
+            sessionStorage.setItem("code", null)
+        }
         document.getElementById("ecvil").innerText = sessionStorage.getItem("username")
         let sp_content = document.getElementById("singleplayer-container")
         let mp_content = document.getElementById("multiplayer-container")

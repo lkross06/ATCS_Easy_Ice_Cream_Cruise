@@ -2,7 +2,13 @@ import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
 import {domainName} from "../globalVars.js"
 
 let ws = new WebSocket("ws://"+domainName+":8008")
-
+console.log(sessionStorage.getItem("code"))
+console.log(sessionStorage.getItem("code") === "null")
+if (sessionStorage.getItem("code") === "null") {
+  // close websocket
+  ws.close()
+  console.log(ws)
+}
 var container = document.querySelector('body'),
     w = container.clientWidth,
     h = container.clientHeight,
@@ -228,8 +234,43 @@ function updatePhysics() {
   navigate()
   updateCheckpoints()
 }
+// opponents: a json o all the opponents. 
+/*
+var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
+var material = new THREE.MeshBasicMaterial({color: LETSPUTLIKEBLUEHERE, side: THREE.DoubleSide});
+var box = new THREE.Mesh(cargeometry, material);
+looks as thus:
+{
+  finn: {
+    3dmodel: 3dmodel
+    x: x
+    y: y
+    z: z
+  }
+}
+car.position = (x, y, z)
+*/
+let opponents = {
 
-
+}
+function setOpponents(opp, xpos, ypos, zpos) {
+  // TODO: hardcoding :(
+  // also TODO: no wheels rip
+  let oppGeo = new THREE.BoxGeometry(2, 0.9, 4)
+  let oppMat = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.DoubleSide})
+  let oppBox = new THREE.Mesh(oppGeo, oppMat)
+  opponents[opp] = {
+    car: oppBox,
+  }
+  opponents[opp].car.position.x = xpos
+  opponents[opp].car.position.y = ypos
+  opponents[opp].car.position.z = zpos
+}
+function renderOpp(opp, xpos, ypos, zpos) {
+  opponents[opp].car.position.x = xpos
+  opponents[opp].car.position.y = ypos
+  opponents[opp].car.position.z = zpos
+}
 function render(timestamp) {
   // timestamp should == the refresh rate 
   // add up diff of timestamps
@@ -244,13 +285,39 @@ function render(timestamp) {
   camera.lookAt(box.position);
   // here should go the ws stuff i belive
   // this packet is this client's data. x, y, z, quaterion(?) etc.
-  let packet = {
-    method: "render",
-    username: sessionStorage.getItem("username")
-  } 
+  // make sure the user is in a multiplayer game
+  if (sessionStorage.getItem("code") !== "null" && ws.readyState === WebSocket.OPEN) {
+    let packet = {
+      method: "render",
+      username: sessionStorage.getItem("username"),
+      x: chassisBody.position.x,
+      y: chassisBody.position.y,
+      z: chassisBody.position.z,
+      code: sessionStorage.getItem("code")
+      // add in here the timestamp/refreshrate probs
+    } 
+    ws.send(JSON.stringify(packet))
+    ws.onmessage = message => {
+      let msg = JSON.parse(message.data)
+      if (msg.method === "render") {
+        if (msg.code === sessionStorage.getItem("code") && msg.username !== sessionStorage.getItem("username")) {
+          // the message is from a user in our game
+          if (!opponents.hasOwnProperty(msg.username)) {
+            console.log("hikfjsklajd")
+            setOpponents(msg.username, msg.x, msg.y, msg.z)
+          } else {
+            console.log("fdkjskaf")
+            renderOpp(msg.username, msg.x, msg.y, msg.z)
+          }
+          scene.add(opponents[msg.username].car)
+        }
+      }
+    }
+  }
   renderer.render(scene, camera);
   updatePhysics()
   document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() + "mph" //1km = 0.621371mi 
+
   requestAnimationFrame(render);
 }
 
