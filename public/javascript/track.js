@@ -235,7 +235,7 @@ export class CheckpointZ extends Checkpoint {
     }
 }
 
-class Ramp extends Block(){
+class Ramp extends Block{
     constructor(x, y, z, pitch, yaw, hasRails){
         super(x, y, z, 10, 10, 10, pitch, yaw, hasRails)
         this.name = "Ramp"
