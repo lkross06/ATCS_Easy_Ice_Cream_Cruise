@@ -73,11 +73,14 @@ world.defaultContactMaterial.friction = 0;
 
 
 //test track piece
+var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
+
 var p = new StraightZ(0, 0, 15)
 p.makeBlock(scene, world)
 
 var p2 = new CheckpointZ(0, 0, 15 + 10 + 2.5)
 p2.makeBlock(scene, world)
+checkpoints.push(p2)
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
@@ -188,16 +191,18 @@ function updatePhysics() {
   box.quaternion.copy(chassisBody.quaternion);
   navigate()
 
-  var result = [];
-  let a = []
-  let b = []
-  for (let i of wheelBodies){
-    a.push(i)
-    b.push(p2.body)
+  for (let cp of checkpoints){
+    let result = [];
+    let a = []
+    let b = []
+    for (let i of wheelBodies){
+      a.push(i)
+      b.push(cp.body)
+    }
+    world.narrowphase.getContacts(a, b, world, result, [], [], []);
+    var overlaps = result.length > 0;
+    cp.setChecked(overlaps)
   }
-  world.narrowphase.getContacts(a, b, world, result, [], [], []);
-  var overlaps = result.length > 0;
-  p2.setChecked(overlaps)
 }
 
 

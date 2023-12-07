@@ -17,15 +17,29 @@ class Block{
         this.mesh;
     }
     
-    makeBlock() {
-        
+    makeBlock(scene, world) {
+        return
     }
 }
 
-export class StraightX extends Block{
+/**
+ * list of block types
+ * straight -- 10x20 straight block
+ * turn -- 10x10 90 degree turn (left or right)
+ * checkpoint -- 10x5 green checkpoint (turns blue after collision)
+ * ramp -- 10x10x10 90 degree triangle ramp (ramp up and ramp down)
+ */
 
+class Straight extends Block{
     constructor(x, y, z, pitch, yaw, hasRails){
         super(x, y, z, 10, 1, 20, pitch, yaw, hasRails)
+        this.name = "Straight"
+    }
+}
+
+export class StraightX extends Straight{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
         this.name = "StraightX"
     }
 
@@ -60,11 +74,11 @@ export class StraightX extends Block{
     }
 }
 
-export class StraightZ extends Block{
+export class StraightZ extends Straight{
 
     constructor(x, y, z, pitch, yaw, hasRails){
-        super(x, y, z, 10, 1, 20, pitch, yaw, hasRails)
-        this.name = "StraightZ"
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "StraightX"
     }
 
     makeBlock(scene, world) {
@@ -99,52 +113,41 @@ export class StraightZ extends Block{
     }
 }
 
-export class LeftTurn extends Block{
+class Turn extends Block{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, 10, 1, 10, pitch, yaw, hasRails)
+        this.name = "Turn"
+    }
+}
+
+export class LeftTurn extends Turn{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "LeftTurn"
+    }
+
     makeBlock() {
         
     }
 }
 
-export class RightTurn extends Block {
+export class RightTurn extends Turn {
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "RightTurn"
+    }
+
     makeBlock() {
         
     }
 }
-export class CheckpointX extends Block {
 
-    constructor(x, y , z, pitch, yaw, hasRails){
-        super(x, y + 0.01, z, 10, 1, 5, pitch, yaw, hasRails, color=0x00FF00)
-        this.name = "CheckpointX"
+class Checkpoint extends Block {
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y + 0.01, z, 10, 1, 5, pitch, yaw, hasRails, 0x00FF00)
+        this.name = "Checkpoint"
         this.checked = false //true when car goes over it
-    }
-
-    makeBlock(scene, world) {
-        //physics
-        let body = new CANNON.Body({mass: 0})
-        let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.height, this.length))
-        
-        body.position.set(this.x, this.y, this.z)
-
-        body.addShape(shape)
-
-        world.add(body)
-        this.body = body
-
-        //visuals
-        let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
-
-        let material = new THREE.MeshPhongMaterial({
-            color: this.color,
-            emissive: this.color,     
-            side: THREE.DoubleSide,
-            flatShading: true,
-        })
-        
-        let mesh = new THREE.Mesh(geo, material)
-
-        mesh.position.set(this.x, this.y, this.z)
-
-        scene.add(mesh)
+        this.checkedColor = 0x0000FF
     }
 
     setChecked(checked){
@@ -153,21 +156,51 @@ export class CheckpointX extends Block {
             this.mesh.material.color = new THREE.Color(this.checkedColor)
             this.mesh.material.emissive = new THREE.Color(this.checkedColor)
         }
-        //else {
-        //     this.mesh.material.color = new THREE.Color(this.color)
-        //     this.mesh.material.emissive = new THREE.Color(this.color)
-        //   }
     }
 }
 
-export class CheckpointZ extends Block {
+export class CheckpointX extends Checkpoint {
 
     constructor(x, y, z, pitch, yaw, hasRails){
-        //y += 0.01 so its above straightX and straightZ
-        super(x, y + 0.01, z, 10, 1, 5, pitch, yaw, hasRails, 0x00FF00, 0x00FF00)
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "CheckpointX"
+    }
+
+    makeBlock(scene, world) {
+        //physics
+        let body = new CANNON.Body({mass: 0})
+        let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.height, this.length))
+        
+        body.position.set(this.x, this.y, this.z)
+
+        body.addShape(shape)
+
+        world.add(body)
+        this.body = body
+
+        //visuals
+        let geo = new THREE.BoxGeometry(this.width *2, this.height*2, this.length * 2)
+
+        let material = new THREE.MeshPhongMaterial({
+            color: this.color,
+            emissive: this.color,     
+            side: THREE.DoubleSide,
+            flatShading: true,
+        })
+        
+        let mesh = new THREE.Mesh(geo, material)
+
+        mesh.position.set(this.x, this.y, this.z)
+
+        scene.add(mesh)
+    }
+}
+
+export class CheckpointZ extends Checkpoint {
+
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
         this.name = "CheckpointZ"
-        this.checked = false //true when car goes over it
-        this.checkedColor = 0xFF00FF //color after being checked
     }
 
     makeBlock(scene, world) {
@@ -200,16 +233,55 @@ export class CheckpointZ extends Block {
         this.mesh = mesh
 
     }
+}
 
-    setChecked(checked){
-        this.checked = checked
-        if (this.checked){
-            this.mesh.material.color = new THREE.Color(this.checkedColor)
-            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
-        }
-        //else {
-        //     this.mesh.material.color = new THREE.Color(this.color)
-        //     this.mesh.material.emissive = new THREE.Color(this.color)
-        //   }
+class Ramp extends Block(){
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, 10, 10, 10, pitch, yaw, hasRails)
+        this.name = "Ramp"
+    }
+}
+
+class RampUpX extends Ramp{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "RampUpX"
+    }
+
+    makeBlock(scene, world){
+
+    }
+}
+
+class RampDownX extends Ramp{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "RampDownX"
+    }
+
+    makeBlock(scene, world){
+        
+    }
+}
+
+class RampUpZ extends Ramp{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "RampUpZ"
+    }
+
+    makeBlock(scene, world){
+        
+    }
+}
+
+class RampDownZ extends Ramp{
+    constructor(x, y, z, pitch, yaw, hasRails){
+        super(x, y, z, pitch, yaw, hasRails)
+        this.name = "RampDownZ"
+    }
+
+    makeBlock(scene, world){
+        
     }
 }
