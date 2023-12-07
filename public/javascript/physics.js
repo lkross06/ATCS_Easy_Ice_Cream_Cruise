@@ -350,14 +350,6 @@ function updateCheckpoints(){
 }
 
 function navigate() {
-  if (!keys_pressed[32]){
-    vehicle.setBrake(0, 0);
-    vehicle.setBrake(0, 1);
-    vehicle.setBrake(0, 2);
-    vehicle.setBrake(0, 3);
-  }
-
-
   let speed = vehicle.currentVehicleSpeedKmHour
 
   //y = -4x + 600 but absolute value
@@ -386,6 +378,11 @@ function navigate() {
   } else {
       vehicle.applyEngineForce(0, 2);
       vehicle.applyEngineForce(0, 3);
+      let brakePower = (speed / 50)
+      vehicle.setBrake(brakePower, 0);
+      vehicle.setBrake(brakePower, 1);
+      vehicle.setBrake(brakePower, 2);
+      vehicle.setBrake(brakePower, 3);
   }
 
   if (keys_pressed[65] && !keys_pressed[68]){ //left
