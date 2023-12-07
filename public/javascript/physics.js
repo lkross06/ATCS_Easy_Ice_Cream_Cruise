@@ -78,18 +78,22 @@ var checkpoints = [] //list of all checkpoints in the order that the player will
 let s = new StraightZ(0, 0, 15)
 s.makeBlock(scene, world)
 
-for (let i = 0; i < 15; i++){
-  let cp = new CheckpointZ()
-  cp.makeBlock(scene, world)
-  checkpoints.push(cp)
+let cp = new CheckpointZ()
+cp.makeBlock(scene, world)
+checkpoints.push(cp)
 
-  cp.snapTo(s, "N")
+cp.snapTo(s, "N")
 
-  s = new StraightZ()
-  s.makeBlock(scene, world)
+s = new StraightZ()
+s.makeBlock(scene, world)
 
-  s.snapTo(cp, "N")
-}
+s.snapTo(cp, "N")
+
+let t = new RightTurn()
+t.color = 0x0000FF
+t.makeBlock(scene, world)
+
+t.snapTo(s, "N")
 
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
@@ -258,12 +262,17 @@ function navigate() {
   //y = -4x + 600 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
-  engineForce = (-4 * Math.abs(speed)) + 600
+  engineForce = (-4 * speed) + 600
+  if (speed < 0){
+    engineForce = (-4 * -speed) + 600
+  }
+  if (engineForce > 800) engineForce = 800 //cap
+ 
 
   if (keys_pressed[32]){ //brake
       //brake has priority over movement
-    vehicle.setBrake(8, 2);
-    vehicle.setBrake(8, 3);
+    vehicle.setBrake(12, 2);
+    vehicle.setBrake(12, 3);
   } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
       vehicle.applyEngineForce(-engineForce, 2);
       vehicle.applyEngineForce(-engineForce, 3);
