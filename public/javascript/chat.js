@@ -6,7 +6,6 @@ let username = sessionStorage.getItem("username")
 // html element 'chat-log'
 let chatlog = document.getElementById("chat-log")
 let chats = []
-let max_message = updateMaxMessages()
 
 function new_chat_message(message, username){ //creates and returns a new chat element with proper attributes
     if (message == ""){
@@ -39,30 +38,37 @@ document.addEventListener("keypress", function(event) { //on enter key press
     }
 })
 
-function updateMaxMessages(){
-    return (window.innerWidth < 1000)? 14 : 8
-}
-
 function cleanChatlog(){ //removes excess messages if there are too many / too little
     function getChatlogHeight(){
         let rtn = 0
         for (let chat of chatlog.children){
             rtn += chat.clientHeight
         }
+        return rtn
+    }
+
+    while (getChatlogHeight() >= chatlog.clientHeight) {
+        chatlog.removeChild(chatlog.firstChild)
     }
 }
 
 window.addEventListener("resize", function(event){
-    max_message = updateMaxMessages()
     cleanChatlog()
 })
 
 function chat_send(){
+    function validInput(input){
+        let rtn = 0
+        for (let i of [...new Set(input)]){
+            if (i != " ") rtn += 1
+        }
+        return rtn > 0
+    }
 
     //add new element
     let input = document.getElementById("chat-new")    
 
-    if (String(input.value) != ""){
+    if (validInput(input.value)){
         // websocket stuff - send the message to server
         let packet = {
             "method": "chat",
@@ -75,11 +81,9 @@ function chat_send(){
         ws.send(JSON.stringify(packet))
 
         //remove content from input
-        input.value = ""
-
-        //if there's more than 8 messages, delete the earliest one
-        cleanChatlog()
     }
+    
+    input.value = ""
 }
 
 function createGame() {
@@ -110,6 +114,7 @@ ws.onmessage = message => {
         let usr = res.username
         let msg = res.message
         new_chat_message(msg, usr)
+        cleanChatlog() //remove chats if necessary
     } else if (res.method === "create") {
         // get that code brother
         if (res.username === sessionStorage.getItem("username")) {

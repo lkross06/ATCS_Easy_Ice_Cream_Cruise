@@ -131,7 +131,7 @@ a:hover {
     color: var(--darker-orange);
 }
 
-.chat-inputs {
+#chat-inputs {
     display: flex;
     flex-direction: row;
     justify-content: center;
