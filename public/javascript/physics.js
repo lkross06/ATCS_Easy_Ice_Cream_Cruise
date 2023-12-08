@@ -1,4 +1,4 @@
-import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
+import { Straight , Checkpoint, rightTurn, leftTurn } from './track.js';
 import {domainName} from "../globalVars.js"
 
 // TODO: error in console about websocket in single player.
@@ -78,7 +78,7 @@ world.defaultContactMaterial.friction = 0.01;
 
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
-
+/*
 let s1 = new Straight(5)
 s1.makeBlock(scene, world)
 
@@ -123,7 +123,10 @@ s4 = new Straight()
 s4.hasRails = false
 s4.makeBlock(scene, world)
 s4.snapTo(s2, "N")
-
+*/
+let t1 = new leftTurn()
+t1.hasRails = true
+t1.makeBlock(scene, world)
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
