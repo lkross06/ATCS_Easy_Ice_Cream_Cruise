@@ -13,7 +13,7 @@ let users = {}
 // object containing all the running games 
 let games = {}
 // object containing all he chat messages. max len of like 100 lets say. newest at the end. 
-let chats = {}
+//let chats = [] //I MOVED THIS TO CHAT.JS.... IF U NEED IT FOR SERVER STUFF USE A DIFFERENT NAME!!!!
 // object containing the game codes so no dupplicates
 let gameCodes = []
 // Serve the static files from the 'public' directory

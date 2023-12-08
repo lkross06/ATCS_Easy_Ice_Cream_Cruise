@@ -103,7 +103,7 @@ a:hover {
     max-width: 60vw;
     height: 40vh;
     max-height: 65vh;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     border-top: 1px solid var(--bg-dark-grey);
@@ -119,6 +119,7 @@ a:hover {
     text-align: left;
     display: block;
     color: var(--font-black);
+    word-wrap: break-word;
 }
 
 #chat-log {
