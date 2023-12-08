@@ -1,9 +1,10 @@
-import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
+import { Straight , Checkpoint, rightTurn, leftTurn } from './track.js';
 import {domainName} from "../globalVars.js"
 
+// TODO: error in console about websocket in single player.
+// doesnt have a negative effect, so lo prior. 
 let ws = new WebSocket("ws://"+domainName+":8008")
-console.log(sessionStorage.getItem("code"))
-console.log(sessionStorage.getItem("code") === "null")
+
 if (sessionStorage.getItem("code") === "null") {
   // close websocket
   ws.close()
@@ -77,7 +78,7 @@ world.defaultContactMaterial.friction = 0.01;
 
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
-
+/*
 let s1 = new Straight(5)
 s1.makeBlock(scene, world)
 
@@ -122,7 +123,10 @@ s4 = new Straight()
 s4.hasRails = false
 s4.makeBlock(scene, world)
 s4.snapTo(s2, "N")
-
+*/
+let t1 = new leftTurn()
+t1.hasRails = true
+t1.makeBlock(scene, world)
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
@@ -152,7 +156,7 @@ var options = {
   dampingRelaxation: 2.3,
   dampingCompression: 4.5,
   maxSuspensionForce: 200000,
-  rollInfluence:  0,
+  rollInfluence: 0,
   axleLocal: new CANNON.Vec3(-1, 0, 0),
   chassisConnectionPointLocal: new CANNON.Vec3(1, 1, 0),
   maxSuspensionTravel: 10,
@@ -179,6 +183,7 @@ vehicle.addToWorld(world);
 var wheelBodies = [],
     wheelVisuals = [];
 vehicle.wheelInfos.forEach(function(wheel) {
+  console.log("rad wheel dude: ", wheel.radius)
   var shape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
   var body = new CANNON.Body({mass: 11.5, material: wheelMaterial});
   var q = new CANNON.Quaternion();
@@ -249,6 +254,18 @@ looks as thus:
   }
 }
 car.position = (x, y, z)
+var geometry = new THREE.CylinderGeometry( wheel.radius, wheel.radius, 0.4, 32 );
+var material = new THREE.MeshPhongMaterial({
+  color: wheelColor,
+  emissive: wheelColor,
+  side: THREE.DoubleSide,
+  flatShading: true,
+});
+var cylinder = new THREE.Mesh(geometry, material);
+cylinder.geometry.rotateZ(Math.PI/2);
+wheelVisuals.push(cylinder);
+scene.add(cylinder);
+// wheel.radius = .5
 */
 let opponents = {
 
@@ -259,17 +276,73 @@ function setOpponents(opp, xpos, ypos, zpos) {
   let oppGeo = new THREE.BoxGeometry(2, 0.9, 4)
   let oppMat = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.DoubleSide})
   let oppBox = new THREE.Mesh(oppGeo, oppMat)
+  var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.4, 32)
+  var material = new THREE.MeshPhongMaterial({
+    color: wheelColor,
+    emissive: wheelColor,
+    side: THREE.DoubleSide,
+    flatShading: true,
+  })
+  var cylinder1 = new THREE.Mesh(geometry, material)
+  var cylinder2 = new THREE.Mesh(geometry, material)
+  var cylinder3 = new THREE.Mesh(geometry, material)
+  var cylinder4 = new THREE.Mesh(geometry, material)
+
+  cylinder1.rotation.z = Math.PI / 2;
+  cylinder2.rotation.z = Math.PI / 2;
+  cylinder3.rotation.z = Math.PI / 2;
+  cylinder4.rotation.z = Math.PI / 2;
+
   opponents[opp] = {
     car: oppBox,
+    // ok this is dumb but idk how else to go about adding wheels w/o CANNOn
+    frontRight: cylinder1,
+    frontLeft: cylinder2,
+    backRight: cylinder3,
+    backLeft: cylinder4
   }
+  // TODO: duplicated code in here and renderOpp()
+  // also hardcoding if we change chassis body dimensions. 
   opponents[opp].car.position.x = xpos
   opponents[opp].car.position.y = ypos
   opponents[opp].car.position.z = zpos
+  // front Right position wheel
+  opponents[opp].frontRight.position.x = xpos + 1.2
+  opponents[opp].frontRight.position.y = ypos - .2
+  opponents[opp].frontRight.position.z = zpos + 1.3
+  // front Left position wheel
+  opponents[opp].frontLeft.position.x = xpos - 1.2
+  opponents[opp].frontLeft.position.y = ypos - .2
+  opponents[opp].frontLeft.position.z = zpos + 1.3
+  // back Right position wheel
+  opponents[opp].backRight.position.x = xpos + 1.2
+  opponents[opp].backRight.position.y = ypos - .2
+  opponents[opp].backRight.position.z = zpos - 1.3
+  // back Left position wheel
+  opponents[opp].backLeft.position.x = xpos - 1.2
+  opponents[opp].backLeft.position.y = ypos - .2
+  opponents[opp].backLeft.position.z = zpos - 1.3
 }
 function renderOpp(opp, xpos, ypos, zpos) {
   opponents[opp].car.position.x = xpos
   opponents[opp].car.position.y = ypos
   opponents[opp].car.position.z = zpos
+  // front Right position wheel
+  opponents[opp].frontRight.position.x = xpos + 1.2
+  opponents[opp].frontRight.position.y = ypos - .2
+  opponents[opp].frontRight.position.z = zpos + 1.3
+  // front Left position wheel
+  opponents[opp].frontLeft.position.x = xpos - 1.2
+  opponents[opp].frontLeft.position.y = ypos - .2
+  opponents[opp].frontLeft.position.z = zpos + 1.3
+  // back Right position wheel
+  opponents[opp].backRight.position.x = xpos + 1.2
+  opponents[opp].backRight.position.y = ypos - .2
+  opponents[opp].backRight.position.z = zpos - 1.3
+  // back Left position wheel
+  opponents[opp].backLeft.position.x = xpos - 1.2
+  opponents[opp].backLeft.position.y = ypos - .2
+  opponents[opp].backLeft.position.z = zpos - 1.3
 }
 function render(timestamp) {
   // timestamp should == the refresh rate 
@@ -303,13 +376,16 @@ function render(timestamp) {
         if (msg.code === sessionStorage.getItem("code") && msg.username !== sessionStorage.getItem("username")) {
           // the message is from a user in our game
           if (!opponents.hasOwnProperty(msg.username)) {
-            console.log("hikfjsklajd")
             setOpponents(msg.username, msg.x, msg.y, msg.z)
           } else {
-            console.log("fdkjskaf")
             renderOpp(msg.username, msg.x, msg.y, msg.z)
           }
           scene.add(opponents[msg.username].car)
+          scene.add(opponents[msg.username].frontRight)
+          scene.add(opponents[msg.username].frontLeft)
+          scene.add(opponents[msg.username].backRight)
+          scene.add(opponents[msg.username].backLeft)
+
         }
       }
     }
