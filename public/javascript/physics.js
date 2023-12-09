@@ -1,5 +1,4 @@
-//import { Straight , Checkpoint, rightTurn, leftTurn } from './track.js';
-import { Start, Straight, RightTurn, LeftTurn, Finish } from "./track_new.js"
+import { Start, Straight, RightTurn, LeftTurn, Finish, Checkpoint, Flat } from "./track.js"
 import {domainName} from "../globalVars.js"
 
 // TODO: error in console about websocket in single player.
@@ -77,27 +76,44 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0.01;
 
-//test track piece
+//where the track is loaded
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
 
 let straight1 = new Start()
 straight1.create(scene, world)
 
+let cp1 = new Checkpoint()
+cp1.create(scene, world)
+cp1.snapTo(straight1)
+checkpoints.push(cp1)
+
 let right = new RightTurn("N")
 right.create(scene, world)
-right.snapTo(straight1)
+right.snapTo(cp1)
 
 let mid = new Straight(5, "E")
 mid.create(scene, world)
 mid.snapTo(right)
 
-let right2 = new RightTurn("E")
-right2.create(scene, world)
-right2.snapTo(mid)
+let flat = new Flat("E")
+flat.create(scene, world)
+flat.snapTo(mid)
+
+let left = new LeftTurn("E")
+left.create(scene, world)
+left.snapTo(flat)
+
+let left2 = new LeftTurn("N")
+left2.create(scene, world)
+left2.snapTo(left)
+
+let left3 = new LeftTurn("W")
+left3.create(scene, world)
+left3.snapTo(left2)
 
 let finish = new Finish("S")
 finish.create(scene, world)
-finish.snapTo(right2)
+finish.snapTo(flat)
 
 
 
