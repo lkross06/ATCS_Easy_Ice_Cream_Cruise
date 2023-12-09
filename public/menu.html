@@ -31,11 +31,12 @@
             margin: auto;
             width: 50vw;
             height: 50vh;
+            justify-content: center;
         }
 
         #game-selection-buttons {
             margin: auto;
-            width: 50vw;
+            width: 48vw;
             display: flex;
             justify-content: space-evenly;
         }
@@ -65,37 +66,29 @@
         }
 
         #singleplayer-container {
+            margin-top: 2vh;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             grid-template-rows: 1fr 1fr;
+            grid-row-gap: 1vw;
+            grid-column-gap: 0.5vh;
         }
 
         .track-option {
             padding: 1%;
             margin: 1%;
-            width: fit-content;
-            height: fit-content;
+            width: 12vw;
+            height: 20vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             cursor: pointer;
         }
         .track-preview {
             border: 1px solid var(--bg-dark-grey);
-            width: 150px; 
-            height: 150px;
-        }
-        /* handle track buttons when page is resized */
-        @media screen and (max-width: 1000px){ /* makes all fonts smaller when window is small */
-            
-            #singleplayer-container {
-                grid-template-columns: 1fr 1fr;
-                grid-template-rows: 1fr 1fr 1fr 1fr;
-            }
-            .track-preview {
-                width: 75px;
-                height: 75px;
-            }
+            width: 90%; 
+            height: 90%;
         }
 
         .track-desc {

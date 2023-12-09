@@ -439,7 +439,6 @@ function navigate() {
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
   
-  
 }
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
