@@ -6,20 +6,14 @@
  * ramp -- 10x10x10 90 degree triangle ramp (ramp up and ramp down)
  */
 class Piece{
-    constructor(x, y, z, width, height, length, orient = "Z", rails = [], color = 0xd6D5cd, railColor = 0xFF0000) {
+    constructor(x, y, z, width, height, length, direction = "N", rails = [], color = 0xd6D5cd, railColor = 0xFF0000) {
         this.x = x
         this.y = y
         this.z = z
         this.width = width
         this.height = height
         this.length = length
-        this.orient = orient
-
-        if (orient == "Z"){
-            this.z += this.length - 10
-        } else if (orient == "X"){
-            this.x += this.width - 10
-        }
+        this.direction = direction //the direction the block faces
 
         this.pitch = 0
         this.yaw = 0
@@ -44,11 +38,11 @@ class Piece{
 
 //all pieces that can be a flat square
 class Block extends Piece{
-    constructor(width, height, length, orient = "Z", size = 1, rails){
-        super(0, 0, 0, width, height, length, orient, rails)
-        if (orient == "Z"){
+    constructor(width, height, length, direction = "N", size = 1, rails){
+        super(0, 0, 0, width, height, length, direction, rails)
+        if (direction == "N" || direction == "S"){
             this.length *= size
-        } else if (orient == "X") {
+        } else if (direction == "E" || direction == "W") {
             this.width *= size
         }
         this.name = "Block"
@@ -94,9 +88,11 @@ class Block extends Piece{
      * 
      * (car spawns facing north with east on right and west on left)
      * 
+     * i also noticed that the direction you snap in is usually the orientation direction
+     * 
      * @param {Block} other other block to snap to (on x-z plane)
      */
-    snapTo(other, dir){
+    snapTo(other, dir = this.direction){
         let ol = other.length
         let ow = other.width
 
@@ -112,10 +108,9 @@ class Block extends Piece{
         } else if (dir == "W"){
             this.setPosition(ox + ow + this.width, this.y, oz)
         }
-        console.log(this.body)
     }
     
-    makeBlock(scene, world) {
+    create(scene, world) {
         //physics
         let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.height, this.length))
         this.body = new CANNON.Body({mass: 0})
@@ -139,11 +134,11 @@ class Block extends Piece{
         scene.add(this.mesh)
 
         if (this.rails.length > 0){
-            this.makeRails(scene, world)
+            this.createRails(scene, world)
         }
     }
 
-    makeRails(scene, world){
+    createRails(scene, world){
         let material = new THREE.MeshPhongMaterial({
             color: this.railColor,
             emissive: this.railColor,     
@@ -199,58 +194,74 @@ class Block extends Piece{
 }
 
 export class Start extends Block{
-    constructor(orient = "Z"){
-        super(10, 1, 10, orient, 1, [])
-        if (orient == "Z"){
+    constructor(direction = "N"){
+        super(10, 1, 10, direction, 1, [])
+        if (direction == "N"){
             this.rails =  ["W", "E", "S"]
-        } else if (orient == "X") {
+        } else if (direction == "S") {
+            this.rails =  ["W", "N", "E"]
+        } else if (direction == "W") {
+            this.rails =  ["S", "N", "E"]
+        } else if (direction == "E") {
             this.rails =  ["W", "N", "S"]
         }
-        this.color = 0x00FFFF
+        this.color = 0x005511
     }
 }
 
 export class Finish extends Block{
-    constructor(orient = "Z"){
-        super(10, 1, 10, orient, 1, [])
-        if (orient == "Z"){
+    constructor(direction = "N"){
+        super(10, 1, 10, direction, 1, [])
+        if (direction == "N"){
             this.rails =  ["W", "E", "N"]
-        } else if (orient == "X") {
-            this.rails =  ["W", "N", "E"]
+        } else if (direction == "S") {
+            this.rails =  ["W", "S", "E"]
+        } else if (direction == "W") {
+            this.rails =  ["S", "N", "W"]
+        } else if (direction == "E") {
+            this.rails =  ["E", "N", "S"]
         }
-        this.color = 0xFF00FF
+        this.color = 0xAA00AA
     }
 }
 
 export class Straight extends Block{
-    constructor(size = 1, orient = "Z"){
-        super(10, 1, 10, orient, size, [])
-        if (orient == "Z"){
+    constructor(size = 1, direction = "N"){
+        super(10, 1, 10, direction, size, [])
+        if (direction == "N" || direction == "S"){
             this.rails = ["W", "E"]
-        } else if (orient == "X") {
+        } else if (direction == "W" || direction == "E") {
             this.rails = ["N", "S"]
         }
     }
 }
 
 export class RightTurn extends Block{
-    constructor(orient = "Z"){
-        super(10, 1, 10, orient, 1, [])
-        if (orient == "Z"){
+    constructor(direction = "N"){
+        super(10, 1, 10, direction, 1, [])
+        if (direction == "N"){
             this.rails = ["W", "N"]
-        } else if (orient == "X") {
+        } else if (direction == "S") {
+            this.rails = ["S", "E"]
+        } else if (direction == "W"){
+            this.rails = ["W", "S"]
+        } else if (direction == "E") {
             this.rails = ["N", "E"]
         }
     }
 }
 
 export class LeftTurn extends Block{
-    constructor(orient = "Z"){
-        super(10, 1, 10, orient, 1, [])
-        if (orient == "X"){
+    constructor(direction = "N"){
+        super(10, 1, 10, direction, 1, [])
+        if (direction == "N"){
+            this.rails = ["E", "N"]
+        } else if (direction == "S") {
+            this.rails = ["S", "W"]
+        } else if (direction == "W"){
             this.rails = ["W", "N"]
-        } else if (orient == "Z") {
-            this.rails = ["N", "E"]
+        } else if (direction == "E") {
+            this.rails = ["S", "E"]
         }
     }
 }
