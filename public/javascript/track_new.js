@@ -15,6 +15,12 @@ class Piece{
         this.length = length
         this.orient = orient
 
+        if (orient == "Z"){
+            this.z += this.length - 10
+        } else if (orient == "X"){
+            this.x += this.width - 10
+        }
+
         this.pitch = 0
         this.yaw = 0
         this.roll = 0
@@ -37,12 +43,13 @@ class Piece{
 }
 
 //all pieces that can be a flat square
-export class Block extends Piece{
+class Block extends Piece{
     constructor(width, height, length, orient = "Z", size = 1, rails){
+        super(0, 0, 0, width, height, length, orient, rails)
         if (orient == "Z"){
-            super(0, 0, 0, width, height, length * size, orient, rails)
+            this.length *= size
         } else if (orient == "X") {
-            super(0, 0, 0, width * size, height, length, orient, rails)
+            this.width *= size
         }
         this.name = "Block"
     }
@@ -187,6 +194,63 @@ export class Block extends Piece{
 
             this.railMeshes[rail] = railMesh
             scene.add(railMesh)
+        }
+    }
+}
+
+export class Start extends Block{
+    constructor(orient = "Z"){
+        super(10, 1, 10, orient, 1, [])
+        if (orient == "Z"){
+            this.rails =  ["W", "E", "S"]
+        } else if (orient == "X") {
+            this.rails =  ["W", "N", "S"]
+        }
+        this.color = 0x00FFFF
+    }
+}
+
+export class Finish extends Block{
+    constructor(orient = "Z"){
+        super(10, 1, 10, orient, 1, [])
+        if (orient == "Z"){
+            this.rails =  ["W", "E", "N"]
+        } else if (orient == "X") {
+            this.rails =  ["W", "N", "E"]
+        }
+        this.color = 0xFF00FF
+    }
+}
+
+export class Straight extends Block{
+    constructor(size = 1, orient = "Z"){
+        super(10, 1, 10, orient, size, [])
+        if (orient == "Z"){
+            this.rails = ["W", "E"]
+        } else if (orient == "X") {
+            this.rails = ["N", "S"]
+        }
+    }
+}
+
+export class RightTurn extends Block{
+    constructor(orient = "Z"){
+        super(10, 1, 10, orient, 1, [])
+        if (orient == "Z"){
+            this.rails = ["W", "N"]
+        } else if (orient == "X") {
+            this.rails = ["N", "E"]
+        }
+    }
+}
+
+export class LeftTurn extends Block{
+    constructor(orient = "Z"){
+        super(10, 1, 10, orient, 1, [])
+        if (orient == "X"){
+            this.rails = ["W", "N"]
+        } else if (orient == "Z") {
+            this.rails = ["N", "E"]
         }
     }
 }
