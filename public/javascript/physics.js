@@ -77,9 +77,9 @@ world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0.01;
 
 //where the track is loaded
-let track1 = new Track("Track 1", 1, "../../res/tracks/track1.txt")
-track1.build(scene, world)
-var checkpoints = track1.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
+var track = new Track("Track 2", 1, "../../res/tracks/track2.txt")
+track.build(scene, world)
+var checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
@@ -345,7 +345,10 @@ function render(timestamp) {
   }
   renderer.render(scene, camera);
   updatePhysics()
-  document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() + "mph" //1km = 0.621371mi 
+  document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString()
+        + "mph" //1km = 0.621371mi 
+        + " " 
+        + track.name
 
   requestAnimationFrame(render);
 }
