@@ -76,10 +76,18 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0.01;
 
-//where the track is loaded
-var track = new Track("Track 1", 1, "../../res/tracks/track2.txt")
-track.build(scene, world)
-var checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
+var track
+var checkpoints
+
+
+loadTrack(1) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+function loadTrack(num){
+  console.log("LOADING TRACK " + String(num))
+  //where the track is loaded
+  track = new Track("Track " + String(num), 1, "../../res/tracks/track"+String(num)+".txt")
+  track.build(scene, world)
+  checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
+}  
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
