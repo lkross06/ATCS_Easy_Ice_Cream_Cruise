@@ -1,4 +1,5 @@
 import { Straight , Checkpoint, rightTurn, leftTurn } from './track.js';
+import { Block } from "./track_new.js"
 import {domainName} from "../globalVars.js"
 
 // TODO: error in console about websocket in single player.
@@ -66,7 +67,7 @@ scene.add(plane);
 var sunlight = new THREE.DirectionalLight(0xffffff, 1.0);
 sunlight.position.set(-10, 10, 0);
 scene.add(sunlight)
-
+3
 /**
 * Physics
 **/
@@ -78,55 +79,25 @@ world.defaultContactMaterial.friction = 0.01;
 
 //test track piece
 var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
-/*
-let s1 = new Straight(5)
-s1.makeBlock(scene, world)
 
-let s2 = new Straight(5)
-s2.makeBlock(scene, world)
-s2.snapTo(s1, "E")
+let straight1 = new Block(10, 1, 10, "Z", 2, ["W", "E", "S"])
+straight1.makeBlock(scene, world)
 
-let s3 = new Straight()
-s3.hasRails = false
-s3.makeBlock(scene, world)
-s3.snapTo(s1, "S")
+let right = new Block(10, 1, 10, "Z", 1, ["N", "W"])
+right.makeBlock(scene, world)
+right.snapTo(straight1, "N")
 
-let s4 = new Straight()
-s4.hasRails = false
-s4.makeBlock(scene, world)
-s4.snapTo(s2, "S")
+let mid = new Block(10, 1, 10, "X", 3, ["N", "S"])
+mid.makeBlock(scene, world)
+mid.snapTo(right, "E")
 
-let c1 = new Checkpoint()
-c1.makeBlock(scene, world)
-checkpoints.push(c1)
-c1.snapTo(s1, "N")
+let left = new Block(10, 1, 10, "Z", 1, ["S", "E"])
+left.makeBlock(scene, world)
+left.snapTo(mid, "E")
 
-let c2 = new Checkpoint()
-c2.makeBlock(scene, world)
-checkpoints.push(c2)
-c2.snapTo(c1, "E")
-
-s1 = new Straight(5)
-s1.makeBlock(scene, world)
-s1.snapTo(c1, "N")
-
-s2 = new Straight(5)
-s2.makeBlock(scene, world)
-s2.snapTo(c2, "N")
-
-s3 = new Straight()
-s3.hasRails = false
-s3.makeBlock(scene, world)
-s3.snapTo(s1, "N")
-
-s4 = new Straight()
-s4.hasRails = false
-s4.makeBlock(scene, world)
-s4.snapTo(s2, "N")
-*/
-let t1 = new leftTurn()
-t1.hasRails = true
-t1.makeBlock(scene, world)
+let straight2 = new Block(10, 1, 10, "Z", 100, ["W", "E", "N"])
+straight2.makeBlock(scene, world)
+straight2.snapTo(left, "N")
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');

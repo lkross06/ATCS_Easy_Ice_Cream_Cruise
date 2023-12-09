@@ -574,18 +574,18 @@ export class rightTurn extends Block{
     
         fbody.addShape(fshape);
         world.add(fbody);
-        this.fbody = fbody;
+        this.rbody = fbody;
     
-        let fmesh = new THREE.Mesh(geo, material);
+        let rmesh = new THREE.Mesh(geo, material);
     
         if (this.orient == "Z") {
-            fmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.railLength);
+            rmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.railLength);
         } else if (this.orient == "X") {
-            fmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z);
+            rmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z);
         }
     
-        scene.add(fmesh);
-        this.fmesh = fmesh;
+        scene.add(rmesh);
+        this.rbody = rmesh;
     }    
 }
 
@@ -672,7 +672,7 @@ export class leftTurn extends Block {
             flatShading: true,
         });
     
-        let rmesh = new THREE.Mesh(geo, material);
+        this.rmesh = new THREE.Mesh(geo, material);
     
         if (this.orient == "Z") {
             rmesh.position.set(this.x - this.width + this.railWidth, this.y + this.height + this.railHeight, this.z);
@@ -701,15 +701,15 @@ export class leftTurn extends Block {
         world.add(fbody);
         this.fbody = fbody;
     
-        let fmesh = new THREE.Mesh(geo, material);
+        let rmesh = new THREE.Mesh(geo, material);
     
         if (this.orient == "Z") {
-            fmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.railLength);
+            rmesh.position.set(this.x, this.y + this.height + this.railHeight, this.z + this.railLength);
         } else if (this.orient == "X") {
-            fmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z);
+            rmesh.position.set(this.x + this.length - this.railWidth, this.y + this.height + this.railHeight, this.z);
         }
     
-        scene.add(fmesh);
-        this.fmesh = fmesh;
+        scene.add(rmesh);
+        this.rmesh = rmesh;
     } 
 }
