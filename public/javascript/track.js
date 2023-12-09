@@ -1,3 +1,75 @@
+export class Track{
+    //the first block always spawns at (0, 0, 0) so we dont have to move the car. everything is built relative to that
+    constructor(name, laps = 1, rel){ //res is a relative link to the .txt file to build the track
+        this.name = name
+        this.laps = laps
+        this.rel = rel
+
+        this.pieces = [] //ordered list of piece objects
+        this.checkpoints = [] //ordered list of checkpoints
+    }
+
+    getCheckpoints(){
+        return this.checkpoints
+    }
+
+    build(scene, world){ //builds the track in a given scene / world
+        fetch(this.rel) //find the file given relative url
+        .then((res) => res.text()) //get the file / resource's text
+        .then((text) => {
+
+            let prev = null
+            
+            for (let line of text.split("\n")){
+                line = line.split(" ")
+
+                let blockType = line[0]
+                let params = line[1].slice(1, -1).split(",") //remove []
+
+                let piece
+
+                if (blockType == "Checkpoint"){
+                    piece = new Checkpoint(params[0])
+                } else if (blockType == "Flat"){
+                    piece = new Flat(params[0])
+                } else if (blockType == "Start"){
+                    piece = new Start(params[0])
+                } else if (blockType == "Finish"){
+                    piece = new Finish(params[0])
+                } else if (blockType == "Straight"){
+                    let test = Number.parseInt(params[0])
+                    if (test != NaN){ //there's two inputs, one for size and one for direction
+                        piece = new Straight(test, params[1])
+                    } else {
+                        piece = new Straight(1, params[0])
+                    }
+                } else if (blockType == "LeftTurn"){
+                    piece = new LeftTurn(params[0])
+                } else if (blockType == "RightTurn"){
+                    piece = new RightTurn(params[0])
+                }
+
+                piece.create(scene, world)
+                //only start on "Start" block
+                if (this.pieces.length > 0){
+                    piece.snapTo(prev)
+                    this.pieces.push(piece)
+                    prev = piece
+
+                    if (blockType == "Checkpoint") this.checkpoints.push(piece)
+                } else if (this.pieces.length == 0 && blockType == "Start"){
+                    this.pieces.push(piece)
+                    prev = piece
+                }
+                
+                //always end on "Finish" block
+                if (blockType == "Finish") break;
+            }
+        })
+        .catch((e) => console.error(e)); //if you don't find it
+    }
+}
+
 class Piece{
     constructor(x, y, z, width, height, length, direction = "N", rails = [], color = 0xd6D5cd, railColor = 0xFF0000) {
         this.x = x
