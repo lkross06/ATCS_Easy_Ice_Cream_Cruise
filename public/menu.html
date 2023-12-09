@@ -230,9 +230,10 @@
           </span>
       </div>
     </div> 
-    <script>
+    <script src="./javascript/handleTrack.js" type="module"></script>
+    <script src="javascript/chat.js" type="module"></script>
 
-    </script>
+
     <script type="module">
         import {domainName} from "../globalVars.js"
 
@@ -302,10 +303,11 @@
             span2.innerText = pb
             div2.appendChild(span2)
             
-            let button = document.createElement("button")
-            button.setAttribute("class", "play-track-button submit-button title3")
-            button.innerText = "Play"
-            div2.appendChild(button)
+            let playButton = document.createElement("button")
+            playButton.setAttribute("class", "play-track-button submit-button title3")
+            playButton.innerText = "Play"
+            div2.appendChild(playButton)
+            playButton.onclick = loadTrack(num)
 
             //level 4
             let h3 = document.createElement("h3")
@@ -353,6 +355,5 @@
         })
         
     </script>
-    <script src="javascript/chat.js" type="module"></script>
 </body>
 </html>

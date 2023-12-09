@@ -28,8 +28,8 @@ chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
-var maxSteerVal = Math.PI/16;
-let engineForce = 600
+var maxSteerVal = Math.PI/64;
+let engineForce = 1200
 
 // car visual body
 let chassisColor = 0xB30E16
@@ -58,7 +58,7 @@ window.addEventListener('resize', function() {
 })
 
 var geometry = new THREE.PlaneGeometry(10, 10, 10);
-var material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
+var material = new THREE.MeshBasicMaterial({color: 0x808080, side: THREE.DoubleSide});
 var plane = new THREE.Mesh(geometry, material);
 plane.rotation.x = Math.PI/2;
 scene.add(plane);
@@ -66,7 +66,7 @@ scene.add(plane);
 var sunlight = new THREE.DirectionalLight(0xffffff, 1.0);
 sunlight.position.set(-10, 10, 0);
 scene.add(sunlight)
-3
+
 /**
 * Physics
 **/
@@ -77,7 +77,7 @@ world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0.01;
 
 //where the track is loaded
-var track = new Track("Track 2", 1, "../../res/tracks/track2.txt")
+var track = new Track("Track 1", 1, "../../res/tracks/track2.txt")
 track.build(scene, world)
 var checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
 
@@ -384,18 +384,18 @@ function updateCheckpoints(){
 function navigate() {
   let speed = vehicle.currentVehicleSpeedKmHour
 
-  //y = -4x + 600 but absolute value
+  //y = -4x + 1200 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
-  engineForce = (-4 * speed) + 600
+  engineForce = (-4 * speed) + 1200
   if (speed < 0){
-    engineForce = (-4 * -speed) + 600
+    engineForce = (-4 * -speed) + 1200
   }
-  if (engineForce > 800) engineForce = 800 //cap
+  if (engineForce > 1200) engineForce = 1200 //cap
 
   if (keys_pressed[32]){ //brake
     //brake has priority over movement
-    let brakePower = (speed / 10 > 5)? (speed / 10) : 5;
+    let brakePower = engineForce / 80
     vehicle.setBrake(brakePower, 0);
     vehicle.setBrake(brakePower, 1);
     vehicle.setBrake(brakePower, 2);
@@ -422,7 +422,7 @@ function navigate() {
   } else if (keys_pressed[68] && !keys_pressed[65]){ //right
       steeringValue -= 0.003
   } else {
-      steeringValue += -steeringValue / 8
+      steeringValue += -steeringValue / 3
   }
 
   if (steeringValue > maxSteerVal) steeringValue = maxSteerVal

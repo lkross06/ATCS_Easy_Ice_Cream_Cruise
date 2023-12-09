@@ -1,6 +1,6 @@
 export class Track{
     //the first block always spawns at (0, 0, 0) so we dont have to move the car. everything is built relative to that
-    constructor(name, laps = 1, rel){ //res is a relative link to the .txt file to build the track
+    constructor(name, laps = 1, rel){ //rel is a relative link to the .txt file to build the track
         this.name = name
         this.laps = laps
         this.rel = rel
@@ -24,7 +24,8 @@ export class Track{
                 line = line.split(" ")
 
                 let blockType = line[0]
-                let params = line[1].slice(1, -1).split(",") //remove []
+                //remove "[]" and carriage return "\r" if present, then split by ","
+                let params = line[1].slice(1, -1).replace("]","").split(",")
 
                 let piece
 
@@ -61,10 +62,9 @@ export class Track{
                     this.pieces.push(piece)
                     prev = piece
                 }
-                
-                //always end on "Finish" block
-                if (blockType == "Finish") break;
             }
+
+            console.log(this.pieces)
         })
         .catch((e) => console.error(e)); //if you don't find it
     }
@@ -89,7 +89,7 @@ class Piece{
 
         this.rails = rails //list of directions to make rails in (NSEW)
         this.railThick = 0.2
-        this.railHeight = 0.4
+        this.railHeight = 0.6
 
         this.name = "Piece"
 

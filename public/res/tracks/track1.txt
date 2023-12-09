@@ -1,7 +1,6 @@
 Start [N]
 Checkpoint [N]
 RightTurn [N]
-Straight [5,E]
-Flat [E]
+Straight [6,E]
 LeftTurn [E]
 Finish [N]
