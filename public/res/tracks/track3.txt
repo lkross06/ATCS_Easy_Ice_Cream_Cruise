@@ -1,0 +1,7 @@
+Start [N]
+Straight [2,N]
+RampUp [15,2,N]
+Straight [2,N]
+RampDown [15,2,N]
+Straight [10,N]
+Finish [N]

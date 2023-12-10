@@ -80,7 +80,7 @@ var track
 var checkpoints
 
 
-loadTrack(1) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+loadTrack(3) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
 function loadTrack(num){
   console.log("LOADING TRACK " + String(num))
   //where the track is loaded
