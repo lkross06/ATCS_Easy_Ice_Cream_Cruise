@@ -6,7 +6,9 @@
     <title>Easy Ice Cream Cruise</title>
     <link rel="stylesheet" href="style.css">
     <style>
-
+        body {
+            height: 80vh;
+        }
         #tempgamebutton {
             color: inherit;
             text-decoration: none;
@@ -29,11 +31,12 @@
             margin: auto;
             width: 50vw;
             height: 50vh;
+            justify-content: center;
         }
 
         #game-selection-buttons {
             margin: auto;
-            width: 50vw;
+            width: 48vw;
             display: flex;
             justify-content: space-evenly;
         }
@@ -63,24 +66,29 @@
         }
 
         #singleplayer-container {
-            display: flex;
-            flex-wrap: wrap;
+            margin-top: 2vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            grid-row-gap: 1vw;
+            grid-column-gap: 0.5vh;
         }
 
         .track-option {
             padding: 1%;
             margin: 1%;
-            width: fit-content;
-            height: fit-content;
+            width: 12vw;
+            height: 20vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             cursor: pointer;
         }
         .track-preview {
             border: 1px solid var(--bg-dark-grey);
-            width: 150px;
-            height: 150px;
+            width: 90%; 
+            height: 90%;
         }
 
         .track-desc {
@@ -143,6 +151,9 @@
             width: 15vw;
             margin: auto;
         }
+        .play-track-button:hover {
+            text-decoration: none;
+        }
         .track-leaderboard {
             font-size: var(--font-size-4);
         }
@@ -153,7 +164,7 @@
     <div id="chat-container">
         <span id="chat-log">
         </span>
-        <span class="chat-inputs">
+        <span id="chat-inputs">
             <input type="text" name="chat-new" id="chat-new" maxlength="30">
             <button id="chat-send" class="submit-button">&rarr;</button>
         </span>
@@ -167,7 +178,7 @@
     <h1 class="title1">Easy Ice Cream Cruise</h1>
 
     <div id="game-selection-buttons">
-        <button id="singleplayer-button" class="title3 game-selection-choice submit-button" onclick="resetCode()"><a id="tempgamebutton" href = "./track1.html">Singleplayer</a></button>
+        <button id="singleplayer-button" class="title3 game-selection-choice submit-button" onclick="resetCode()">Singleplayer</button>
         <button id="multiplayer-button" class="title3 game-selection-choice submit-button">Multiplayer</button>
     </div>
 
@@ -230,13 +241,13 @@
           </span>
       </div>
     </div> 
-    <script>
+    <script src="javascript/chat.js" type="module"></script>
 
-    </script>
+
     <script type="module">
         import {domainName} from "../globalVars.js"
 
-        // womp womp the user tried to hack the system and bypass login
+        // womp womp the user tried to hack the system and bypass login :(
         if(sessionStorage.getItem("username") === null) {
             // Ensure the redirect URL is correctly formed
             const redirectUrl = "http://" + domainName + ":3000";
@@ -254,7 +265,7 @@
         let mp_content = document.getElementById("multiplayer-container")
 
         document.getElementById("singleplayer-button").addEventListener("click", function(e){
-            sp_content.style.display = "flex";
+            sp_content.style.display = "grid";
             mp_content.style.display = "none";
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){
@@ -302,10 +313,11 @@
             span2.innerText = pb
             div2.appendChild(span2)
             
-            let button = document.createElement("button")
-            button.setAttribute("class", "play-track-button submit-button title3")
-            button.innerText = "Play"
-            div2.appendChild(button)
+            let playButton = document.createElement("a")
+            playButton.setAttribute("class", "play-track-button submit-button title3")
+            playButton.setAttribute("href", "./track.html")
+            playButton.innerText = "Play"
+            div2.appendChild(playButton)
 
             //level 4
             let h3 = document.createElement("h3")
@@ -353,6 +365,5 @@
         })
         
     </script>
-    <script src="javascript/chat.js" type="module"></script>
 </body>
 </html>

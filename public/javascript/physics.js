@@ -1,4 +1,4 @@
-import { Straight, LeftTurn, RightTurn, Checkpoint } from './track.js';
+import { Track } from "./track.js"
 import {domainName} from "../globalVars.js"
 
 // TODO: error in console about websocket in single player.
@@ -28,8 +28,8 @@ chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 //speed tings
-var maxSteerVal = Math.PI/16;
-let engineForce = 600
+var maxSteerVal = Math.PI/64;
+let engineForce = 1200
 
 // car visual body
 let chassisColor = 0xB30E16
@@ -57,11 +57,11 @@ window.addEventListener('resize', function() {
   renderer.setSize(w, h);
 })
 
-var geometry = new THREE.PlaneGeometry(10, 10, 10);
-var material = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
-var plane = new THREE.Mesh(geometry, material);
-plane.rotation.x = Math.PI/2;
-scene.add(plane);
+// var geometry = new THREE.PlaneGeometry(10, 10, 10);
+// var material = new THREE.MeshBasicMaterial({color: 0x808080, side: THREE.DoubleSide});
+// var plane = new THREE.Mesh(geometry, material);
+// plane.rotation.x = Math.PI/2;
+// scene.add(plane);
 
 var sunlight = new THREE.DirectionalLight(0xffffff, 1.0);
 sunlight.position.set(-10, 10, 0);
@@ -71,59 +71,28 @@ scene.add(sunlight)
 * Physics
 **/
 
+var start = Date.now()
+var last = start
+
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
-world.gravity.set(0, -9.8, 0);
 world.defaultContactMaterial.friction = 0.01;
+world.gravity.set(0, -18, 0);
 
-//test track piece
-var checkpoints = [] //list of all checkpoints in the order that the player will see them. start with staring line
+var track
+var checkpoints
 
-let s1 = new Straight(5)
-s1.makeBlock(scene, world)
 
-let s2 = new Straight(5)
-s2.makeBlock(scene, world)
-s2.snapTo(s1, "E")
+loadTrack(4) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
 
-let s3 = new Straight()
-s3.hasRails = false
-s3.makeBlock(scene, world)
-s3.snapTo(s1, "S")
-
-let s4 = new Straight()
-s4.hasRails = false
-s4.makeBlock(scene, world)
-s4.snapTo(s2, "S")
-
-let c1 = new Checkpoint()
-c1.makeBlock(scene, world)
-checkpoints.push(c1)
-c1.snapTo(s1, "N")
-
-let c2 = new Checkpoint()
-c2.makeBlock(scene, world)
-checkpoints.push(c2)
-c2.snapTo(c1, "E")
-
-s1 = new Straight(5)
-s1.makeBlock(scene, world)
-s1.snapTo(c1, "N")
-
-s2 = new Straight(5)
-s2.makeBlock(scene, world)
-s2.snapTo(c2, "N")
-
-s3 = new Straight()
-s3.hasRails = false
-s3.makeBlock(scene, world)
-s3.snapTo(s1, "N")
-
-s4 = new Straight()
-s4.hasRails = false
-s4.makeBlock(scene, world)
-s4.snapTo(s2, "N")
-
+function loadTrack(num){
+  console.log("LOADING TRACK " + String(num))
+  //where the track is loaded
+  track = new Track("Track " + String(num), 1, "../../res/tracks/track"+String(num)+".txt")
+  track.build(scene, world)
+  checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
+}  
+document.getElementById("track-name").innerText = track.getName()
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
@@ -214,15 +183,15 @@ world.addEventListener('postStep', function() {
     wheelVisuals[i].quaternion.copy(t.quaternion);
   }
 });
-var q = plane.quaternion;
+// var q = plane.quaternion;
 
-var planeBody = new CANNON.Body({
-  mass: 0, // mass = 0 makes the body static
-  material: groundMaterial,
-  shape: new CANNON.Plane(),
-  quaternion: new CANNON.Quaternion(-q._x, q._y, q._z, q._w)
-});
-world.add(planeBody)
+// var planeBody = new CANNON.Body({
+//   mass: 0, // mass = 0 makes the body static
+//   material: groundMaterial,
+//   shape: new CANNON.Plane(),
+//   quaternion: new CANNON.Quaternion(-q._x, q._y, q._z, q._w)
+// });
+// world.add(planeBody)
 
 /**
 * Main
@@ -389,9 +358,43 @@ function render(timestamp) {
   }
   renderer.render(scene, camera);
   updatePhysics()
-  document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() + "mph" //1km = 0.621371mi 
+  updateUI()
 
   requestAnimationFrame(render);
+}
+
+function updateUI(){
+  function getMinutes(ms){
+    let mins = Math.floor((Number(ms) / 1000 / 60) % 60)
+    return String(mins)
+  }
+  function getSeconds(ms){
+    //round to 2 decimal points
+    let secs = parseFloat((Number(ms) / 1000) % 60).toFixed(2)
+
+    if (secs < 10){
+      secs = "0" + String(secs)
+    }
+    return String(secs)
+  }
+  //speed
+  document.getElementById("speed-number").innerText = 
+    Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() //1km = 0.621371mi
+    let ms_elapsed = Date.now() - last
+
+  //time elapsed
+  if (ms_elapsed > 50){ //update only after 50ms (so it doesnt look crazy)
+    let total_elapsed = Date.now() - start
+    
+    document.getElementById("time").innerText = 
+      String(getMinutes(total_elapsed)) + ":" + getSeconds(total_elapsed)
+    last = Date.now()
+  }
+
+  //track name is done during initialization to save time
+
+  //TODO: make this work with laps logic
+  document.getElementById("laps").innerText = "Lap " + track.sendLaps()
 }
 
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
@@ -425,18 +428,18 @@ function updateCheckpoints(){
 function navigate() {
   let speed = vehicle.currentVehicleSpeedKmHour
 
-  //y = -4x + 600 but absolute value
+  //y = -4x + 1200 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
-  engineForce = (-4 * speed) + 600
+  engineForce = (-4 * speed) + 1200
   if (speed < 0){
-    engineForce = (-4 * -speed) + 600
+    engineForce = (-4 * -speed) + 1200
   }
-  if (engineForce > 800) engineForce = 800 //cap
+  if (engineForce > 1200) engineForce = 1200 //cap
 
   if (keys_pressed[32]){ //brake
     //brake has priority over movement
-    let brakePower = (speed / 10 > 5)? (speed / 10) : 5;
+    let brakePower = engineForce / 80
     vehicle.setBrake(brakePower, 0);
     vehicle.setBrake(brakePower, 1);
     vehicle.setBrake(brakePower, 2);
@@ -463,7 +466,7 @@ function navigate() {
   } else if (keys_pressed[68] && !keys_pressed[65]){ //right
       steeringValue -= 0.003
   } else {
-      steeringValue += -steeringValue / 8
+      steeringValue += -steeringValue / 3
   }
 
   if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
@@ -472,12 +475,8 @@ function navigate() {
   vehicle.setSteeringValue(steeringValue, 2);
   vehicle.setSteeringValue(steeringValue, 3);
   
-  
 }
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
 
-var then = Date.now();
-var fpsInterval = 60/1000;
-
-render()
+render();

@@ -78,11 +78,61 @@
       .hidden {
         display: none;
       }
+
+      .text-border {
+        font-size: var(--font-size-1);
+        -webkit-text-stroke-width: 3px; 
+        -webkit-text-stroke-color: black;
+      }
+
+      #time {
+        width: 100vw;
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+      }
+
+      #speed {
+        position: absolute;
+        bottom: 2vh;
+        right: 2vw;
+        
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #speed-units {
+        font-size: var(--font-size-2);
+        -webkit-text-stroke-width: 2px; 
+      }
+
+      #top-ui-bar {
+        font-size: var(--font-size-3);
+        -webkit-text-stroke-width: 2px; 
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        text-align: right;
+      }
     </style>
   </head>
   <body>
     <div id="root"></div>
-    <div id="speed"></div>
+
+    <div id="top-ui-bar" class="text-border">
+      <div id="track-name"></div>
+      <div id="laps">Lap 1 / 1</div>
+    </div>
+
+    <div id="speed" class="text-border">
+      <div id="speed-number">0</div>
+      <div id="speed-units">mph</div>
+    </div>
+
+    <div id="time" class="text-border">0:00.00</div>
 
     <script type="module">
       import { domainName } from "../globalVars.js"
@@ -97,10 +147,8 @@
 
     <script defer src="/javascript/esc.js"></script>
     <script defer type="module" src="/javascript/physics.js"></script>
-
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js'></script>
-
     <div id="escape-menu" class="hidden">
       <div class="menu-content">
         <h2>Easy Ice Cream Cruise</h2>
