@@ -27,9 +27,6 @@ var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
 chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
-//speed tings
-var maxSteerVal = Math.PI/64;
-let engineForce = 1200
 
 // car visual body
 let chassisColor = 0xB30E16
@@ -379,7 +376,7 @@ function updateUI(){
   }
   //speed
   document.getElementById("speed-number").innerText = 
-    Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() //1km = 0.621371mi
+    Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371).toString() //1km = 0.621371mi
     let ms_elapsed = Date.now() - last
 
   //time elapsed
@@ -431,7 +428,7 @@ function navigate() {
   //y = -4x + 1200 but absolute value
   //at speed = 0, eF = 600
   //at speed = 150 or -150, eF = 0
-  engineForce = (-4 * speed) + 1200
+  let engineForce = (-4 * speed) + 1200
   if (speed < 0){
     engineForce = (-4 * -speed) + 1200
   }
@@ -461,12 +458,20 @@ function navigate() {
       vehicle.setBrake(brakePower, 3);
   }
 
+  
+  //between pi/16 and pi/64 when speed is between (0, 250)w
+  let maxSteerVal = Math.PI / (((1/5) * speed) + 16)
+
+  //functional based increment between 0.005 and 0.0001 when the speed is between (0, 250)
+  let steeringIncrement = (-(1/55555) * speed) + 0.005
+  if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
+
   if (keys_pressed[65] && !keys_pressed[68]){ //left
-      steeringValue += 0.003
+      steeringValue += steeringIncrement
   } else if (keys_pressed[68] && !keys_pressed[65]){ //right
-      steeringValue -= 0.003
+      steeringValue -= steeringIncrement
   } else {
-      steeringValue += -steeringValue / 3
+      steeringValue -= steeringValue / 3
   }
 
   if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
