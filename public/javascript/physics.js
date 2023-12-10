@@ -478,6 +478,6 @@ window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
 
 var then = Date.now();
-var fpsInterval = 1000 / 60;
+var fpsInterval = 60/1000;
 
-render();
+render()
