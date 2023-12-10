@@ -21,6 +21,18 @@ function showEscapeMenu() {
 function hideEscapeMenu() {
     isEscapeMenuVisible = false
     document.getElementById('modal').style.display = "none"
+    document.getElementById("esc-menu").style.display = "flex"
+    document.getElementById("settings-menu").style.display = "none"
+}
+
+function goToSettingsMenu() {
+    document.getElementById("esc-menu").style.display = "none"
+    document.getElementById("settings-menu").style.display = "flex"
+}
+
+function goToEscMenu() {
+    document.getElementById("esc-menu").style.display = "flex"
+    document.getElementById("settings-menu").style.display = "none"
 }
 
 

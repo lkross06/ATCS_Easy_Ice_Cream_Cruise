@@ -28,6 +28,7 @@
       }
 
       .modal-content {
+        color: var(--font-black);
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -36,6 +37,22 @@
 
       .modal-content button, a {
         width: 40%;
+      }
+
+      #settings-menu {
+        display: none;
+      }
+
+      .close-menu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: var(--font-size-2);
+        border: none;
+        background: none;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
       }
 
       .text-border {
@@ -131,14 +148,16 @@
     <div id="modal" class="modal hidden">
       <div class="modal-content" id="esc-menu">
         <h2 class="title2">Easy Ice Cream Cruise</h2>
-        <button onclick="hideEscapeMenu()" class="submit-button">Resume</button>
+        <img onclick="hideEscapeMenu()" class="close-menu" src="./res/close.png">
+        <br>
+        <button onclick="goToSettingsMenu()" class="submit-button">Settings</button>
         <br>
         <button onclick="goHome()" class="submit-button" id="help">Home</button>
-        <br>
-        <button onclick="goToSettings()"  class="submit-button">Settings</button>
       </div>
-      <!-- <div class="modal-content" id="settings-menu"></div> -->
+      <div class="modal-content" id="settings-menu">
+        <img onclick="goToEscMenu()" class="close-menu" src="./res/close.png">
+        <p>there's nothing here yet!</p>
+      </div>
     </div>
-
   </body>
 </html>
