@@ -71,6 +71,9 @@ scene.add(sunlight)
 * Physics
 **/
 
+var start = Date.now()
+var last = start
+
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
 world.gravity.set(0, -9.8, 0);
@@ -81,6 +84,7 @@ var checkpoints
 
 
 loadTrack(3) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+
 function loadTrack(num){
   console.log("LOADING TRACK " + String(num))
   //where the track is loaded
@@ -88,6 +92,8 @@ function loadTrack(num){
   track.build(scene, world)
   checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
 }  
+
+document.getElementById("track-name").innerText = track.getName()
 
 
 var groundMaterial = new CANNON.Material('groundMaterial');
@@ -353,12 +359,46 @@ function render(timestamp) {
   }
   renderer.render(scene, camera);
   updatePhysics()
-  document.getElementById("speed").innerText = Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString()
-        + "mph" //1km = 0.621371mi 
-        + " " 
-        + track.name
+  updateUI()
 
   requestAnimationFrame(render);
+}
+
+function updateUI(){
+  function getMinutes(ms){
+    let mins = Math.floor((Number(ms) / 1000 / 60) % 60)
+    return String(mins)
+  }
+  function getSeconds(ms){
+    let secs = parseFloat((Number(ms) / 1000) % 60)
+
+    if (secs < 10){
+      secs = "0" + String(secs)
+    }
+    secs = String(secs)
+
+    if (secs.length < 6) secs = secs + "0"
+    
+    return secs.slice(0, -1)
+  }
+  //speed
+  document.getElementById("speed-number").innerText = 
+    Math.abs(Math.round(vehicle.currentVehicleSpeedKmHour * 0.621371)).toString() //1km = 0.621371mi
+    let ms_elapsed = Date.now() - last
+
+  //time elapsed
+  if (ms_elapsed > 50){ //update only after 50ms (so it doesnt look crazy)
+    let total_elapsed = Date.now() - start
+    
+    document.getElementById("time").innerText = 
+      String(getMinutes(total_elapsed)) + ":" + getSeconds(total_elapsed)
+    last = Date.now()
+  }
+
+  //track name is done during initialization to save time
+
+  //TODO: make this work with laps logic
+  document.getElementById("laps").innerText = "Lap " + track.sendLaps()
 }
 
 var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
@@ -442,8 +482,5 @@ function navigate() {
 }
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
-
-var then = Date.now();
-var fpsInterval = 1000 / 60;
 
 render();

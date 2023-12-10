@@ -3,10 +3,19 @@ export class Track{
     constructor(name, laps = 1, rel){ //rel is a relative link to the .txt file to build the track
         this.name = name
         this.laps = laps
+        this.curr_lap = 1
         this.rel = rel
 
         this.pieces = [] //ordered list of piece objects
         this.checkpoints = [] //ordered list of checkpoints
+    }
+
+    sendLaps(){
+        return String(this.curr_lap) + " / " + String(this.laps)
+    }
+
+    getName(){
+        return this.name
     }
 
     getCheckpoints(){
