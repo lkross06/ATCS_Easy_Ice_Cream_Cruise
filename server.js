@@ -30,7 +30,7 @@ app.get("/menu", (req, res) => {
     res.sendFile(__dirname+"/public/menu.html")
 })
 
-app.get("/track", (req, res) => {
+app.get("/track1", (req, res) => {
     res.sendFile(path.join(__dirname, '/public/track.html'));
 });
 
