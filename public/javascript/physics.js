@@ -57,11 +57,11 @@ window.addEventListener('resize', function() {
   renderer.setSize(w, h);
 })
 
-var geometry = new THREE.PlaneGeometry(10, 10, 10);
-var material = new THREE.MeshBasicMaterial({color: 0x808080, side: THREE.DoubleSide});
-var plane = new THREE.Mesh(geometry, material);
-plane.rotation.x = Math.PI/2;
-scene.add(plane);
+// var geometry = new THREE.PlaneGeometry(10, 10, 10);
+// var material = new THREE.MeshBasicMaterial({color: 0x808080, side: THREE.DoubleSide});
+// var plane = new THREE.Mesh(geometry, material);
+// plane.rotation.x = Math.PI/2;
+// scene.add(plane);
 
 var sunlight = new THREE.DirectionalLight(0xffffff, 1.0);
 sunlight.position.set(-10, 10, 0);
@@ -76,14 +76,14 @@ var last = start
 
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
-world.gravity.set(0, -18, 0);
 world.defaultContactMaterial.friction = 0.01;
+world.gravity.set(0, -18, 0);
 
 var track
 var checkpoints
 
 
-loadTrack(3) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+loadTrack(4) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
 
 function loadTrack(num){
   console.log("LOADING TRACK " + String(num))
@@ -92,7 +92,6 @@ function loadTrack(num){
   track.build(scene, world)
   checkpoints = track.getCheckpoints() //list of all checkpoints in the order that the player will see them. start with staring line
 }  
-
 document.getElementById("track-name").innerText = track.getName()
 
 
@@ -184,15 +183,15 @@ world.addEventListener('postStep', function() {
     wheelVisuals[i].quaternion.copy(t.quaternion);
   }
 });
-var q = plane.quaternion;
+// var q = plane.quaternion;
 
-var planeBody = new CANNON.Body({
-  mass: 0, // mass = 0 makes the body static
-  material: groundMaterial,
-  shape: new CANNON.Plane(),
-  quaternion: new CANNON.Quaternion(-q._x, q._y, q._z, q._w)
-});
-world.add(planeBody)
+// var planeBody = new CANNON.Body({
+//   mass: 0, // mass = 0 makes the body static
+//   material: groundMaterial,
+//   shape: new CANNON.Plane(),
+//   quaternion: new CANNON.Quaternion(-q._x, q._y, q._z, q._w)
+// });
+// world.add(planeBody)
 
 /**
 * Main

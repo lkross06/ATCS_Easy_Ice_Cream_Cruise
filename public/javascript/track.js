@@ -27,9 +27,10 @@ export class Track{
         .then((res) => res.text()) //get the file / resource's text
         .then((text) => {
 
+            let lines = text.split("\n")
             let prev = null
             
-            for (let line of text.split("\n")){
+            for (let line of lines){
                 line = line.split(" ")
 
                 let blockType = line[0]
@@ -74,8 +75,6 @@ export class Track{
                     prev = piece
                 }
             }
-
-            console.log(this.pieces)
         })
         .catch((e) => console.error(e)); //if you don't find it
     }
