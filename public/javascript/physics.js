@@ -370,16 +370,13 @@ function updateUI(){
     return String(mins)
   }
   function getSeconds(ms){
-    let secs = parseFloat((Number(ms) / 1000) % 60)
+    //round to 2 decimal points
+    let secs = parseFloat((Number(ms) / 1000) % 60).toFixed(2)
 
     if (secs < 10){
       secs = "0" + String(secs)
     }
-    secs = String(secs)
-
-    if (secs.length < 6) secs = secs + "0"
-    
-    return secs.slice(0, -1)
+    return String(secs)
   }
   //speed
   document.getElementById("speed-number").innerText = 
