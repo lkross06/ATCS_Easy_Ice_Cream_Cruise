@@ -107,28 +107,6 @@
 
         /* ------ track modal ------ */
 
-        .modal { /* modal has to be the first element in the body */
-            position: absolute;
-            height: 100vh;
-            width: 100vw;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: none;
-            z-index: 99;
-        }
-
-        .modal-content {
-            border: 1px solid var(--bg-dark-grey);
-            background-color: var(--bg-white);
-            /* this works for any element that you want centered */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-top: -25vh; /* negative half of the height to offset top: 50% */
-            margin-left: -25vw;
-            width: 50vw;
-            height: 50vh;
-        }
-
         .track-modal {
             display: grid;
             grid-template-columns: 1fr 1fr;

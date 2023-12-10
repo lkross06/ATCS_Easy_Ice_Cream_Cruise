@@ -15,23 +15,13 @@ function handleKeyPress(e) {
 }
 
 function showEscapeMenu() {
-    document.getElementById('escape-menu').classList.remove('hidden');
+    document.getElementById('modal').style.display = "block"
 }
 
 function hideEscapeMenu() {
-    console.log("eee")
-    console.log("Escape menu element:", document.getElementById('escape-menu'))
     isEscapeMenuVisible = false
-    document.getElementById('escape-menu').classList.add('hidden');
+    document.getElementById('modal').style.display = "none"
 }
 
 
 window.addEventListener('keydown', handleKeyPress)
-
-function goToHome() {
-
-}
-
-function goToSettings() {
-
-}

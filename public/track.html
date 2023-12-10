@@ -6,10 +6,6 @@
     <title>Easy Ice Cream Cruise</title>  
     <link rel="stylesheet" href="style.css">  
     <style>
-      #myThreeJsCanvas {
-        width: 100vw;
-        height: 100vh;
-      }
       * {
         margin: 0;
         padding: 0;
@@ -27,56 +23,19 @@
         color: var(--font-white);
       }
 
-      #escape-menu {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: var(--bg-white);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        width: 500px; 
-        height: auto;
-      }
-  
-      .menu-content {
-        text-align: center;
-      }
-  
-      h2 {
-        font-size: var(--font-size-2);
-        color: var(--dark-orange);
-      }
-  
-      p {
-        font-size: var(--font-size-4);
-      }
-  
-      button {
-        display: block; 
-        background-color: var(--dark-orange);
-        color: var(--font-white);
-        padding: 10px 20px;
-        font-size: var(--font-size-3);
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin: 20px auto; 
-        text-align: center; 
-      }
-      
-  
-      button:hover {
-        background-color: var(--darker-orange);
-      }
-      a:hover{
-        text-decoration: none;
+      .modal-content h2 {
+        color: var(--font-black);
       }
 
-      .hidden {
-        display: none;
+      .modal-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content button, a {
+        width: 40%;
       }
 
       .text-border {
@@ -109,7 +68,7 @@
         -webkit-text-stroke-width: 2px; 
       }
 
-      #top-ui-bar {
+      #top-right {
         font-size: var(--font-size-3);
         -webkit-text-stroke-width: 2px; 
         width: 100vw;
@@ -117,12 +76,29 @@
         top: 0;
         text-align: right;
       }
+
+      #instructions {
+        font-size: var(--font-size-3);
+        -webkit-text-stroke-width: 2px;
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        text-align: left;
+      }
     </style>
   </head>
   <body>
     <div id="root"></div>
 
-    <div id="top-ui-bar" class="text-border">
+    <div id="instructions" class="text-border">
+      WASD to move
+      <br>
+      SPACE to brake
+      <br>
+      R to respawn
+    </div>
+
+    <div id="top-right" class="text-border">
       <div id="track-name"></div>
       <div id="laps">Lap 1 / 1</div>
     </div>
@@ -136,12 +112,15 @@
 
     <script type="module">
       import { domainName } from "../globalVars.js"
+      const redirectUrl = "http://" + domainName + ":3000";
 
       if (sessionStorage.getItem("username") === null) {
-        // Ensure the redirect URL is correctly formed
-        const redirectUrl = "http://" + domainName + ":3000";
         // Redirect the user
         window.location.href = redirectUrl;
+      }
+
+      document.getElementById("help").onclick = function(e){
+        window.location.href = redirectUrl + "/menu"
       }
     </script>
 
@@ -149,13 +128,16 @@
     <script defer type="module" src="/javascript/physics.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js'></script>
-    <div id="escape-menu" class="hidden">
-      <div class="menu-content">
-        <h2>Easy Ice Cream Cruise</h2>
-        <button onclick="hideEscapeMenu()">Resume</button>
-        <a href = "./menu.html"><button>Home</button></a>
-        <button onclick="goToSettings()">Settings</button>
+    <div id="modal" class="modal hidden">
+      <div class="modal-content" id="esc-menu">
+        <h2 class="title2">Easy Ice Cream Cruise</h2>
+        <button onclick="hideEscapeMenu()" class="submit-button">Resume</button>
+        <br>
+        <button onclick="goHome()" class="submit-button" id="help">Home</button>
+        <br>
+        <button onclick="goToSettings()"  class="submit-button">Settings</button>
       </div>
+      <!-- <div class="modal-content" id="settings-menu"></div> -->
     </div>
 
   </body>

@@ -270,7 +270,34 @@ class Block extends Piece{
     }
 }
 
-export class Checkpoint extends Block{
+class Checkpoint extends Block{
+    constructor(direction = "N"){
+        super(10, 1, 10, direction, 1, [])
+        if (direction == "N" || direction == "S"){
+            this.length = 5
+            this.rails = ["W", "E"]
+        } else if (direction == "E" || direction == "W"){
+            this.width = 5
+            this.rails = ["N", "S"]
+        }
+        this.color = 0xFFFF00
+        this.checked = false //true when car goes over it
+        this.checkedColor = 0x0000FF
+
+        this.name = "Checkpoint"
+    }
+
+    setChecked(checked){
+        this.checked = checked
+        if (this.checked){
+            this.mesh.material.color = new THREE.Color(this.checkedColor)
+            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
+        }
+    }
+
+}
+
+class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1 if all checkpoints are checked, sets all checkponits to unchecked
     constructor(direction = "N"){
         super(10, 1, 10, direction, 1, [])
         if (direction == "N" || direction == "S"){
@@ -320,7 +347,7 @@ class Start extends Block{
     }
 }
 
-export class Finish extends Block{
+class Finish extends Block{
     constructor(direction = "N"){
         super(10, 1, 10, direction, 1, [])
         if (direction == "N"){
