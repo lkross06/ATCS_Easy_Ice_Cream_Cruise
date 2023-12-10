@@ -399,6 +399,7 @@ class Ramp extends Piece {
         this.theta = theta
 
         //you can think of this.true_length as the hypoteneuse length
+        this.length -= (2 * this.railThick * Math.cos(this.theta))
         this.true_length = this.length / Math.cos(this.theta) //dont change length because we want it to be the same size as normal blocks
 
         this.true_height = this.height
@@ -516,8 +517,8 @@ class Ramp extends Piece {
             let railGeo;
 
             let railX = this.x;
-            let railY = this.true_y + this.true_height + this.railHeight;
-            let railZ = this.z;
+            let railY = this.true_y + ((this.true_height + this.railHeight) * Math.cos(this.theta));
+            let railZ = this.z - ((this.true_height + this.railHeight) * Math.cos(this.theta));
             if (rail == "N"){
                 railShape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railThick))
                 railGeo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railThick * 2)
@@ -531,12 +532,12 @@ class Ramp extends Piece {
             } else if (rail == "W"){
                 //the rail length has to be a bit longer or there is a gap
                 railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.length + this.true_height)))
-                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, (this.length + this.true_height) * 2)
+                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, this.length * 2)
             
                 railX = this.x + this.width - this.railThick
             } else if (rail == "E"){
                 railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.length + this.true_height)))
-                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, (this.length + this.true_height) * 2)
+                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, this.length * 2)
             
                 railX = this.x - this.width + this.railThick
             }
@@ -573,6 +574,6 @@ class RampDown extends Ramp{
     constructor(theta = 15, size = 1, direction = "N"){
         //convert degrees to radians
         super(10, 1, 10, direction, theta * -(Math.PI/180), size, ["W", "E"])
-        this.name = "RampUp"
+        this.name = "RampDown"
     }
 }
