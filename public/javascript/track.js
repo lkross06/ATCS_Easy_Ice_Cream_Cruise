@@ -8,6 +8,12 @@ export class Track{
 
         this.pieces = [] //ordered list of piece objects
         this.checkpoints = [] //ordered list of checkpoints
+
+        this.start = Date.now() //when the track was started
+    }
+
+    getStart(){
+        return this.start
     }
 
     sendLaps(){
