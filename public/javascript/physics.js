@@ -76,7 +76,7 @@ var last = start
 
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
-world.gravity.set(0, -9.8, 0);
+world.gravity.set(0, -18, 0);
 world.defaultContactMaterial.friction = 0.01;
 
 var track
