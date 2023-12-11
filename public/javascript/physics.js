@@ -77,10 +77,9 @@ var track
 var checkpoints
 
 
-loadTrack(4) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+loadTrack(3) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
 
 function loadTrack(num){
-  console.log("LOADING TRACK " + String(num))
   //where the track is loaded
   track = new Track("Track " + String(num), 1, "../../res/tracks/track"+String(num)+".txt")
   track.build(scene, world)
@@ -146,7 +145,6 @@ vehicle.addToWorld(world);
 var wheelBodies = [],
     wheelVisuals = [];
 vehicle.wheelInfos.forEach(function(wheel) {
-  console.log("rad wheel dude: ", wheel.radius)
   var shape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
   var body = new CANNON.Body({mass: 11.5, material: wheelMaterial});
   var q = new CANNON.Quaternion();
@@ -202,7 +200,7 @@ function updatePhysics() {
   navigate()
   updateCheckpoints()
 
-  if (keys_pressed[82]){ //if "r" is pressed
+  if (keys_pressed[82] || chassisBody.position.y < -10){ //if "r" is pressed or car is below the map
     reset()
   }
 }
@@ -316,37 +314,25 @@ function reset(){
   let ms_elapsed = Date.now() - last_reset
   if (ms_elapsed > 500){
 
-  //bring car back to start
-  chassisBody.position.set(0, 2, 0);
+    //bring car back to start, make it not move
+    chassisBody.position.set(0, 2, 0);
+    vehicle.chassisBody.quaternion.set(0, 0, 0, 1)
+    vehicle.chassisBody.velocity.set(0, 0, 0);
 
-  //TODO: how do you make the car stop moving!
-  vehicle.chassisBody.angularVelocity.set(0, 0, 0);
+    vehicle.applyEngineForce(0, 0)
+    vehicle.applyEngineForce(0, 1)
+    vehicle.applyEngineForce(0, 2)
+    vehicle.applyEngineForce(0, 3)
 
-  vehicle.applyEngineForce(0, 0)
-  vehicle.applyEngineForce(0, 1)
-  vehicle.applyEngineForce(0, 2)
-  vehicle.applyEngineForce(0, 3)
+    vehicle.setBrake(10, 0)
+    vehicle.setBrake(10, 1)
+    vehicle.setBrake(10, 2)
+    vehicle.setBrake(10, 3)
 
-  let brakePower = Math.abs(speed)
-  vehicle.setBrake(brakePower, 0);
-  vehicle.setBrake(brakePower, 1);
-  vehicle.setBrake(brakePower, 2);
-  vehicle.setBrake(brakePower, 3);
-
-  //reset time
-  track.start = Date.now()
-  last = track.getStart()
-  last_reset = Date.now()
-
-  //turn off car
-
-  //turn off all keybinds
-  for (let key in keys_pressed){
-    keys_pressed[key] = false
-  }
-
-  //update UI again
-  updateUI()
+    //reset time
+    track.start = Date.now()
+    last = track.getStart()
+    last_reset = Date.now()
   }
 }
 
@@ -521,13 +507,12 @@ function navigate() {
         vehicle.setBrake(brakePower, 2);
         vehicle.setBrake(brakePower, 3);
     }
-
     
     //between pi/16 and pi/64 when speed is between (0, 250)w
-    let maxSteerVal = Math.PI / (((1/5) * speed) + 16)
+    let maxSteerVal = Math.PI / (((1/5) * Math.abs(speed)) + 16)
 
     //functional based increment between 0.005 and 0.0001 when the speed is between (0, 250)
-    let steeringIncrement = (-(1/55555) * speed) + 0.005
+    let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.005
     if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
 
     if (keys_pressed[65] && !keys_pressed[68]){ //left
