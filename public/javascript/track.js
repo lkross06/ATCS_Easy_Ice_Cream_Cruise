@@ -452,8 +452,9 @@ class Ramp extends Piece {
         this.theta = theta
 
         //you can think of this.true_length as the hypoteneuse length
-        this.length -= (2 * this.railThick * Math.cos(this.theta))
-        this.true_length = this.length / Math.cos(this.theta) //dont change length because we want it to be the same size as normal blocks
+        this.length -= (2 * this.railThick * Math.cos(this.theta)) //dont change length because we want it to be the same size as normal blocks
+        //im adding 0.4 so it blends with the other blocks better. this is an approximation of the length between the edge of the ramp and the edge of the block itself
+        this.true_length = (this.length / Math.cos(this.theta)) + (2 * Math.sin(Math.abs(this.theta)))
 
         this.true_height = this.height
         this.height = this.true_length * Math.sin(this.theta)
@@ -584,13 +585,13 @@ class Ramp extends Piece {
                 railZ = this.z - this.true_length + this.railThick
             } else if (rail == "W"){
                 //the rail length has to be a bit longer or there is a gap
-                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.length + this.true_height)))
-                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, this.length * 2)
+                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.true_length)))
+                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, (this.true_length) * 2)
             
                 railX = this.x + this.width - this.railThick
             } else if (rail == "E"){
-                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.length + this.true_height)))
-                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, this.length * 2)
+                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.true_length)))
+                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, (this.true_length) * 2)
             
                 railX = this.x - this.width + this.railThick
             }
