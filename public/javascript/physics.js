@@ -200,7 +200,8 @@ function updatePhysics() {
   navigate()
   updateCheckpoints()
 
-  if (keys_pressed[82] || chassisBody.position.y < -10){ //if "r" is pressed or car is below the map
+  //if "r" is pressed or car is below the map or too high above the map
+  if (keys_pressed[82] || chassisBody.position.y < -10 || chassisBody.position.y > 100){ 
     reset()
   }
 }
