@@ -12,6 +12,9 @@ export class Track{
         this.start = Date.now() //when the track was started
         this.finish = null //null until the track is finish, then this is the time the track was finished
     }
+    setStart(now){
+        this.start = now
+    }
 
     addLap(){
         this.curr_lap += 1

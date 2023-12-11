@@ -112,10 +112,24 @@
         top: 0;
         text-align: left;
       }
+
+      #countdown {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -5vh; /* negative half of the height to offset top: 50% */
+        margin-left: -5vw;
+        width: 10vw;
+        height: 10vh;
+        font-size: var(--font-size-1);
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <div id="root"></div>
+
+    <div id="countdown" class="text-border"></div>
 
     <div id="instructions" class="text-border">
       WASD to move

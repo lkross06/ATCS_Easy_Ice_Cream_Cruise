@@ -93,7 +93,7 @@ function loadTrack(num){
 }  
 
 document.getElementById("track-name").innerText = track.getName()
-var last = track.getStart()
+var last = 0
 var last_reset = 0
 
 
@@ -403,6 +403,13 @@ function render(timestamp) {
     }
   }
   renderer.render(scene, camera);
+  
+
+  if (countdown >= 0 && Date.now() - last_countdown_update >= 1000){
+    countdown -= 1
+    last_countdown_update = Date.now()
+  }
+
   updatePhysics()
   updateUI()
 
@@ -436,11 +443,21 @@ function getTimeElapsed(){
 }
 
 function updateUI(){
+
+  let countdown_num = countdown
+  if (countdown == 1){
+    track.setStart(Date.now())
+  } else if (countdown == 0){
+    countdown_num = "GO!"
+  } else if (countdown == -1){
+    document.getElementById("countdown").style.display = "none"
+  }
+  document.getElementById("countdown").innerText = String(countdown_num)
   
   let ms_elapsed = Date.now() - last
 
   //time elapsed
-  if (ms_elapsed > 50){ //update only after 50ms (so it doesnt look crazy)
+  if (ms_elapsed >= 50 && countdown <= 0){ //update only after 50ms (so it doesnt look crazy)
     //time
     document.getElementById("time").innerText = getTimeElapsed()
     last = Date.now()
@@ -545,78 +562,87 @@ function checkFinish(){
 function navigate() {
     let speed = vehicle.currentVehicleSpeedKmHour
 
-    //y = -4x + 1200 but absolute value
-    //at speed = 0, eF = 600
-    //at speed = 150 or -150, eF = 0
-    let engineForce = (-4 * Math.abs(speed)) + 1200
-    if (engineForce > 1200) engineForce = 1200 //cap
-    if (engineForce < 0) engineForce = 0
+    if (countdown <= 0){
 
-    if (keys_pressed[32]){ //brake
-      //brake has priority over movement
-      let brakePower = engineForce / 80
-      vehicle.setBrake(brakePower, 0);
-      vehicle.setBrake(brakePower, 1);
-      vehicle.setBrake(brakePower, 2);
-      vehicle.setBrake(brakePower, 3);
+      //y = -4x + 1200 but absolute value
+      //at speed = 0, eF = 600
+      //at speed = 150 or -150, eF = 0
+      let engineForce = (-4 * Math.abs(speed)) + 1200
+      if (engineForce > 1200) engineForce = 1200 //cap
+      if (engineForce < 0) engineForce = 0
 
-      vehicle.applyEngineForce(0, 0)
-      vehicle.applyEngineForce(0, 1)
-      vehicle.applyEngineForce(0, 2)
-      vehicle.applyEngineForce(0, 3)
-
-    } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
-        vehicle.applyEngineForce(-engineForce / 2, 0);
-        vehicle.applyEngineForce(-engineForce / 2, 1);
-        vehicle.applyEngineForce(-engineForce / 2, 2);
-        vehicle.applyEngineForce(-engineForce / 2, 3);
-    } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
-          vehicle.applyEngineForce(engineForce / 4, 0);
-          vehicle.applyEngineForce(engineForce / 4, 1);
-          vehicle.applyEngineForce(engineForce / 4, 2);
-          vehicle.applyEngineForce(engineForce / 4, 3);
-    } else {
-      if (speed > 0){
-        vehicle.applyEngineForce(-engineForce / 64, 0);
-        vehicle.applyEngineForce(-engineForce / 64, 1);
-        vehicle.applyEngineForce(-engineForce / 64, 2);
-        vehicle.applyEngineForce(-engineForce / 64, 3);
-      } else {
-        vehicle.applyEngineForce(engineForce / 128, 0);
-        vehicle.applyEngineForce(engineForce / 128, 1);
-        vehicle.applyEngineForce(engineForce / 128, 2);
-        vehicle.applyEngineForce(engineForce / 128, 3);
-      }
-        
-        let brakePower = Math.abs(speed / 50)
+      if (keys_pressed[32]){ //brake
+        //brake has priority over movement
+        let brakePower = engineForce / 80
         vehicle.setBrake(brakePower, 0);
         vehicle.setBrake(brakePower, 1);
         vehicle.setBrake(brakePower, 2);
         vehicle.setBrake(brakePower, 3);
+
+        vehicle.applyEngineForce(0, 0)
+        vehicle.applyEngineForce(0, 1)
+        vehicle.applyEngineForce(0, 2)
+        vehicle.applyEngineForce(0, 3)
+
+      } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
+          vehicle.applyEngineForce(-engineForce / 2, 0);
+          vehicle.applyEngineForce(-engineForce / 2, 1);
+          vehicle.applyEngineForce(-engineForce / 2, 2);
+          vehicle.applyEngineForce(-engineForce / 2, 3);
+      } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
+            vehicle.applyEngineForce(engineForce / 4, 0);
+            vehicle.applyEngineForce(engineForce / 4, 1);
+            vehicle.applyEngineForce(engineForce / 4, 2);
+            vehicle.applyEngineForce(engineForce / 4, 3);
+      } else {
+        if (speed > 0){
+          vehicle.applyEngineForce(-engineForce / 64, 0);
+          vehicle.applyEngineForce(-engineForce / 64, 1);
+          vehicle.applyEngineForce(-engineForce / 64, 2);
+          vehicle.applyEngineForce(-engineForce / 64, 3);
+        } else {
+          vehicle.applyEngineForce(engineForce / 128, 0);
+          vehicle.applyEngineForce(engineForce / 128, 1);
+          vehicle.applyEngineForce(engineForce / 128, 2);
+          vehicle.applyEngineForce(engineForce / 128, 3);
+        }
+          
+          let brakePower = Math.abs(speed / 50)
+          vehicle.setBrake(brakePower, 0);
+          vehicle.setBrake(brakePower, 1);
+          vehicle.setBrake(brakePower, 2);
+          vehicle.setBrake(brakePower, 3);
+      }
+      
+      //between pi/16 and pi/64 when speed is between (0, 250)w
+      let maxSteerVal = Math.PI / (((1/5) * Math.abs(speed)) + 16)
+
+      //functional based increment between 0.005 and 0.0001 when the speed is between (0, 250)
+      let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.005
+      if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
+
+      if (keys_pressed[65] && !keys_pressed[68]){ //left
+          steeringValue += steeringIncrement
+      } else if (keys_pressed[68] && !keys_pressed[65]){ //right
+          steeringValue -= steeringIncrement
+      } else {
+          steeringValue -= steeringValue / 3
+      }
+
+      if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
+      if (steeringValue < -maxSteerVal) steeringValue = -maxSteerVal
+
+      vehicle.setSteeringValue(steeringValue, 2);
+      vehicle.setSteeringValue(steeringValue, 3);
     }
-    
-    //between pi/16 and pi/64 when speed is between (0, 250)w
-    let maxSteerVal = Math.PI / (((1/5) * Math.abs(speed)) + 16)
-
-    //functional based increment between 0.005 and 0.0001 when the speed is between (0, 250)
-    let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.005
-    if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
-
-    if (keys_pressed[65] && !keys_pressed[68]){ //left
-        steeringValue += steeringIncrement
-    } else if (keys_pressed[68] && !keys_pressed[65]){ //right
-        steeringValue -= steeringIncrement
-    } else {
-        steeringValue -= steeringValue / 3
-    }
-
-    if (steeringValue > maxSteerVal) steeringValue = maxSteerVal
-    if (steeringValue < -maxSteerVal) steeringValue = -maxSteerVal
-
-    vehicle.setSteeringValue(steeringValue, 2);
-    vehicle.setSteeringValue(steeringValue, 3);
 }
 window.addEventListener('keydown', handleKeyPress)
 window.addEventListener('keyup', handleKeyPress)
+
+//run the 3-2-1 sequence
+
+//TODO: wait until everyone loads
+var countdown = 3
+var last_countdown_update = Date.now()
 
 render();
