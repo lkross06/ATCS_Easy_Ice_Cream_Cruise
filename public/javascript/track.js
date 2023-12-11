@@ -10,10 +10,15 @@ export class Track{
         this.checkpoints = [] //ordered list of checkpoints
 
         this.start = Date.now() //when the track was started
+        this.finish = null //null until the track is finish, then this is the time the track was finished
     }
 
     getStart(){
         return this.start
+    }
+
+    getFinish(){
+        return this.finish
     }
 
     sendLaps(){
@@ -26,6 +31,14 @@ export class Track{
 
     getCheckpoints(){
         return this.checkpoints
+    }
+
+    getStartBody(){
+        return this.pieces[0].body
+    }
+
+    getFinishBody(){
+        return this.pieces[this.pieces.length - 1].body
     }
 
     build(scene, world){ //builds the track in a given scene / world
@@ -298,7 +311,15 @@ class Checkpoint extends Block{
         if (this.checked){
             this.mesh.material.color = new THREE.Color(this.checkedColor)
             this.mesh.material.emissive = new THREE.Color(this.checkedColor)
+        } else {
+            this.mesh.material.color = new THREE.Color(this.color)
+            this.mesh.material.emissive = new THREE.Color(this.color)
+
         }
+    }
+
+    getChecked(){
+        return this.checked
     }
 
 }

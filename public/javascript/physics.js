@@ -77,7 +77,7 @@ var track
 var checkpoints
 
 
-loadTrack(3) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+loadTrack(2) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
 
 function loadTrack(num){
   //where the track is loaded
@@ -199,7 +199,8 @@ function updatePhysics() {
   box.quaternion.copy(chassisBody.quaternion);
   navigate()
   updateCheckpoints()
-
+  checkFinish()
+  
   //if "r" is pressed or car is below the map or too high above the map
   if (keys_pressed[82] || chassisBody.position.y < -10 || chassisBody.position.y > 100){ 
     reset()
@@ -332,8 +333,14 @@ function reset(){
 
     //reset time
     track.start = Date.now()
+    track.finish = null
     last = track.getStart()
     last_reset = Date.now()
+
+    //reset checkpoints
+    for (let cp of checkpoints){
+      cp.setChecked(false)
+    }
   }
 }
 
@@ -409,7 +416,12 @@ function updateUI(){
   //time elapsed
   if (ms_elapsed > 50){ //update only after 50ms (so it doesnt look crazy)
     //time
-    let total_elapsed = Date.now() - track.getStart()
+    let total_elapsed
+    if (track.finish != null){
+      total_elapsed = track.getFinish() - track.getStart()
+    } else {
+      total_elapsed = Date.now() - track.getStart()
+    }
     
     document.getElementById("time").innerText = 
       String(getMinutes(total_elapsed)) + ":" + getSeconds(total_elapsed)
@@ -452,8 +464,34 @@ function updateCheckpoints(){
     }
     world.narrowphase.getContacts(a, b, world, result, [], [], []);
     var overlaps = result.length > 0;
-    cp.setChecked(overlaps)
+    if (overlaps) cp.setChecked(overlaps)
   }
+}
+
+function checkFinish(){
+  if (track.pieces.length > 0){ //only check if there is a track and its been loaded
+    let result = [];
+    let a = []
+    let b = []
+    for (let i of wheelBodies){
+      a.push(i)
+      b.push(track.getFinishBody())
+    }
+    world.narrowphase.getContacts(a, b, world, result, [], [], []);
+    var overlaps = result.length > 0;
+    if (overlaps && track.finish == null) { //check to see if finish block and wheels touch
+      for (let cp of checkpoints){ //check to see if all checkpoints have been checked
+        if (!cp.getChecked()){
+          return false
+        }
+      }
+      //we know that we finished the track yay!
+      track.finish = Date.now()
+    }
+  }
+  
+
+  
 }
 
 function navigate() {

@@ -1,5 +1,6 @@
 Start [N]
 Straight [2,N]
+Checkpoint [N]
 RampUp [10,10,N]
 RightTurn [N]
 Straight [1,E]
