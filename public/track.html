@@ -43,6 +43,16 @@
         display: none;
       }
 
+      #track-finish {
+        display: none;
+      }
+
+      #new_pb {
+        color: rgb(186, 0, 0);
+        font-weight: bolder;
+        font-size: var(--font-size-4);
+      }
+
       .close-menu {
         position: absolute;
         top: 0;
@@ -113,6 +123,8 @@
       SPACE to brake
       <br>
       R to respawn
+      <br>
+      ESC to menu
     </div>
 
     <div id="top-right" class="text-border">
@@ -136,9 +148,12 @@
         window.location.href = redirectUrl;
       }
 
-      document.getElementById("help").onclick = function(e){
-        window.location.href = redirectUrl + "/menu"
+      for (let button of document.getElementsByClassName("home-button")){
+        button.onclick = function(e){
+          window.location.href = redirectUrl + "/menu"
+        } 
       }
+     
     </script>
 
     <script defer src="/javascript/esc.js"></script>
@@ -152,11 +167,19 @@
         <br>
         <button onclick="goToSettingsMenu()" class="submit-button">Settings</button>
         <br>
-        <button onclick="goHome()" class="submit-button" id="help">Home</button>
+        <button onclick="goHome()" class="submit-button home-button">Home</button>
       </div>
       <div class="modal-content" id="settings-menu">
         <img onclick="goToEscMenu()" class="close-menu" src="./res/close.png">
         <p>there's nothing here yet!</p>
+      </div>
+      <div class="modal-content" id="track-finish">
+        <img onclick="hideEscapeMenu()" class="close-menu" src="./res/close.png">
+        <h2 class="title2"><span id="track-finish-track-name"></span> Complete!</h2>
+        <h3 class="title3" id="track-finish-time">-:--.--</h3>
+        <h4 id="new_pb">NEW PERSONAL BEST!</h4>
+        <br>
+        <button onclick="goHome()" class="submit-button home-button">Home</button>
       </div>
     </div>
   </body>

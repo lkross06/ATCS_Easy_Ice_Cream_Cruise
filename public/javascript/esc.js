@@ -3,7 +3,7 @@ let isEscapeMenuVisible = false;
 
 //handle key press events
 function handleKeyPress(e) {
-    if (e.keyCode === 27) { 
+    if (e.keyCode === 27){ 
         isEscapeMenuVisible = !isEscapeMenuVisible
         // call a function to show or hide the escape menu based on its visibility
         if (isEscapeMenuVisible) {

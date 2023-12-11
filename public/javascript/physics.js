@@ -76,8 +76,14 @@ world.gravity.set(0, -18, 0);
 var track
 var checkpoints
 
+//get the number in the url-encoded data
+const params = new URLSearchParams(window.location.search);
+var trackValue = params.get('track')
+//if the parameter is invalid or doesn't exist, send to 
+trackValue = (!isNaN(parseInt(trackValue)))? parseInt(trackValue) : 0
 
-loadTrack(2) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+
+loadTrack(trackValue) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
 
 function loadTrack(num){
   //where the track is loaded
@@ -197,12 +203,14 @@ function updatePhysics() {
   // update the chassis position
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
-  navigate()
-  updateCheckpoints()
-  checkFinish()
+  if (track.getFinish() == null){
+    navigate()
+    updateCheckpoints()
+    checkFinish()
+  }
   
   //if "r" is pressed or car is below the map or too high above the map
-  if (keys_pressed[82] || chassisBody.position.y < -10 || chassisBody.position.y > 100){ 
+  if (keys_pressed[82] || chassisBody.position.y < -10 || chassisBody.position.y > 400){ 
     reset()
   }
 }
@@ -397,7 +405,7 @@ function render(timestamp) {
   requestAnimationFrame(render);
 }
 
-function updateUI(){
+function getTimeElapsed(){
   function getMinutes(ms){
     let mins = Math.floor((Number(ms) / 1000 / 60) % 60)
     return String(mins)
@@ -411,20 +419,26 @@ function updateUI(){
     }
     return String(secs)
   }
+
+  //time
+  let total_elapsed
+  if (track.finish != null){
+    total_elapsed = track.getFinish() - track.getStart()
+  } else {
+    total_elapsed = Date.now() - track.getStart()
+  }
+
+  return String(getMinutes(total_elapsed)) + ":" + getSeconds(total_elapsed)
+}
+
+function updateUI(){
+  
   let ms_elapsed = Date.now() - last
 
   //time elapsed
   if (ms_elapsed > 50){ //update only after 50ms (so it doesnt look crazy)
     //time
-    let total_elapsed
-    if (track.finish != null){
-      total_elapsed = track.getFinish() - track.getStart()
-    } else {
-      total_elapsed = Date.now() - track.getStart()
-    }
-    
-    document.getElementById("time").innerText = 
-      String(getMinutes(total_elapsed)) + ":" + getSeconds(total_elapsed)
+    document.getElementById("time").innerText = getTimeElapsed()
     last = Date.now()
 
     //speed
@@ -446,10 +460,10 @@ var steeringValue = 0
 
 // Function to handle key press events
 function handleKeyPress(e) {
-    if (e.type !== 'keydown' && e.type !== 'keyup') return;
+    //only update if the track is still being played
+    if ((e.type !== 'keydown' && e.type !== 'keyup') || track.getFinish() != null) return;
 
     keys_pressed[e.keyCode] = e.type === 'keydown';
-
 }
 
 
@@ -487,6 +501,24 @@ function checkFinish(){
       }
       //we know that we finished the track yay!
       track.finish = Date.now()
+
+      //stop vehicle from accelerating and disable key presses
+      for (let key in keys_pressed){
+        keys_pressed[key] = false;
+      }
+
+      vehicle.applyEngineForce(0, 0)
+      vehicle.applyEngineForce(0, 1)
+      vehicle.applyEngineForce(0, 2)
+      vehicle.applyEngineForce(0, 3)
+
+      document.getElementById('modal').style.display = "block"
+      document.getElementById("track-finish").style.display = "flex"
+      document.getElementById("esc-menu").style.display = "none"
+      document.getElementById("settings-menu").style.display = "none"
+
+      document.getElementById("track-finish-time").innerText = getTimeElapsed()
+      document.getElementById("track-finish-track-name").innerText = track.name
     }
   }
   
