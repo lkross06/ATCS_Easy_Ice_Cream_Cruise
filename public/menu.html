@@ -14,6 +14,10 @@
             text-decoration: none;
         }
 
+        #ecvil {
+            text-align: right;
+        }
+
         .log-out {
             position: absolute;
             top: 0;
@@ -210,7 +214,6 @@
                   <option value="Track 8">Track 8</option>
               </select>
               <button class="submit-button" id="createGame">Create Game</button>
-              <div id="gameCode" style="display: none;">Game Code: </div>
           </span>
           <h3 class="title3">Join Online Game</h3>
           <span id="multiplayer-join">
@@ -232,6 +235,10 @@
             
             // Redirect the user
             window.location.href = redirectUrl;    
+        }
+
+        if(sessionStorage.getItem("code") != null) { //keep their last game in the pocket
+            document.getElementById("multiplayer-join-code").value = sessionStorage.getItem("code")
         }
     </script>
     <script>

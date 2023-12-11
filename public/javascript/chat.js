@@ -119,9 +119,7 @@ ws.onmessage = message => {
         // get that code brother
         if (res.username === sessionStorage.getItem("username")) {
             // dingdingding we gotchu fam
-            let codeDiv = document.getElementById("gameCode")
-            codeDiv.style.display = "block"
-            codeDiv.innerText = res.code
+            document.getElementById("multiplayer-join-code").value = res.code
         }
     } else if (res.method === "join") {
         // confirm that user has actually put in a good code, 
@@ -133,7 +131,8 @@ ws.onmessage = message => {
                 // TODO: add some HTML error thingy here
             } else {
                 sessionStorage.setItem("code", res.code)
-                location.replace(res.track)
+                let n = res.track.split("k")[1] //dont bother convert to number, its going in a string
+                window.location.href = "http://"+domainName+":3000/track.html?track=" + n + "&joincode=" + res.code
             }
         }
     }
