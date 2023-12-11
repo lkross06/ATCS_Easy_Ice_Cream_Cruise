@@ -454,7 +454,7 @@ class Ramp extends Piece {
         //you can think of this.true_length as the hypoteneuse length
         this.length -= (2 * this.railThick * Math.cos(this.theta)) //dont change length because we want it to be the same size as normal blocks
         //im adding 0.4 so it blends with the other blocks better. this is an approximation of the length between the edge of the ramp and the edge of the block itself
-        this.true_length = (this.length / Math.cos(this.theta)) + (2 * Math.sin(Math.abs(this.theta)))
+        this.true_length = (this.length / Math.cos(this.theta)) + (2 * Math.sin(Math.abs(this.theta) * this.height))
 
         this.true_height = this.height
         this.height = this.true_length * Math.sin(this.theta)
