@@ -83,7 +83,7 @@ var trackValue = params.get('track')
 trackValue = (!isNaN(parseInt(trackValue)))? parseInt(trackValue) : 0
 
 
-loadTrack(trackValue) // TODO: FINN MAKE THIS WORK WITH THE BUTTONS PLS
+loadTrack(trackValue)
 
 function loadTrack(num){
   //where the track is loaded
@@ -394,6 +394,10 @@ function render(timestamp) {
           scene.add(opponents[msg.username].backRight)
           scene.add(opponents[msg.username].backLeft)
 
+          //TODO: also send chassisBody quaternion and apply it to chassisBody in "renderOpp()"
+          //or somehow make rotation update bc right now its a bunch of blocks sliding around
+          //if you can also do this for wheels that would be great!
+
         }
       }
     }
@@ -516,9 +520,14 @@ function checkFinish(){
       document.getElementById("track-finish").style.display = "flex"
       document.getElementById("esc-menu").style.display = "none"
       document.getElementById("settings-menu").style.display = "none"
-
+      
+      //TODO: this code is run when the player reaches the finish line
+      //the final time is given by "getTimeElapsed()"", can you check if its the new PB for
+      //this track? the track name is given by "track.name"
       document.getElementById("track-finish-time").innerText = getTimeElapsed()
       document.getElementById("track-finish-track-name").innerText = track.name
+
+      //TODO: also, if this is multiplayer, can you somehow indicate that this user finished the track
     }
   }
   
