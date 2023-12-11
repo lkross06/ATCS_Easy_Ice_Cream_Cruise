@@ -1,3 +1,4 @@
+1
 Start [N]
 Straight [5,N]
 Checkpoint [N]
@@ -9,7 +10,7 @@ Straight [6,N]
 LeftTurn [N]
 Straight [6,W]
 LeftTurn [W]
-Straight [4wd,S]
+Straight [4,S]
 Checkpoint [S]
 Straight [4,S]
 LeftTurn [S]

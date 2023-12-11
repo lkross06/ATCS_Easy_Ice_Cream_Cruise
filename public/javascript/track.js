@@ -13,6 +13,10 @@ export class Track{
         this.finish = null //null until the track is finish, then this is the time the track was finished
     }
 
+    addLap(){
+        this.curr_lap += 1
+    }
+
     getStart(){
         return this.start
     }
@@ -34,11 +38,14 @@ export class Track{
     }
 
     getStartBody(){
-        return this.pieces[0].body
+        return this.pieces[0].body //start block or lap block is always the first block
     }
 
-    getFinishBody(){
-        return this.pieces[this.pieces.length - 1].body
+    getFinishBody(){ //you can finish on a lap or a finish
+        for (let piece of this.pieces){
+            if (piece.name == "Lap" || piece.name == "Finish") return piece.body
+        }
+        return null
     }
 
     build(scene, world){ //builds the track in a given scene / world
@@ -48,8 +55,11 @@ export class Track{
 
             let lines = text.split("\n")
             let prev = null
+
+            this.laps = parseInt(lines[0])
+            if (isNaN(this.laps)) this.laps = 1
             
-            for (let line of lines){
+            for (let line of lines.slice(1)){
                 line = line.split(" ")
 
                 let blockType = line[0]
@@ -60,6 +70,8 @@ export class Track{
 
                 if (blockType == "Checkpoint"){
                     piece = new Checkpoint(params[0])
+                } else if (blockType == "Lap"){
+                    piece = new Lap(params[0])
                 } else if (blockType == "Flat"){
                     piece = new Flat(params[0])
                 } else if (blockType == "Start"){
@@ -89,7 +101,7 @@ export class Track{
                     prev = piece
 
                     if (blockType == "Checkpoint") this.checkpoints.push(piece)
-                } else if (this.pieces.length == 0 && blockType == "Start"){
+                } else if (this.pieces.length == 0 && (blockType == "Start" || blockType == "Lap")){
                     this.pieces.push(piece)
                     prev = piece
                 }
@@ -334,20 +346,11 @@ class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1
             this.width = 5
             this.rails = ["N", "S"]
         }
-        this.color = 0xFFFF00
-        this.checked = false //true when car goes over it
-        this.checkedColor = 0x0000FF
+        this.color = 0x005511
 
-        this.name = "Checkpoint"
+        this.name = "Lap"
     }
 
-    setChecked(checked){
-        this.checked = checked
-        if (this.checked){
-            this.mesh.material.color = new THREE.Color(this.checkedColor)
-            this.mesh.material.emissive = new THREE.Color(this.checkedColor)
-        }
-    }
 
 }
 

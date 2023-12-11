@@ -503,31 +503,38 @@ function checkFinish(){
           return false
         }
       }
-      //we know that we finished the track yay!
-      track.finish = Date.now()
+      if (track.curr_lap > track.laps - 1){
+        //we know that we finished the track yay!
+        track.finish = Date.now()
 
-      //stop vehicle from accelerating and disable key presses
-      for (let key in keys_pressed){
-        keys_pressed[key] = false;
+        //stop vehicle from accelerating and disable key presses
+        for (let key in keys_pressed){
+          keys_pressed[key] = false;
+        }
+
+        vehicle.applyEngineForce(0, 0)
+        vehicle.applyEngineForce(0, 1)
+        vehicle.applyEngineForce(0, 2)
+        vehicle.applyEngineForce(0, 3)
+
+        document.getElementById('modal').style.display = "block"
+        document.getElementById("track-finish").style.display = "flex"
+        document.getElementById("esc-menu").style.display = "none"
+        document.getElementById("settings-menu").style.display = "none"
+        
+        //TODO: this code is run when the player reaches the finish line
+        //the final time is given by "getTimeElapsed()"", can you check if its the new PB for
+        //this track? the track name is given by "track.name"
+        document.getElementById("track-finish-time").innerText = getTimeElapsed()
+        document.getElementById("track-finish-track-name").innerText = track.name
+
+        //TODO: also, if this is multiplayer, can you somehow indicate that this user finished the track
+      } else {
+        track.addLap()
+        for (let cp of checkpoints){ //uncheck all checkpoints
+          cp.setChecked(false)
+        }
       }
-
-      vehicle.applyEngineForce(0, 0)
-      vehicle.applyEngineForce(0, 1)
-      vehicle.applyEngineForce(0, 2)
-      vehicle.applyEngineForce(0, 3)
-
-      document.getElementById('modal').style.display = "block"
-      document.getElementById("track-finish").style.display = "flex"
-      document.getElementById("esc-menu").style.display = "none"
-      document.getElementById("settings-menu").style.display = "none"
-      
-      //TODO: this code is run when the player reaches the finish line
-      //the final time is given by "getTimeElapsed()"", can you check if its the new PB for
-      //this track? the track name is given by "track.name"
-      document.getElementById("track-finish-time").innerText = getTimeElapsed()
-      document.getElementById("track-finish-track-name").innerText = track.name
-
-      //TODO: also, if this is multiplayer, can you somehow indicate that this user finished the track
     }
   }
   
