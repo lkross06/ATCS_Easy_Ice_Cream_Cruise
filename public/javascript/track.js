@@ -41,7 +41,10 @@ export class Track{
     }
 
     getStartBody(){
-        return this.pieces[0].body //start block or lap block is always the first block
+        for (let piece of this.pieces){
+            if (piece.name == "Lap" || piece.name == "Start") return piece.body
+        }
+        return null
     }
 
     getFinishBody(){ //you can finish on a lap or a finish
@@ -104,7 +107,7 @@ export class Track{
                     prev = piece
 
                     if (blockType == "Checkpoint") this.checkpoints.push(piece)
-                } else if (this.pieces.length == 0 && (blockType == "Start" || blockType == "Lap")){
+                } else if (this.pieces.length == 0){
                     this.pieces.push(piece)
                     prev = piece
                 }
@@ -471,6 +474,11 @@ class Ramp extends Piece {
 
         //add half the height of the ramp and subtract the full thickness of the ramp
         this.true_y = this.y + this.height - (this.true_height * 2)
+
+        if (direction == "S" || direction == "E"){
+            this.theta *= -1
+            this.true_y -= this.height
+        }
     }
 
     setPosition(x, y, z){
