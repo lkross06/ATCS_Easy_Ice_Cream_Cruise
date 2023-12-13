@@ -86,17 +86,17 @@ export class Track{
                     piece = new Finish(params[0])
                 } else if (blockType == "Straight"){
                     //size, direction
-                    piece = new Straight(Number.parseInt(params[0]), params[1])
+                    piece = new Straight(Number.parseFloat(params[0]), params[1])
                 } else if (blockType == "LeftTurn"){
                     piece = new LeftTurn(params[0])
                 } else if (blockType == "RightTurn"){
                     piece = new RightTurn(params[0])
                 } else if (blockType == "RampUp"){
                     //theta, size, direction
-                    piece = new RampUp(Number.parseInt(params[0]), Number.parseInt(params[1]), params[2])
+                    piece = new RampUp(Number.parseFloat(params[0]), Number.parseFloat(params[1]), params[2])
                 } else if (blockType == "RampDown"){
                     //theta, size, direction
-                    piece = new RampDown(Number.parseInt(params[0]), Number.parseInt(params[1]), params[2])
+                    piece = new RampDown(Number.parseFloat(params[0]), Number.parseFloat(params[1]), params[2])
                 }
 
                 piece.create(scene, world)
@@ -105,11 +105,12 @@ export class Track{
                     piece.snapTo(prev)
                     this.pieces.push(piece)
                     prev = piece
-
+                    console.log("loaded " + blockType + " " + params)
                     if (blockType == "Checkpoint") this.checkpoints.push(piece)
                 } else if (this.pieces.length == 0){
                     this.pieces.push(piece)
                     prev = piece
+                    console.log("loaded " + blockType + " " + params)
                 }
             }
         })
