@@ -213,11 +213,11 @@ class Block extends Piece{
         if (dir == "N"){
             this.setPosition(ox, oy + (oh * 2) - (this.height * 2), oz + ol + this.length)
         } else if (dir == "S"){
-            this.setPosition(ox, oy + oh - this.height, oz - ol - this.length)
+            this.setPosition(ox, oy + (oh * 2) - (this.height * 2), oz - ol - this.length)
         } else if (dir == "E"){
-            this.setPosition(ox - ow - this.width, oy + oh - this.height, oz)
+            this.setPosition(ox - ow - this.width, oy + (oh * 2) - (this.height * 2), oz)
         } else if (dir == "W"){
-            this.setPosition(ox + ow + this.width, oy + oh - this.height, oz)
+            this.setPosition(ox + ow + this.width, oy + (oh * 2) - (this.height * 2), oz)
         }
     }
     
@@ -452,18 +452,22 @@ class Ramp extends Piece {
         }
         this.name = "Ramp"
 
-
         //"true" variables are used for calculation with CANNON and THREE
         //non-"true" variables are sent to other objects for snapTo calculation
         this.theta = theta
 
-        //you can think of this.true_length as the hypoteneuse length
-        this.length -= (2 * this.railThick * Math.cos(this.theta)) //dont change length because we want it to be the same size as normal blocks
-        //im adding 0.4 so it blends with the other blocks better. this is an approximation of the length between the edge of the ramp and the edge of the block itself
-        this.true_length = (this.length / Math.cos(this.theta)) + (2 * Math.sin(Math.abs(this.theta) * this.height))
+        this.true_size = null //the hypoteneuse length
 
+        if (this.direction == "N" || this.direction == "S"){
+            this.length -= (2 * this.railThick * Math.cos(this.theta)) //dont change length because we want it to be the same size as normal blocks
+            this.true_size = (this.length / Math.cos(this.theta)) + (2 * Math.sin(Math.abs(this.theta) * this.height))
+        } else {
+            this.width -= (2 * this.railThick * Math.cos(this.theta)) //dont change length because we want it to be the same size as normal blocks
+            this.true_size = (this.width / Math.cos(this.theta)) + (2 * Math.sin(Math.abs(this.theta) * this.height))
+        }
+        
         this.true_height = this.height
-        this.height = this.true_length * Math.sin(this.theta)
+        this.height = this.true_size * Math.sin(this.theta)
 
         //add half the height of the ramp and subtract the full thickness of the ramp
         this.true_y = this.y + this.height - (this.true_height * 2)
@@ -482,19 +486,24 @@ class Ramp extends Piece {
             let rb = this.railBodies[rail]
             let rm = this.railMeshes[rail]
 
+            //see createRails() for info on h
+            let h = (this.true_height + this.railHeight)
             let newx = this.x;
-            let newy = this.true_y + this.true_height + this.railHeight;
+            let newy = this.true_y + (h * Math.cos(this.theta));
             let newz = this.z;
             if (rail == "N"){
-                newz = this.z + this.true_length - this.railThick
+                newz = this.z + this.length - this.railThick
+                newx -= (h * Math.sin(this.theta))
             } else if (rail == "S"){
-                newz = this.z - this.true_length + this.railThick
+                newz = this.z - this.length + this.railThick
+                newx -= (h * Math.sin(this.theta))
             } else if (rail == "W"){
                 newx = this.x + this.width - this.railThick
+                newz -= (h * Math.sin(this.theta))
             } else if (rail == "E"){
                 newx = this.x - this.width + this.railThick
+                newz -= (h * Math.sin(this.theta))
             }
-
             rb.position.set(newx, newy, newz)
             rm.position.set(newx, newy, newz)
         }
@@ -536,16 +545,32 @@ class Ramp extends Piece {
     
     create(scene, world) {
         //physics
-        let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.true_height, this.true_length))
+        let shape
+        if (this.direction == "N" || this.direction == "S"){
+            shape = new CANNON.Box(new CANNON.Vec3(this.width, this.true_height, this.true_size))
+        } else {
+            shape = new CANNON.Box(new CANNON.Vec3(this.true_size, this.true_height, this.length))
+        }
         this.body = new CANNON.Body({mass: 0})
         this.body.addShape(shape)
         this.body.position.set(this.x, this.true_y, this.z)
-        this.body.quaternion.x = -this.theta / 2
+        if (this.direction == "N" || this.direction == "S"){
+            this.body.quaternion.x = -this.theta / 2
+        } else {
+            this.body.quaternion.z = -this.theta / 2
+        }
+        
 
         world.add(this.body)
 
         //graphics
-        let geo = new THREE.BoxGeometry(this.width * 2, this.true_height * 2, this.true_length * 2)
+        let geo
+        if (this.direction == "N" || this.direction == "S"){
+            geo = new THREE.BoxGeometry(this.width * 2, this.true_height * 2, this.true_size * 2)
+        } else {
+            geo = new THREE.BoxGeometry(this.true_size * 2, this.true_height * 2, this.length * 2)
+        }
+        
         let material = new THREE.MeshPhongMaterial({
             color: this.color,
             emissive: this.color,     
@@ -555,7 +580,11 @@ class Ramp extends Piece {
         
         this.mesh = new THREE.Mesh(geo, material)
         this.mesh.position.set(this.x, this.true_y, this.z)
-        this.mesh.quaternion.x = -this.theta / 2
+        if (this.direction == "N" || this.direction == "S"){
+            this.mesh.quaternion.x = -this.theta / 2
+        } else {
+            this.mesh.quaternion.z = -this.theta / 2
+        }
 
         scene.add(this.mesh)
 
@@ -576,37 +605,49 @@ class Ramp extends Piece {
             let railShape;
             let railGeo;
 
+            // h = the distance between the block coordinates and supposed rail coordinates
+            //that are perpendicular to theta
+            let h = (this.true_height + this.railHeight) 
             let railX = this.x;
             let railY = this.true_y + ((this.true_height + this.railHeight) * Math.cos(this.theta));
-            let railZ = this.z - ((this.true_height + this.railHeight) * Math.cos(this.theta));
-            if (rail == "N"){
-                railShape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railThick))
-                railGeo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railThick * 2)
+            let railZ = this.z;
 
-                railZ = this.z + this.true_length - this.railThick
+            if (rail == "N"){
+                railShape = new CANNON.Box(new CANNON.Vec3(this.true_size, this.railHeight, this.railThick))
+                railGeo = new THREE.BoxGeometry(this.true_size * 2, this.railHeight * 2, this.railThick * 2)
+
+                railZ = this.z + this.length - this.railThick
+                railX -= (h * Math.sin(this.theta))
             } else if (rail == "S"){
-                railShape = new CANNON.Box(new CANNON.Vec3(this.width, this.railHeight, this.railThick))
-                railGeo = new THREE.BoxGeometry(this.width * 2, this.railHeight * 2, this.railThick * 2)
+                railShape = new CANNON.Box(new CANNON.Vec3(this.true_size, this.railHeight, this.railThick))
+                railGeo = new THREE.BoxGeometry(this.true_size * 2, this.railHeight * 2, this.railThick * 2)
             
-                railZ = this.z - this.true_length + this.railThick
+                railZ = this.z + this.length - this.railThick
+                railX -= (h * Math.sin(this.theta))
             } else if (rail == "W"){
                 //the rail length has to be a bit longer or there is a gap
-                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.true_length)))
-                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, (this.true_length) * 2)
+                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, this.true_size))
+                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, this.true_size * 2)
             
                 railX = this.x + this.width - this.railThick
+                railZ -= (h * Math.sin(this.theta))
             } else if (rail == "E"){
-                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, (this.true_length)))
-                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, (this.true_length) * 2)
+                railShape = new CANNON.Box(new CANNON.Vec3(this.railThick, this.railHeight, this.true_size))
+                railGeo = new THREE.BoxGeometry(this.railThick * 2, this.railHeight * 2, this.true_size * 2)
             
                 railX = this.x - this.width + this.railThick
+                railZ -= (h * Math.sin(this.theta))
             }
 
             //physics
             let railBody = new CANNON.Body({mass: 0})
             railBody.addShape(railShape)
             railBody.position.set(railX, railY, railZ)
-            railBody.quaternion.x = -this.theta / 2
+            if (this.direction == "N" || this.direction == "S"){
+                railBody.quaternion.x = -this.theta / 2
+            } else {
+                railBody.quaternion.z = -this.theta / 2
+            }
 
             this.railBodies[rail] = railBody
             world.add(railBody)
@@ -614,7 +655,11 @@ class Ramp extends Piece {
             //graphics
             let railMesh = new THREE.Mesh(railGeo, material)
             railMesh.position.set(railX, railY, railZ)
-            railMesh.quaternion.x = -this.theta / 2
+            if (this.direction == "N" || this.direction == "S"){
+                railMesh.quaternion.x = -this.theta / 2
+            } else {
+                railMesh.quaternion.z = -this.theta / 2
+            }
 
             this.railMeshes[rail] = railMesh
             scene.add(railMesh)
@@ -626,6 +671,10 @@ class RampUp extends Ramp{
     constructor(theta = 15, size = 1, direction = "N"){
         //convert degrees to radians
         super(10, 1, 10, direction, theta * (Math.PI/180), size, ["W", "E"])
+        if (this.direction == "W" || this.direction == "E"){
+            this.rails = ["N", "S"]
+        }
+
         this.name = "RampUp"
     }
 }
@@ -634,6 +683,10 @@ class RampDown extends Ramp{
     constructor(theta = 15, size = 1, direction = "N"){
         //convert degrees to radians
         super(10, 1, 10, direction, theta * -(Math.PI/180), size, ["W", "E"])
+        if (this.direction == "W" || this.direction == "E"){
+            this.rails = ["N", "S"]
+        }
+        
         this.name = "RampDown"
     }
 }

@@ -1,7 +1,5 @@
 1
-Start [N]
-Checkpoint [N]
-RightTurn [N]
-Straight [6,E]
-LeftTurn [E]
-Finish [N]
+Start [S]
+Straight [2,S]
+RampDown [15,1,S]
+Finish [S]

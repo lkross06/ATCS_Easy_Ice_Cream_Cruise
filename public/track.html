@@ -136,7 +136,7 @@
       <br>
       SPACE to brake
       <br>
-      R to respawn
+      R to restart
       <br>
       ESC to menu
     </div>
@@ -191,9 +191,11 @@
         <img onclick="hideEscapeMenu()" class="close-menu" src="./res/close.png">
         <h2 class="title2"><span id="track-finish-track-name"></span> Complete!</h2>
         <h3 class="title3" id="track-finish-time">-:--.--</h3>
-        <h4 id="new_pb">NEW PERSONAL BEST!</h4>
+        <h5 id="new_pb">NEW PERSONAL BEST!</h5>
         <br>
-        <button onclick="goHome()" class="submit-button home-button">Home</button>
+        <button id="restart-button" class="submit-button">Restart</button>
+        <br>
+        <button class="submit-button home-button">Home</button>
       </div>
     </div>
   </body>

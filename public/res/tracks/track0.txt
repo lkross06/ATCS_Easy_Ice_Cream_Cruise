@@ -2,7 +2,7 @@
 Lap [N]
 Straight [5,N]
 RightTurn [N]
-Straight [1,E]
+Straight [5,N]
 RightTurn [E]
 Straight [5,S]
 Checkpoint [S]

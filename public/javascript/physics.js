@@ -210,7 +210,7 @@ function updatePhysics() {
   }
   
   //if "r" is pressed or car is below the map or too high above the map
-  if (keys_pressed[82] || chassisBody.position.y < -10 || chassisBody.position.y > 400){ 
+  if (keys_pressed[82] || chassisBody.position.y < -20 || chassisBody.position.y > 400){ 
     reset()
   }
 }
