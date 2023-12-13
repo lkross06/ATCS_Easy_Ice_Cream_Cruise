@@ -339,7 +339,8 @@ function reset(){
     vehicle.setBrake(10, 2)
     vehicle.setBrake(10, 3)
 
-    //reset time
+    //reset track + time
+    track.curr_lap = 1
     track.start = Date.now()
     track.finish = null
     last = track.getStart()
