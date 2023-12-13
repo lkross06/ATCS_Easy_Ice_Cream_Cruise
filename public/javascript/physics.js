@@ -563,6 +563,12 @@ function checkFinish(){
 function navigate() {
     let speed = vehicle.currentVehicleSpeedKmHour
 
+    let go_forward = keys_pressed[87] || keys_pressed[38]
+    let go_backward = keys_pressed[83] || keys_pressed[40]
+    let turn_left = keys_pressed[65] || keys_pressed[37]
+    let turn_right = keys_pressed[68] || keys_pressed[39]
+    let use_brake = keys_pressed[32]
+
     if (countdown <= 0){
 
       //y = -4x + 1200 but absolute value
@@ -572,7 +578,7 @@ function navigate() {
       if (engineForce > 1200) engineForce = 1200 //cap
       if (engineForce < 0) engineForce = 0
 
-      if (keys_pressed[32]){ //brake
+      if (use_brake){ //brake
         //brake has priority over movement
         let brakePower = engineForce / 80
         vehicle.setBrake(brakePower, 0);
@@ -585,12 +591,12 @@ function navigate() {
         vehicle.applyEngineForce(0, 2)
         vehicle.applyEngineForce(0, 3)
 
-      } else if (keys_pressed[87] && !keys_pressed[83]) { //forward
+      } else if (go_forward && !go_backward) { //forward
           vehicle.applyEngineForce(-engineForce / 2, 0);
           vehicle.applyEngineForce(-engineForce / 2, 1);
           vehicle.applyEngineForce(-engineForce / 2, 2);
           vehicle.applyEngineForce(-engineForce / 2, 3);
-      } else if (!keys_pressed[87] && keys_pressed[83]) { //backward
+      } else if (!go_forward && go_backward) { //backward
             vehicle.applyEngineForce(engineForce / 4, 0);
             vehicle.applyEngineForce(engineForce / 4, 1);
             vehicle.applyEngineForce(engineForce / 4, 2);
@@ -622,9 +628,9 @@ function navigate() {
       let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.005
       if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
 
-      if (keys_pressed[65] && !keys_pressed[68]){ //left
+      if (turn_left && !turn_right){ //left
           steeringValue += steeringIncrement
-      } else if (keys_pressed[68] && !keys_pressed[65]){ //right
+      } else if (turn_right && !turn_left){ //right
           steeringValue -= steeringIncrement
       } else {
           steeringValue -= steeringValue / 3
