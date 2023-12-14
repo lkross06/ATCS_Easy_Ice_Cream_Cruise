@@ -685,7 +685,7 @@ class Ramp extends Piece {
 class RampUp extends Ramp{
     constructor(theta = 15, size = 1, direction = "N", thick_size){
         //convert degrees to radians
-        super(10, 1, 10, direction, theta * (Math.PI/180), size, thick_size, ["W", "E"])
+        super(10, 1 / Math.sqrt(2), 10, direction, theta * (Math.PI/180), size, thick_size, ["W", "E"])
         if (this.direction == "W" || this.direction == "E"){
             this.rails = ["N", "S"]
         }
@@ -697,7 +697,7 @@ class RampUp extends Ramp{
 class RampDown extends Ramp{
     constructor(theta = 15, size = 1, direction = "N", thick_size){
         //convert degrees to radians
-        super(10, 1, 10, direction, theta * -(Math.PI/180), size, thick_size, ["W", "E"])
+        super(10, 1 / Math.sqrt(2), 10, direction, theta * -(Math.PI/180), size, thick_size, ["W", "E"])
         if (this.direction == "W" || this.direction == "E"){
             this.rails = ["N", "S"]
         }

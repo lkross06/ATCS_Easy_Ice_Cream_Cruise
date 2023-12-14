@@ -26,9 +26,21 @@
             text-align: right;
         }
 
-        button.game-selection-choice {
+        .game-selection-choice {
             width: 25vw;
             font-size: var(--font-size-3);
+        }
+
+        .game-selection-choice:hover {
+            background-color: var(--dark-orange);
+        }
+
+        .game-selection-unchecked {
+            opacity: 0.7;
+        }
+
+        .game-selection-unchecked:hover {
+            background-color: var(--dark-orange);
         }
 
         #game-selection-container {
@@ -115,7 +127,10 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 3fr 1fr;
-            padding: 2%;
+            padding-top: 3%;
+            padding-left: 4%;
+            padding-right: 2%;
+            padding-bottom: 2%;
         }
         
         .modal-preview {
@@ -161,7 +176,7 @@
 
     <div id="game-selection-buttons">
         <button id="singleplayer-button" class="title3 game-selection-choice submit-button" onclick="resetCode()">Singleplayer</button>
-        <button id="multiplayer-button" class="title3 game-selection-choice submit-button">Multiplayer</button>
+        <button id="multiplayer-button" class="title3 game-selection-choice submit-button game-selection-unchecked">Multiplayer</button>
     </div>
 
     <div class="container" id="game-selection-container">
@@ -237,7 +252,7 @@
             window.location.href = redirectUrl;    
         }
 
-        if(sessionStorage.getItem("code") != null) { //keep their last game in the pocket
+        if(sessionStorage.getItem("code") != "null") { //keep their last game in the pocket
             document.getElementById("multiplayer-join-code").value = sessionStorage.getItem("code")
         }
     </script>
@@ -252,10 +267,16 @@
         document.getElementById("singleplayer-button").addEventListener("click", function(e){
             sp_content.style.display = "grid";
             mp_content.style.display = "none";
+            this.classList.remove("game-selection-unchecked")
+            document.getElementById("multiplayer-button").classList.add("game-selection-unchecked")
+
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){
             sp_content.style.display = "none";
             mp_content.style.display = "flex";
+            this.classList.remove("game-selection-unchecked")
+            document.getElementById("singleplayer-button").classList.add("game-selection-unchecked")
+
         })
 
         function create_track_modal(num){
@@ -284,6 +305,13 @@
             div1.appendChild(div2)
 
             //level 3
+
+            let imgclose = document.createElement("img")
+            imgclose.setAttribute("class", "close-menu")
+            imgclose.setAttribute("id", "close-button")
+            imgclose.setAttribute("src", "./res/close.png")
+            div2.appendChild(imgclose)
+
             let img = document.createElement("img")
             img.setAttribute("src", "../res/previews/track" + String(num) + ".png")
             img.setAttribute("class", "modal-preview")
@@ -342,13 +370,13 @@
             })
         }
 
-        window.addEventListener("click", function(e){
+        window.onclick = function(e){
             let modal = document.getElementById("modal")
-            if (e.target == modal) {
+            let close = document.getElementById("close-button")
+            if (e.target == modal || e.target == close){
                 modal.remove()
             }
-        })
-        
+        }
     </script>
 </body>
 </html>
