@@ -64,8 +64,11 @@ export class Track{
 
             this.laps = parseInt(lines[0])
             if (isNaN(this.laps)) this.laps = 1
+
+            let thick = parseFloat(lines[1]) //multiplier on width of block (default = 1)
+            if (isNaN(thick)) thick = 1
             
-            for (let line of lines.slice(1)){
+            for (let line of lines.slice(2)){
                 line = line.split(" ")
 
                 let blockType = line[0]
@@ -75,28 +78,28 @@ export class Track{
                 let piece
 
                 if (blockType == "Checkpoint"){
-                    piece = new Checkpoint(params[0])
+                    piece = new Checkpoint(params[0], thick)
                 } else if (blockType == "Lap"){
-                    piece = new Lap(params[0])
+                    piece = new Lap(params[0], thick)
                 } else if (blockType == "Flat"){
-                    piece = new Flat(params[0])
+                    piece = new Flat(params[0], thick)
                 } else if (blockType == "Start"){
-                    piece = new Start(params[0])
+                    piece = new Start(params[0], thick)
                 } else if (blockType == "Finish"){
-                    piece = new Finish(params[0])
+                    piece = new Finish(params[0], thick)
                 } else if (blockType == "Straight"){
-                    //size, direction
-                    piece = new Straight(Number.parseFloat(params[0]), params[1])
+                    //size, direction, width
+                    piece = new Straight(Number.parseFloat(params[0]), params[1], thick)
                 } else if (blockType == "LeftTurn"){
-                    piece = new LeftTurn(params[0])
+                    piece = new LeftTurn(params[0], thick)
                 } else if (blockType == "RightTurn"){
-                    piece = new RightTurn(params[0])
+                    piece = new RightTurn(params[0], thick)
                 } else if (blockType == "RampUp"){
-                    //theta, size, direction
-                    piece = new RampUp(Number.parseFloat(params[0]), Number.parseFloat(params[1]), params[2])
+                    //theta, size, direction, width
+                    piece = new RampUp(Number.parseFloat(params[0]), Number.parseFloat(params[1]), params[2], thick)
                 } else if (blockType == "RampDown"){
-                    //theta, size, direction
-                    piece = new RampDown(Number.parseFloat(params[0]), Number.parseFloat(params[1]), params[2])
+                    //theta, size, direction, width
+                    piece = new RampDown(Number.parseFloat(params[0]), Number.parseFloat(params[1]), params[2], thick)
                 }
 
                 piece.create(scene, world)
@@ -151,12 +154,14 @@ class Piece{
 
 //all pieces that can be a flat square
 class Block extends Piece{
-    constructor(width, height, length, direction = "N", size = 1, rails){
+    constructor(width, height, length, direction = "N", size = 1, thick_size = 1, rails){
         super(0, 0, 0, width, height, length, direction, rails)
         if (direction == "N" || direction == "S"){
-            this.length *= size
+            this.length *= size * thick_size
+            this.width *= thick_size
         } else if (direction == "E" || direction == "W") {
-            this.width *= size
+            this.width *= size * thick_size
+            this.length *= thick_size
         }
         this.name = "Block"
     }
@@ -309,8 +314,8 @@ class Block extends Piece{
 }
 
 class Checkpoint extends Block{
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N" || direction == "S"){
             this.length = 5
             this.rails = ["W", "E"]
@@ -344,8 +349,8 @@ class Checkpoint extends Block{
 }
 
 class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1 if all checkpoints are checked, sets all checkponits to unchecked
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N" || direction == "S"){
             this.length = 5
             this.rails = ["W", "E"]
@@ -362,14 +367,14 @@ class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1
 }
 
 class Flat extends Block{
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
     }
 }
 
 class Start extends Block{
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
             this.rails =  ["W", "E", "S"]
         } else if (direction == "S") {
@@ -385,8 +390,8 @@ class Start extends Block{
 }
 
 class Finish extends Block{
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
             this.rails =  ["W", "E", "N"]
         } else if (direction == "S") {
@@ -402,8 +407,8 @@ class Finish extends Block{
 }
 
 class Straight extends Block{
-    constructor(size = 1, direction = "N"){
-        super(10, 1, 10, direction, size, [])
+    constructor(size = 1, direction = "N", thick_size){
+        super(10, 1, 10, direction, size, thick_size, [])
         if (direction == "N" || direction == "S"){
             this.rails = ["W", "E"]
         } else if (direction == "W" || direction == "E") {
@@ -414,8 +419,8 @@ class Straight extends Block{
 }
 
 class RightTurn extends Block{
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
             this.rails = ["W", "N"]
         } else if (direction == "S") {
@@ -430,8 +435,8 @@ class RightTurn extends Block{
 }
 
 class LeftTurn extends Block{
-    constructor(direction = "N"){
-        super(10, 1, 10, direction, 1, [])
+    constructor(direction = "N", thick_size){
+        super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
             this.rails = ["E", "N"]
         } else if (direction == "S") {
@@ -447,12 +452,14 @@ class LeftTurn extends Block{
 
 class Ramp extends Piece {
     //theta == angle (radians) from x-z plane
-    constructor(width, height, length, direction = "N", theta, size = 1, rails){
+    constructor(width, height, length, direction = "N", theta, size = 1, thick_size = 1, rails){
         super(0, 0, 0, width, height, length, direction, rails)
         if (direction == "N" || direction == "S"){
             this.length *= size
+            this.width *= thick_size
         } else if (direction == "E" || direction == "W") {
             this.width *= size
+            this.length *= thick_size
         }
         this.name = "Ramp"
 
@@ -677,9 +684,9 @@ class Ramp extends Piece {
 }
 
 class RampUp extends Ramp{
-    constructor(theta = 15, size = 1, direction = "N"){
+    constructor(theta = 15, size = 1, direction = "N", thick_size){
         //convert degrees to radians
-        super(10, 1, 10, direction, theta * (Math.PI/180), size, ["W", "E"])
+        super(10, 1, 10, direction, theta * (Math.PI/180), size, thick_size, ["W", "E"])
         if (this.direction == "W" || this.direction == "E"){
             this.rails = ["N", "S"]
         }
@@ -689,9 +696,9 @@ class RampUp extends Ramp{
 }
 
 class RampDown extends Ramp{
-    constructor(theta = 15, size = 1, direction = "N"){
+    constructor(theta = 15, size = 1, direction = "N", thick_size){
         //convert degrees to radians
-        super(10, 1, 10, direction, theta * -(Math.PI/180), size, ["W", "E"])
+        super(10, 1, 10, direction, theta * -(Math.PI/180), size, thick_size, ["W", "E"])
         if (this.direction == "W" || this.direction == "E"){
             this.rails = ["N", "S"]
         }
