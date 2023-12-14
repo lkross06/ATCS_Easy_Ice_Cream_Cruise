@@ -116,8 +116,7 @@ export class Track{
                     console.log("loaded " + blockType + " " + params)
                 }
             }
-        })
-        .catch((e) => console.error(e)); //if you don't find it
+        }).catch((e) => console.error(e)); //if you don't find it
     }
 }
 
