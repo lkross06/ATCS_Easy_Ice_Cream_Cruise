@@ -476,7 +476,7 @@ class Ramp extends Piece {
         //add half the height of the ramp and subtract the full thickness of the ramp
         this.true_y = this.y + this.height - (this.true_height * 2)
 
-        if (direction == "S" || direction == "E"){
+        if (direction == "S" || direction == "W"){
             this.theta *= -1
             this.true_y -= this.height
         }
