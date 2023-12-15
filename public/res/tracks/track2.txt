@@ -1,7 +1,7 @@
 1
 1.5
 Start [N]
-Straight [1,N]
+Straight [3,N]
 Flat [N]
 Straight [7,N]
 Checkpoint [N]
@@ -27,5 +27,5 @@ Straight [1,W]
 Checkpoint [W]
 Straight [1,W]
 Flat [W]
-Straight [2,W]
+Straight [1,W]
 Finish [W]

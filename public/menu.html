@@ -133,11 +133,27 @@
             padding-bottom: 2%;
         }
         
-        .modal-preview {
-            margin: 0 5% 5% 0;
+        .modal-img-div {
+            position: relative;
             width: 90%;
             height: 90%;
+        }
+
+        .modal-preview {
+            margin: 0 5% 5% 0;
+            width: 100%;
+            height: 100%;
             border: 1px solid var(--bg-dark-grey);
+        }
+
+        .modal-difficulty { 
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: 0;
+            left: 0;
+            color: var(--darker-orange);
+            font-size: var(--font-size-3);
         }
 
         .track-pb {
@@ -219,7 +235,7 @@
           <h3 class="title3" id="host-game-title">Host Online Game</h3>
           <span id="multiplayer-host">
               <select name="multiplayer-host-track" id="tracks">
-                  <option value="Track 1">Track 1</option>
+                  <option value="Track 1">Track 1 </option>
                   <option value="Track 2">Track 2</option>
                   <option value="Track 3">Track 3</option>
                   <option value="Track 4">Track 4</option>
@@ -279,6 +295,41 @@
 
         })
 
+        function getDifficulty(num){
+            let rtn = ""
+
+            switch (num){
+                case 1:
+                    rtn += "★"
+                    break
+                case 2:
+                    rtn += "★★"
+                    break
+                case 3:
+                    rtn += "★"
+                    break
+                case 4:
+                    rtn += "★★★"
+                    break
+                case 5:
+                    rtn += "★★★★"
+                    break
+                case 6:
+                    rtn += "★★★"
+                    break
+                case 7:
+                    rtn += "★★★★★"
+                    break
+                case 8:
+                    rtn += "★★★★★"
+                    break
+            }
+
+            while (rtn.length < 5) rtn += "☆"
+
+            return rtn
+        }
+
         function create_track_modal(num){
             leaderboard = [ //TODO: get this from server
                 {"username":"--","time":"--"},
@@ -312,10 +363,22 @@
             imgclose.setAttribute("src", "./res/close.png")
             div2.appendChild(imgclose)
 
+            /** --- difficulty + preview --- **/
+            let imgdiv = document.createElement("div")
+            imgdiv.setAttribute("class", "modal-img-div")
+            div2.appendChild(imgdiv)
+
             let img = document.createElement("img")
             img.setAttribute("src", "../res/previews/track" + String(num) + ".png")
             img.setAttribute("class", "modal-preview")
-            div2.appendChild(img)
+            imgdiv.appendChild(img)
+
+            let difficulty = document.createElement("p")
+            difficulty.innerText = getDifficulty(num)
+            difficulty.setAttribute("class", "modal-difficulty")
+            imgdiv.appendChild(difficulty)
+
+            /** --------------------------- **/
 
             let span1 = document.createElement("span")
             span1.setAttribute("class", "track-leaderboard")
