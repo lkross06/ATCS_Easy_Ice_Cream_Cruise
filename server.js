@@ -7,9 +7,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // setting up the WebSocket!
 const WebSocket = require('ws')
 const socket = new WebSocket.Server({ port: 8008 })
+const fs = require("fs")
+const user_data_rel = "./user_data.json"
 
-// object containing all the users
-let users = {}
+//try to read user_data.json. if not, create a new empty file
+let users
+
+try { //read synchronously
+    users = JSON.parse(fs.readFileSync(user_data_rel))
+} catch (error) { //if file doesnt exist
+    fs.writeFileSync("./user_data.json", '{}') //make a new file with "{}"
+    users = {}
+}
+
+
 // object containing all the running games 
 let games = {}
 // object containing all he chat messages. max len of like 100 lets say. newest at the end. 
@@ -61,7 +72,23 @@ app.post("/submitsignup", (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (!(username in users)) {
-        users[username] = {"password": pswd, "friends": []} 
+        users[username] = {
+            "password": pswd, 
+            "friends": [],
+            "pbs": {
+                "track1":"--",
+                "track2":"--",
+                "track3":"--",
+                "track4":"--",
+                "track5":"--",
+                "track6":"--",
+                "track7":"--",
+                "track8":"--"
+            }
+        }
+        //rewrite file
+        //formatting taken from https://stackoverflow.com/questions/71091649/add-newline-after-each-key-value-using-json-stringify
+        fs.writeFileSync(user_data_rel, JSON.stringify(users, null, "\t").replaceAll("],\n\t\"", "],\n\n\t\""))
     }
     res.redirect("/menu")
 })
