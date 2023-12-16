@@ -27,7 +27,7 @@ function writeData(data, username = null, info1 = null, info2 = null){ //usernam
     fs.writeFileSync(rel, JSON.stringify(json, null, "\t").replaceAll("],\n\t\"", "],\n\n\t\""))
 }
 
-function readData(){ //returns json
+function readData(username = null, info1 = null, info2 = null){ //returns json
     let users
     try { //read synchronously
         users = JSON.parse(fs.readFileSync(rel))
@@ -35,7 +35,18 @@ function readData(){ //returns json
         fs.writeFileSync(rel, '{}') //make a new file with "{}"
         users = {}
     }
-    return users
+
+    //get the data they want
+    if (username == null){ //trying to create new file (old one was destroyed)
+        return users
+    } else if (info1 == null){ //trying to create new user
+        return users[username]
+    } else if (info2 == null){ //trying to change entire attribute of user profile (i.e friends list, pwd)
+        return users[username][info1]
+    } else { //trying to change one aspect of user profile (i.e. track 6 pb)
+        return users[username][info1][info2]
+    }
+    
 }
 
 //try to read user_data.json. if not, create a new empty file
@@ -79,7 +90,7 @@ app.post('/submitlogin', (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (username in users && pswd === users[username].password) {
-        res.redirect("/menu")
+        // res.redirect("/menu")
     } else {
         res.redirect("/login") 
     }
@@ -221,6 +232,16 @@ socket.on('connection', (ws) => {
                 y: msg.y,
                 z: msg.z
             }
+            socket.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(packet))
+                }
+            })
+        } else if (msg.method === "user_write"){ //update le user data
+            writeData(msg.data, msg.username, msg.info1, msg.info2)
+        } else if (msg.method === "user_read"){ //return le user data
+            let packet = readData(msg.username, msg.info1, msg.info2)
+
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify(packet))

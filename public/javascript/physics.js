@@ -543,17 +543,30 @@ function checkFinish(){
         //check for new pb
         let ss_path = "track" + String(trackValue) + "pb"
         let stored_pb = sessionStorage.getItem(ss_path)
+        let new_pb = getTimeElapsed()
+
         let stored_min = parseInt(stored_pb.slice(0,1))
         let stored_sec = parseFloat(stored_pb.slice(2))
-        let new_min = parseInt(getTimeElapsed().slice(0,1))
-        let new_sec = parseFloat(getTimeElapsed().slice(2))
+        let new_min = parseInt(new_pb.slice(0,1))
+        let new_sec = parseFloat(new_pb.slice(2))
 
         if (new_min < stored_min || (new_min == stored_min && new_sec < stored_sec) || stored_pb.length != 7){
           //we have a new personal best ladies and gentlemen!
           //TODO: rewrite user_data with new pb...
 
           document.getElementById("new_pb").style.display = "block"
-          sessionStorage.setItem(ss_path, getTimeElapsed())
+          sessionStorage.setItem(ss_path, new_pb)
+
+          if (ws.readyState === WebSocket.OPEN){ //rewrite user_data with new pb!
+            let packet = {
+              method: "user_write",
+              data: new_pb,
+              username: sessionStorage.getItem("username"),
+              info1: "pbs",
+              info2: "track" + String(trackValue)
+            } 
+            ws.send(JSON.stringify(packet))
+          }
         }
 
         document.getElementById("track-finish-time").innerText = getTimeElapsed()

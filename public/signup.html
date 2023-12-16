@@ -83,9 +83,6 @@
             <button type="submit" class="submit-button" id="submit-button" onclick="getUsername()">Create Account</button>
         </form>
     </div>
-    <script type="module">
-        import { readData, writeData, test } from "./userDataHandler.js"
-    </script>
     <script>
         let username = ""
         function validateInput() {
@@ -115,7 +112,7 @@
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)
 
-            //new account --> default trackpb settings
+            //since its a new acc we can just cheese the track pb session storage
             for (let num = 1; num < 9; num++){
                 i = String(num)
                 sessionStorage.setItem("track" + i + "pb", "--")
