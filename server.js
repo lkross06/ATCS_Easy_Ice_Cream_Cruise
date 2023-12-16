@@ -7,18 +7,39 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // setting up the WebSocket!
 const WebSocket = require('ws')
 const socket = new WebSocket.Server({ port: 8008 })
+const rel = "./user_data.json"
 const fs = require("fs")
-const user_data_rel = "./user_data.json"
+
+function writeData(data, username = null, info1 = null, info2 = null){ //username/info1/info2 are for finding path to data
+    let json = readData()
+
+    if (username == null){ //trying to create new file (old one was destroyed)
+        json = data
+    } else if (info1 == null){ //trying to create new user
+        json[username] = data
+    } else if (info2 == null){ //trying to change entire attribute of user profile (i.e friends list, pwd)
+        json[username][info1] = data
+    } else { //trying to change one aspect of user profile (i.e. track 6 pb)
+        json[username][info1][info2] = data
+    }
+
+    //formatting taken from https://stackoverflow.com/questions/71091649/add-newline-after-each-key-value-using-json-stringify
+    fs.writeFileSync(rel, JSON.stringify(json, null, "\t").replaceAll("],\n\t\"", "],\n\n\t\""))
+}
+
+function readData(){ //returns json
+    let users
+    try { //read synchronously
+        users = JSON.parse(fs.readFileSync(rel))
+    } catch (error) { //if file doesnt exist
+        fs.writeFileSync(rel, '{}') //make a new file with "{}"
+        users = {}
+    }
+    return users
+}
 
 //try to read user_data.json. if not, create a new empty file
-let users
-
-try { //read synchronously
-    users = JSON.parse(fs.readFileSync(user_data_rel))
-} catch (error) { //if file doesnt exist
-    fs.writeFileSync("./user_data.json", '{}') //make a new file with "{}"
-    users = {}
-}
+let users = readData()
 
 
 // object containing all the running games 
@@ -44,10 +65,6 @@ app.get("/menu", (req, res) => {
 app.get("/track1", (req, res) => {
     res.sendFile(path.join(__dirname, '/public/track.html'));
 });
-
-app.get("/res/track.jpg", (req, res) => {
-    res.sendFile(__dirname+"/public/res/track.jpg")
-})
 
 app.get("/globalVars.js", (req, res) => {
     res.sendFile(__dirname+"/globalVars.js")
@@ -87,8 +104,7 @@ app.post("/submitsignup", (req, res) => {
             }
         }
         //rewrite file
-        //formatting taken from https://stackoverflow.com/questions/71091649/add-newline-after-each-key-value-using-json-stringify
-        fs.writeFileSync(user_data_rel, JSON.stringify(users, null, "\t").replaceAll("],\n\t\"", "],\n\n\t\""))
+        writeData(users)
     }
     res.redirect("/menu")
 })

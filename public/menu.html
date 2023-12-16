@@ -343,7 +343,7 @@
                 {"username":"--","time":"--"},
                 {"username":"--","time":"--"}
             ]
-            pb = "--" //TODO: get this user's pb from server
+            pb = sessionStorage.getItem("track" + String(num) + "pb") //TODO: get this user's pb from server
 
             //level 1
             let div1 = document.createElement("div")

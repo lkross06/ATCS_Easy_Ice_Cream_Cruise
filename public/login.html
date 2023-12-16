@@ -102,6 +102,12 @@
         function getUsername() {
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)
+
+            //TODO: use websockets to read user_data.json for times
+            for (let num = 1; num < 9; num++){
+                i = String(num)
+                sessionStorage.setItem("track" + i + "pb", "--")
+            }
         }
     </script>
 </body>

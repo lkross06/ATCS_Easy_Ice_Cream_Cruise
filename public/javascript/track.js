@@ -108,12 +108,10 @@ export class Track{
                     piece.snapTo(prev)
                     this.pieces.push(piece)
                     prev = piece
-                    console.log("loaded " + blockType + " " + params)
                     if (blockType == "Checkpoint") this.checkpoints.push(piece)
                 } else if (this.pieces.length == 0){
                     this.pieces.push(piece)
                     prev = piece
-                    console.log("loaded " + blockType + " " + params)
                 }
             }
         }).catch((e) => console.error(e)); //if you don't find it

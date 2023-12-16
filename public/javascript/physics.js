@@ -540,9 +540,22 @@ function checkFinish(){
         document.getElementById("esc-menu").style.display = "none"
         document.getElementById("settings-menu").style.display = "none"
         
-        //TODO: this code is run when the player reaches the finish line
-        //the final time is given by "getTimeElapsed()"", can you check if its the new PB for
-        //this track? the track name is given by "track.name"
+        //check for new pb
+        let ss_path = "track" + String(trackValue) + "pb"
+        let stored_pb = sessionStorage.getItem(ss_path)
+        let stored_min = parseInt(stored_pb.slice(0,1))
+        let stored_sec = parseFloat(stored_pb.slice(2))
+        let new_min = parseInt(getTimeElapsed().slice(0,1))
+        let new_sec = parseFloat(getTimeElapsed().slice(2))
+
+        if (new_min < stored_min || (new_min == stored_min && new_sec < stored_sec) || stored_pb.length != 7){
+          //we have a new personal best ladies and gentlemen!
+          //TODO: rewrite user_data with new pb...
+
+          document.getElementById("new_pb").style.display = "block"
+          sessionStorage.setItem(ss_path, getTimeElapsed())
+        }
+
         document.getElementById("track-finish-time").innerText = getTimeElapsed()
         document.getElementById("track-finish-track-name").innerText = track.name
 
