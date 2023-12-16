@@ -90,7 +90,7 @@ app.post('/submitlogin', (req, res) => {
     let username = req.body.username
     let pswd = req.body.password
     if (username in users && pswd === users[username].password) {
-        // res.redirect("/menu")
+        res.redirect("/menu")
     } else {
         res.redirect("/login") 
     }

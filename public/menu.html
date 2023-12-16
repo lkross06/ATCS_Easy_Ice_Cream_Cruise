@@ -266,6 +266,27 @@
             
             // Redirect the user
             window.location.href = redirectUrl;    
+        } else {
+            let ws = new WebSocket("ws://" + domainName + ":8008")
+
+            let packet = {
+                method: "user_read",
+                username: sessionStorage.getItem("username"),
+                info1: "pbs",
+                info2: null
+            }
+
+            ws.onopen = (event) => {
+                ws.send(JSON.stringify(packet))
+            }
+
+            ws.onmessage = message => {
+                message = JSON.parse(message.data)
+                for (let num = 1; num < 9; num++){
+                    let i = String(num)
+                    sessionStorage.setItem("track" + i + "pb", message["track" + i])
+                }   
+            }   
         }
 
         if(sessionStorage.getItem("code") != "null") { //keep their last game in the pocket
@@ -315,7 +336,7 @@
                     rtn += "★★★★"
                     break
                 case 6:
-                    rtn += "★★★"
+                    rtn += "★★★★"
                     break
                 case 7:
                     rtn += "★★★★★"

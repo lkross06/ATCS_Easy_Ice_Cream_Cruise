@@ -111,12 +111,6 @@
         function getUsername() {
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)
-
-            //since its a new acc we can just cheese the track pb session storage
-            for (let num = 1; num < 9; num++){
-                i = String(num)
-                sessionStorage.setItem("track" + i + "pb", "--")
-            }
         }
     </script>
 </body>

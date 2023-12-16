@@ -102,28 +102,6 @@
         function getUsername() {
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)
-
-            //cant cheese track session storage, gotta use a websocker
-            //TODO: not working rip
-            // let ws = new WebSocket("ws://localhost:8008")
-
-            // let packet = {
-            //     username: username,
-            //     info1: "pbs",
-            //     info2: null
-            // }
-
-            // ws.onopen = (e) => {
-            //     ws.send(JSON.stringify(packet))
-            //     ws.onmessage = message => {
-            //         console.log(message)
-            //         for (let num = 1; num < 9; num++){
-            //             i = String(num)
-            //             sessionStorage.setItem("track" + i + "pb", message["track" + i])
-            //         }
-            //     }
-            // }
-            
         }
     </script>
 </body>

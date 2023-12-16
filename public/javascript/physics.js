@@ -79,7 +79,7 @@ var checkpoints
 //get the number in the url-encoded data
 const params = new URLSearchParams(window.location.search);
 var trackValue = params.get('track')
-//if the parameter is invalid or doesn't exist, send to 
+//if the parameter is invalid or doesn't exist, send to
 trackValue = (!isNaN(parseInt(trackValue)))? parseInt(trackValue) : 0
 
 
@@ -552,7 +552,6 @@ function checkFinish(){
 
         if (new_min < stored_min || (new_min == stored_min && new_sec < stored_sec) || stored_pb.length != 7){
           //we have a new personal best ladies and gentlemen!
-          //TODO: rewrite user_data with new pb...
 
           document.getElementById("new_pb").style.display = "block"
           sessionStorage.setItem(ss_path, new_pb)
