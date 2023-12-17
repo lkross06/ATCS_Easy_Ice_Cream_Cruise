@@ -113,6 +113,37 @@
         font-size: var(--font-size-1);
         text-align: center;
       }
+      
+
+      #settings-menu {
+        max-height: 500px; 
+        overflow-y: scroll; 
+        padding: 20px;
+      }
+      
+      .settings-section {
+          margin-bottom: 20px;
+      }
+      
+      .keybind {
+          margin: 10px 0;
+      }
+      
+      .keybind input[type="text"] {
+          width: 30px;
+          text-align: center;
+      } 
+
+      #volume-slider {
+        margin: 10px;
+      }
+        
+      #refresh-rate {
+        position: absolute;
+        bottom:0;
+        left:0;
+      }
+    
     </style>
   </head>
   <body>
@@ -121,7 +152,7 @@
     <div id="countdown" class="text-border"></div>
 
     <div id="instructions" class="text-border">
-      WASD/ARROWS to move
+      <span id="movement-binds">WASD</span>/ARROWS to move
       <br>
       SPACE to brake
       <br>
@@ -139,6 +170,8 @@
       <div id="speed-number">0</div>
       <div id="speed-units">mph</div>
     </div>
+
+    <div id="refresh-rate" class="text-border">0ms</div>
 
     <div id="time" class="text-border">0:00.00</div>
 
@@ -174,8 +207,30 @@
       </div>
       <div class="modal-content" id="settings-menu">
         <img onclick="goToEscMenu()" class="close-menu" src="./res/close.png">
-        <p>there's nothing here yet!</p>
+        <div class="settings-section">
+          <h1>Settings</h1>
+          <div class="keybind">
+              <label for="forward-key">Move Forward: </label>
+              <input type="text" id="forward-key" value="W" maxlength="1">
+          </div>
+          <div class="keybind">
+              <label for="backward-key">Move Backward: </label>
+              <input type="text" id="backward-key" value="S" maxlength="1">
+          </div>
+          <div class="keybind">
+            <label for="backward-key">Turn Left: </label>
+            <input type="text" id="left-key" value="A" maxlength="1">
+          </div>
+          <div class="keybind">
+            <label for="backward-key">Turn Right: </label>
+            <input type="text" id="right-key" value="D" maxlength="1">
+          </div>
+        </div>
+
+        <!-- Save and Cancel Buttons -->
+        <button onclick="saveSettings()" class="submit-button">Save</button>
       </div>
+
       <div class="modal-content" id="track-finish">
         <img onclick="hideEscapeMenu()" class="close-menu" src="./res/close.png">
         <h2 class="title2"><span id="track-finish-track-name"></span> Complete!</h2>

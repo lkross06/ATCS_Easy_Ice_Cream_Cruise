@@ -231,8 +231,9 @@ function getWheelPositions(vehicle) {
 
 function checkSkid(){
   let speed = Math.abs(vehicle.currentVehicleSpeedKmHour)
-  console.log(vehicle.sliding)
-  if ((speed > 30 && keys_pressed[32]) || (speed > 120 && Math.abs(vehicle.wheelInfos[2].steering) > getMaxSteerVal(speed) * 0.75) || vehicle.sliding){
+  if (vehicle.sliding) return true
+
+  if ((speed > 30 && keys_pressed[32]) || (speed > 120 && Math.abs(vehicle.wheelInfos[2].steering) > getMaxSteerVal(speed) * 0.75)){
     for (let piece of track.pieces){
       let result = [];
       let a = []
@@ -420,7 +421,15 @@ function reset(){
   }
 }
 
+function getRefreshRate(timestamp){ //return this client's refresh rate
+  return Math.round(timestamp / total_renders)
+}
+
+var total_renders = 0 //total number of times render() was run
+
 function render(timestamp) {
+  total_renders += 1
+  document.getElementById("refresh-rate").innerText = String(getRefreshRate(timestamp)) + "ms"
   // timestamp should == the refresh rate 
   // add up diff of timestamps
   // then do a game tick - increase accell, move car, etc
@@ -534,12 +543,19 @@ function updateUI(){
     let new_speed = vehicle.currentVehicleSpeedKmHour * 0.621371
     if (new_speed > -1.7 && new_speed < 1.7) new_speed = 0 
     document.getElementById("speed-number").innerText = 
-    Math.floor(new_speed).toString() //1km = 0.621371mi
+    Math.floor(Math.abs(new_speed)).toString() //1km = 0.621371mi
   }
+
+  //we can always update this
+  let forward = String.fromCharCode(parseInt(sessionStorage.getItem("forwardKey")));
+  let backward = String.fromCharCode(parseInt(sessionStorage.getItem("backwardKey")));
+  let left = String.fromCharCode(parseInt(sessionStorage.getItem("leftKey")));
+  let right = String.fromCharCode(parseInt(sessionStorage.getItem("rightKey")));
+
+  document.getElementById("movement-binds").innerText = (forward + left + backward + right).toUpperCase()
 
   //track name is done during initialization to save time
 
-  //TODO: make this work with laps logic
   document.getElementById("laps").innerText = "Lap " + track.sendLaps()
 }
 
@@ -659,10 +675,16 @@ function getMaxSteerVal(speed){
 function navigate() {
     let speed = vehicle.currentVehicleSpeedKmHour
 
-    let go_forward = keys_pressed[87] || keys_pressed[38]
-    let go_backward = keys_pressed[83] || keys_pressed[40]
-    let turn_left = keys_pressed[65] || keys_pressed[37]
-    let turn_right = keys_pressed[68] || keys_pressed[39]
+    let forward_key = parseInt(sessionStorage.getItem("forwardKey"))
+    let backward_key = parseInt(sessionStorage.getItem("backwardKey"))
+    let left_key = parseInt(sessionStorage.getItem("leftKey"))
+    let right_key = parseInt(sessionStorage.getItem("rightKey"))
+
+
+    let go_forward = keys_pressed[forward_key] || keys_pressed[38]
+    let go_backward = keys_pressed[backward_key] || keys_pressed[40]
+    let turn_left = keys_pressed[left_key] || keys_pressed[37]
+    let turn_right = keys_pressed[right_key] || keys_pressed[39]
     let use_brake = keys_pressed[32]
 
     if (countdown <= 0){

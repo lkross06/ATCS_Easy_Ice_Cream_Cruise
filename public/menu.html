@@ -316,6 +316,11 @@
                     }
                 }
             }   
+
+            sessionStorage.setItem("forwardKey", "w".charCodeAt(0))
+            sessionStorage.setItem("backwardKey", "s".charCodeAt(0))
+            sessionStorage.setItem("leftKey", "a".charCodeAt(0))
+            sessionStorage.setItem("rightKey", "d".charCodeAt(0))
         }
 
         if(sessionStorage.getItem("code") != "null") { //keep their last game in the pocket
