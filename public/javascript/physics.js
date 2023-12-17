@@ -211,7 +211,7 @@ function createSkidMarkAtPosition(position) {
 
   // Adjust position and rotation based on the vehicle's orientation and wheel position
   skidMesh.position.copy(position);
-  skidMesh.position.y -= 0.49
+  skidMesh.position.y -= 0.45
   skidMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
 
   scene.add(skidMesh);
@@ -725,8 +725,8 @@ function navigate() {
       //between pi/16 and pi/64 when speed is between (0, 250)
       let maxSteerVal = getMaxSteerVal(speed)
 
-      //functional based increment between 0.005 and 0.0001 when the speed is between (0, 250)
-      let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.005
+      //functional based increment between 0.006 and 0.0001 when the speed is between (0, 250)
+      let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.006
       if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
 
       if (turn_left && !turn_right){ //left
