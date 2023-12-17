@@ -259,6 +259,26 @@
     <script type="module">
         import {domainName} from "../globalVars.js"
 
+        function getSmallestTime(a, b){ //compares two strings in format "m:ss.ss"
+            if (a == "--"){
+                return b
+            } else if (b == "--"){
+                return a
+            } //even if both are "--" it returns "--"
+
+            let a_min = parseInt(a.slice(0,1))
+            let a_sec = parseFloat(a.slice(2))
+            let b_min = parseInt(b.slice(0,1))
+            let b_sec = parseFloat(b.slice(2))
+
+            if (a_min < b_min || (a_min == b_min && a_sec < b_sec)){
+                return a
+            }
+            return b
+        }
+
+        let mickey = "haha"
+
         // womp womp the user tried to hack the system and bypass login :(
         if(sessionStorage.getItem("username") === null) {
             // Ensure the redirect URL is correctly formed
@@ -268,11 +288,12 @@
             window.location.href = redirectUrl;    
         } else {
             let ws = new WebSocket("ws://" + domainName + ":8008")
+            let username = sessionStorage.getItem("username")
 
             let packet = {
                 method: "user_read",
-                username: sessionStorage.getItem("username"),
-                info1: "pbs",
+                username: null,
+                info1: null,
                 info2: null
             }
 
@@ -282,10 +303,18 @@
 
             ws.onmessage = message => {
                 message = JSON.parse(message.data)
+
+                //get this user's pbs
                 for (let num = 1; num < 9; num++){
-                    let i = String(num)
-                    sessionStorage.setItem("track" + i + "pb", message["track" + i])
-                }   
+                    sessionStorage.setItem("track" + String(num) + "pb", message[username]["pbs"]["track" + String(num)])
+                } 
+
+                //now get the top 8 scores on each track
+                for (let num = 1; num < 9; num++){
+                    for (let user in message){
+                        console.log(message[user]["pbs"]["track" + String(num)])
+                    }
+                }
             }   
         }
 

@@ -194,9 +194,69 @@ world.addEventListener('postStep', function() {
 // });
 // world.add(planeBody)
 
-/**
-* Main
-**/
+
+let skidArr = []
+
+function addSkidMarks(vehicle) {
+  const skidPositions = getWheelPositions(vehicle); 
+  skidPositions.forEach(position => {
+      createSkidMarkAtPosition(position);
+  });
+}
+
+function createSkidMarkAtPosition(position) {
+  const skidGeometry = new THREE.PlaneGeometry(0.5, 0.5);
+  const skidMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  const skidMesh = new THREE.Mesh(skidGeometry, skidMaterial);
+
+  // Adjust position and rotation based on the vehicle's orientation and wheel position
+  skidMesh.position.copy(position);
+  skidMesh.position.y -= 0.49
+  skidMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+
+  scene.add(skidMesh);
+  skidArr.push(skidMesh)
+}
+
+function getWheelPositions(vehicle) {
+  let wheelPositions = [];
+  for (let wheel of vehicle.wheelInfos) {
+      // Assuming each wheel has a worldTransform property
+      let wheelPosition = new THREE.Vector3();
+      wheelPosition.copy(wheel.worldTransform.position);
+      wheelPositions.push(wheelPosition);
+  }
+  return wheelPositions;
+}
+
+function checkSkid(){
+  let speed = Math.abs(vehicle.currentVehicleSpeedKmHour)
+  console.log(vehicle.sliding)
+  if ((speed > 30 && keys_pressed[32]) || (speed > 120 && Math.abs(vehicle.wheelInfos[2].steering) > getMaxSteerVal(speed) * 0.75) || vehicle.sliding){
+    for (let piece of track.pieces){
+      let result = [];
+      let a = []
+      let b = []
+      for (let i of wheelBodies){
+        a.push(i)
+        b.push(piece.body)
+      }
+      world.narrowphase.getContacts(a, b, world, result, [], [], []);
+      var overlaps = result.length > 0;
+      if (overlaps){
+        return true
+      } 
+    }
+  }
+  return false;
+}
+
+function delSkid() {
+  if (skidArr.length > 1000) {
+      let oldSkidMark = skidArr.shift();
+      scene.remove(oldSkidMark);
+  }
+}
 
 function updatePhysics() {
   world.step(1/60);
@@ -208,7 +268,10 @@ function updatePhysics() {
     updateCheckpoints()
     checkFinish()
   }
-  
+  if (checkSkid()) {
+    addSkidMarks(vehicle);
+    delSkid()
+  }
   //if "r" is pressed or car is below the map or too high above the map
   if (keys_pressed[82] || chassisBody.position.y < -20 || chassisBody.position.y > 400){ 
     reset()
@@ -321,6 +384,10 @@ function renderOpp(opp, xpos, ypos, zpos) {
 }
 
 function reset(){
+  for (let i = 0; i <= skidArr.length; i++){
+    let oldSkidMark1 = skidArr.shift();
+    scene.remove(oldSkidMark1);
+  }
   let ms_elapsed = Date.now() - last_reset
   if (ms_elapsed > 500){
 
@@ -585,6 +652,10 @@ function checkFinish(){
   
 }
 
+function getMaxSteerVal(speed){
+  return (Math.PI / (((1/5) * Math.abs(speed)) + 16))
+}
+
 function navigate() {
     let speed = vehicle.currentVehicleSpeedKmHour
 
@@ -602,6 +673,11 @@ function navigate() {
       let engineForce = (-4 * Math.abs(speed)) + 1200
       if (engineForce > 1200) engineForce = 1200 //cap
       if (engineForce < 0) engineForce = 0
+
+      vehicle.setBrake(0, 0);
+      vehicle.setBrake(0, 1);
+      vehicle.setBrake(0, 2);
+      vehicle.setBrake(0, 3); 
 
       if (use_brake){ //brake
         //brake has priority over movement
@@ -622,10 +698,10 @@ function navigate() {
           vehicle.applyEngineForce(-engineForce / 2, 2);
           vehicle.applyEngineForce(-engineForce / 2, 3);
       } else if (!go_forward && go_backward) { //backward
-            vehicle.applyEngineForce(engineForce / 4, 0);
-            vehicle.applyEngineForce(engineForce / 4, 1);
-            vehicle.applyEngineForce(engineForce / 4, 2);
-            vehicle.applyEngineForce(engineForce / 4, 3);
+          vehicle.applyEngineForce(engineForce / 4, 0);
+          vehicle.applyEngineForce(engineForce / 4, 1);
+          vehicle.applyEngineForce(engineForce / 4, 2);
+          vehicle.applyEngineForce(engineForce / 4, 3);
       } else {
         if (speed > 0){
           vehicle.applyEngineForce(-engineForce / 64, 0);
@@ -646,8 +722,8 @@ function navigate() {
           vehicle.setBrake(brakePower, 3);
       }
       
-      //between pi/16 and pi/64 when speed is between (0, 250)w
-      let maxSteerVal = Math.PI / (((1/5) * Math.abs(speed)) + 16)
+      //between pi/16 and pi/64 when speed is between (0, 250)
+      let maxSteerVal = getMaxSteerVal(speed)
 
       //functional based increment between 0.005 and 0.0001 when the speed is between (0, 250)
       let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.005

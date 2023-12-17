@@ -124,5 +124,33 @@
 			"track7": "--",
 			"track8": "--"
 		}
+	},
+	"lucas": {
+		"password": "h",
+		"friends": [],
+		"pbs": {
+			"track1": "0:33.13",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		}
+	},
+	"ecvil": {
+		"password": "h",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		}
 	}
 }
