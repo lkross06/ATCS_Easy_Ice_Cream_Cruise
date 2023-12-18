@@ -17,10 +17,10 @@ function handleKeyPress(e) {
 function showEscapeMenu() {
     document.getElementById('modal').style.display = "block"
 
-    document.getElementById('forward-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("forwardKey")));
-    document.getElementById('backward-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("backwardKey")));
-    document.getElementById('left-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("leftKey")));
-    document.getElementById('right-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("rightKey")));
+    document.getElementById('forward-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("forwardKey"))).toUpperCase();
+    document.getElementById('backward-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("backwardKey"))).toUpperCase();
+    document.getElementById('left-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("leftKey"))).toUpperCase();
+    document.getElementById('right-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("rightKey"))).toUpperCase();
 }
 
 function hideEscapeMenu() {
@@ -28,6 +28,8 @@ function hideEscapeMenu() {
     document.getElementById('modal').style.display = "none"
     document.getElementById("esc-menu").style.display = "flex"
     document.getElementById("settings-menu").style.display = "none"
+
+    console.log(sessionStorage.getItem("forwardKey"))
 }
 
 function goToSettingsMenu() {
@@ -50,6 +52,8 @@ function saveSettings() {
     const leftKey = document.getElementById('left-key').value.toUpperCase();
     const rightKey = document.getElementById('right-key').value.toUpperCase();
 
+    console.log(forwardKey.charCodeAt(0))
+
     sessionStorage.setItem("forwardKey", forwardKey.charCodeAt(0))
     sessionStorage.setItem("backwardKey", backwardKey.charCodeAt(0))
     sessionStorage.setItem("leftKey", leftKey.charCodeAt(0))
@@ -67,6 +71,11 @@ document.querySelectorAll('.keybind input').forEach(input => {
         event.preventDefault();
         
         // Sets the input value to the pressed key
-        input.value = event.key.toUpperCase();
+        let keycode = event.keyCode
+
+        //if its a printable character (not esc) and its not space or R (already bound)
+        if (keycode > 33 && keycode < 126 && keycode !== 82){
+            input.value = event.key.toUpperCase();
+        } 
     });
 });

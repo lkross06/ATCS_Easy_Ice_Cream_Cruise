@@ -312,15 +312,16 @@
                 //now get the top 8 scores on each track
                 for (let num = 1; num < 9; num++){
                     for (let user in message){
-                        console.log(message[user]["pbs"]["track" + String(num)])
+                        //console.log(message[user]["pbs"]["track" + String(num)])
                     }
                 }
             }   
 
-            sessionStorage.setItem("forwardKey", "w".charCodeAt(0))
-            sessionStorage.setItem("backwardKey", "s".charCodeAt(0))
-            sessionStorage.setItem("leftKey", "a".charCodeAt(0))
-            sessionStorage.setItem("rightKey", "d".charCodeAt(0))
+            //TODO: set up their keybinds properly from user_data
+            sessionStorage.setItem("forwardKey", "W".charCodeAt(0))
+            sessionStorage.setItem("backwardKey", "S".charCodeAt(0))
+            sessionStorage.setItem("leftKey", "A".charCodeAt(0))
+            sessionStorage.setItem("rightKey", "D".charCodeAt(0))
         }
 
         if(sessionStorage.getItem("code") != "null") { //keep their last game in the pocket
