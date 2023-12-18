@@ -4,6 +4,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cannon-es": "^0.20.0",
     "cannon-es-debugger": "^1.0.0",

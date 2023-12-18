@@ -9,6 +9,9 @@ const WebSocket = require('ws')
 const socket = new WebSocket.Server({ port: 8008 })
 const rel = "./user_data.json"
 const fs = require("fs")
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // idk the wiki said to do this 
+
 
 function writeData(data, username = null, info1 = null, info2 = null){ //username/info1/info2 are for finding path to data
     let json = readData()
@@ -85,50 +88,74 @@ app.get("/track.js", (req, res) => {
     res.sendFile(__dirname+"/public/javascript/track.js")
 })
 
-// all post paths. mainly using websockets so not many. 
 app.post('/submitlogin', (req, res) => {
-    let username = req.body.username
-    let pswd = req.body.password
-    if (username in users && pswd === users[username].password) {
-        res.redirect("/menu")
+    let username = req.body.username;
+    let pswd = req.body.password;
+
+    if (username in users) {
+        // compare submitted password with stored hash
+        bcrypt.compare(pswd, users[username].password, function(err, result) {
+            if (result) {
+                // passwords match
+                res.redirect("/menu");
+            } else {
+                // passwords don't match or error occurred
+                res.redirect("/login");
+            }
+        });
     } else {
-        res.redirect("/login") 
+        // username does not exist
+        res.redirect("/login");
     }
 });
 
 app.post("/submitsignup", (req, res) => {
-    let username = req.body.username
-    let pswd = req.body.password
+    let username = req.body.username;
+    let pswd = req.body.password;
+
     if (!(username in users)) {
-        users[username] = {
-            "password": pswd, 
-            "friends": [],
-            "pbs": {
-                "track1":"--",
-                "track2":"--",
-                "track3":"--",
-                "track4":"--",
-                "track5":"--",
-                "track6":"--",
-                "track7":"--",
-                "track8":"--"
-            },
-            "keybinds": {
-                "forward": 38,
-                "backward": 40,
-                "left": 37,
-                "right": 39
+        // hash the password before saving it
+        bcrypt.hash(pswd, saltRounds, function(err, hash) {
+            if (err) {
+                // Handle error
+                alert("Error, please try again.")
+            } else {
+                // save the user with the hashed password
+                users[username] = {
+                    "password": hash, // store the hash instead of the plain password
+                    "friends": [],
+                    "pbs": {
+                        "track1":"--",
+                        "track2":"--",
+                        "track3":"--",
+                        "track4":"--",
+                        "track5":"--",
+                        "track6":"--",
+                        "track7":"--",
+                        "track8":"--"
+                    },
+                    "keybinds": {
+                        "forward": 38,
+                        "backward": 40,
+                        "left": 37,
+                        "right": 39
+                    }                };
+                // rewrite file
+                writeData(users);
+                res.redirect("/menu");
             }
-        }
-        //rewrite file
-        writeData(users)
+        });
+    } else {
+        // Handle case where username already exists
+        res.redirect("/signup"); // Redirect back to signup or another appropriate response
     }
-    res.redirect("/menu")
-})
+});
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
+
 
 // here beginnith websockets
 

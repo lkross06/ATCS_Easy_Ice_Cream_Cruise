@@ -38,5 +38,25 @@
 			"left": 65,
 			"right": 68
 		}
+	},
+	"test123": {
+		"password": "$2b$10$Nl9NHe1m4ayLlBdHk6X3Pu4Q9itC.bm40R0/q0GevV1yoCH38yDCC",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }
