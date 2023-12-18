@@ -112,6 +112,12 @@ app.post("/submitsignup", (req, res) => {
                 "track6":"--",
                 "track7":"--",
                 "track8":"--"
+            },
+            "keybinds": {
+                "forward": 38,
+                "backward": 40,
+                "left": 37,
+                "right": 39
             }
         }
         //rewrite file

@@ -7,7 +7,7 @@ let ws = new WebSocket("ws://"+domainName+":8008")
 
 if (sessionStorage.getItem("code") === "null") {
   // close websocket
-  ws.close()
+  //ws.close()
   console.log(ws)
 }
 var container = document.querySelector('body'),
@@ -20,7 +20,7 @@ renderer = new THREE.WebGLRenderer(renderConfig);
 const cameraOffset = new THREE.Vector3(0, 4, -10);
 
 // car physics body
-var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.3, 2));
+var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
 // did u know F1 cars are only 100 kg
 var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
 
@@ -31,7 +31,7 @@ chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 // car visual body
 let chassisColor = 0xB30E16
 let wheelColor = 0x43464B
-var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
+var cargeometry = new THREE.BoxGeometry(2, 0.75, 4); // double chasis shape
 var material = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.DoubleSide});
 var box = new THREE.Mesh(cargeometry, material);
 scene.add(box);
@@ -547,12 +547,57 @@ function updateUI(){
   }
 
   //we can always update this
-  let forward = String.fromCharCode(parseInt(sessionStorage.getItem("forwardKey")));
-  let backward = String.fromCharCode(parseInt(sessionStorage.getItem("backwardKey")));
-  let left = String.fromCharCode(parseInt(sessionStorage.getItem("leftKey")));
-  let right = String.fromCharCode(parseInt(sessionStorage.getItem("rightKey")));
+  let forward = parseInt(sessionStorage.getItem("forwardKey"))
+  let backward = parseInt(sessionStorage.getItem("backwardKey"))
+  let left = parseInt(sessionStorage.getItem("leftKey"))
+  let right = parseInt(sessionStorage.getItem("rightKey"))
 
-  document.getElementById("movement-binds").innerText = (forward + left + backward + right).toUpperCase()
+  let keys = [forward, backward, left, right]
+  let arrow_counter = 0
+
+  for (let i = 0; i < keys.length; i++){
+    let keycode = keys[i]
+    if (keycode >= 37 && keycode <= 40) {
+      arrow_counter += 1
+      let arrows = ["←", "↑", "→", "↓"]
+      keys[i] = arrows[keycode - 37]
+    } else {
+      keys[i] = String.fromCharCode(keycode)
+    }
+  }
+  
+  let newtext
+  if (arrow_counter == 4) {
+    newtext = "ARROWS"
+  } else {
+    newtext = (keys[0] + keys[2] + keys[1] + keys[3]).toUpperCase()
+  }
+  //see if we need to send info to server
+  if (newtext !== document.getElementById("movement-binds").innerText){
+    //we have new keybinds! lets tell the server
+    if (ws.readyState === WebSocket.OPEN){ //rewrite user_data with new pb!
+      let json_ids = ["forward", "backward", "left", "right"]
+
+      for (let id of json_ids){
+
+        let new_bind = parseInt(sessionStorage.getItem(id + "Key"))
+
+        let packet = {
+          method: "user_write",
+          data: new_bind,
+          username: sessionStorage.getItem("username"),
+          info1: "keybinds",
+          info2: id
+        }
+  
+        ws.send(JSON.stringify(packet))
+      }
+    }
+  }
+
+
+  document.getElementById("movement-binds").innerText = newtext
+
 
   //track name is done during initialization to save time
 
@@ -681,10 +726,15 @@ function navigate() {
     let right_key = parseInt(sessionStorage.getItem("rightKey"))
 
 
-    let go_forward = keys_pressed[forward_key] || keys_pressed[38]
-    let go_backward = keys_pressed[backward_key] || keys_pressed[40]
-    let turn_left = keys_pressed[left_key] || keys_pressed[37]
-    let turn_right = keys_pressed[right_key] || keys_pressed[39]
+    // let go_forward = keys_pressed[forward_key] || keys_pressed[38]
+    // let go_backward = keys_pressed[backward_key] || keys_pressed[40]
+    // let turn_left = keys_pressed[left_key] || keys_pressed[37]
+    // let turn_right = keys_pressed[right_key] || keys_pressed[39]
+    let go_forward = keys_pressed[forward_key]
+    let go_backward = keys_pressed[backward_key]
+    let turn_left = keys_pressed[left_key]
+    let turn_right = keys_pressed[right_key]
+
     let use_brake = keys_pressed[32]
 
     if (countdown <= 0){

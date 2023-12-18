@@ -315,13 +315,18 @@
                         //console.log(message[user]["pbs"]["track" + String(num)])
                     }
                 }
+
+                //get their keybinds if they haven't been initialized already
+                if (sessionStorage.getItem("forwardKey") == null){
+                    sessionStorage.setItem("forwardKey", String(message[username]["keybinds"]["forward"]))
+                    sessionStorage.setItem("backwardKey", String(message[username]["keybinds"]["backward"]))
+                    sessionStorage.setItem("leftKey", String(message[username]["keybinds"]["left"]))
+                    sessionStorage.setItem("rightKey", String(message[username]["keybinds"]["right"]))
+                }
+                
+
             }   
 
-            //TODO: set up their keybinds properly from user_data
-            sessionStorage.setItem("forwardKey", "W".charCodeAt(0))
-            sessionStorage.setItem("backwardKey", "S".charCodeAt(0))
-            sessionStorage.setItem("leftKey", "A".charCodeAt(0))
-            sessionStorage.setItem("rightKey", "D".charCodeAt(0))
         }
 
         if(sessionStorage.getItem("code") != "null") { //keep their last game in the pocket

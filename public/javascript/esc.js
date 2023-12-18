@@ -17,10 +17,24 @@ function handleKeyPress(e) {
 function showEscapeMenu() {
     document.getElementById('modal').style.display = "block"
 
-    document.getElementById('forward-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("forwardKey"))).toUpperCase();
-    document.getElementById('backward-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("backwardKey"))).toUpperCase();
-    document.getElementById('left-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("leftKey"))).toUpperCase();
-    document.getElementById('right-key').value = String.fromCharCode(parseInt(sessionStorage.getItem("rightKey"))).toUpperCase();
+    let forward = parseInt(sessionStorage.getItem("forwardKey"))
+    let backward = parseInt(sessionStorage.getItem("backwardKey"))
+    let left = parseInt(sessionStorage.getItem("leftKey"))
+    let right = parseInt(sessionStorage.getItem("rightKey"))
+
+    let keys = [forward, backward, left, right]
+    let id_keys = ['forward-key', 'backward-key', 'left-key', 'right-key']
+
+    for (let i = 0; i < keys.length; i++){
+        let keycode = keys[i]
+        let id = id_keys[i]
+        if (keycode >= 37 && keycode <= 40) {
+        let arrows = ["←", "↑", "→", "↓"]
+        document.getElementById(id).value = arrows[keycode - 37]
+        } else {
+            document.getElementById(id).value = String.fromCharCode(keycode)
+        }
+    }
 }
 
 function hideEscapeMenu() {
@@ -28,8 +42,6 @@ function hideEscapeMenu() {
     document.getElementById('modal').style.display = "none"
     document.getElementById("esc-menu").style.display = "flex"
     document.getElementById("settings-menu").style.display = "none"
-
-    console.log(sessionStorage.getItem("forwardKey"))
 }
 
 function goToSettingsMenu() {
@@ -52,14 +64,26 @@ function saveSettings() {
     const leftKey = document.getElementById('left-key').value.toUpperCase();
     const rightKey = document.getElementById('right-key').value.toUpperCase();
 
-    console.log(forwardKey.charCodeAt(0))
+    let keys = [forwardKey, backwardKey, leftKey, rightKey]
+    let ss_keys = ["forwardKey", "backwardKey", "leftKey", "rightKey"]
 
-    sessionStorage.setItem("forwardKey", forwardKey.charCodeAt(0))
-    sessionStorage.setItem("backwardKey", backwardKey.charCodeAt(0))
-    sessionStorage.setItem("leftKey", leftKey.charCodeAt(0))
-    sessionStorage.setItem("rightKey", rightKey.charCodeAt(0))
+    for (let i = 0; i < ss_keys.length; i++){
+        let key = keys[i]
+        let ss_key = ss_keys[i]
+        let keycode = key.charCodeAt(0)
 
-    // TODO:  code to handle keybind changes
+        if (key == "←") {
+            sessionStorage.setItem(ss_key, "37")
+        } else if (key == "↑") {
+            sessionStorage.setItem(ss_key, "38")
+        } else if (key == "→") {
+            sessionStorage.setItem(ss_key, "39")
+        } else if (key == "↓") {
+            sessionStorage.setItem(ss_key, "40")
+        } else {
+            sessionStorage.setItem(ss_key, keycode)
+        }
+    }
 }
 
 
@@ -73,8 +97,13 @@ document.querySelectorAll('.keybind input').forEach(input => {
         // Sets the input value to the pressed key
         let keycode = event.keyCode
 
-        //if its a printable character (not esc) and its not space or R (already bound)
-        if (keycode > 33 && keycode < 126 && keycode !== 82){
+        //see js keycode library https://www.npmjs.com/package/keycode-js
+        //check arrow keys first
+        if (keycode >= 37 && keycode <= 40) {
+            let arrows = ["←", "↑", "→", "↓"]
+            input.value = arrows[keycode - 37]
+        }//if its a printable character (not esc) and its not space or R (already bound)
+        else if ((keycode >= 48 && keycode <= 90 && keycode !== 82) || (keycode >= 186 && keycode <= 222)){
             input.value = event.key.toUpperCase();
         } 
     });
