@@ -158,7 +158,7 @@ vehicle.wheelInfos.forEach(function(wheel) {
   body.addShape(shape, new CANNON.Vec3(), q);
   wheelBodies.push(body);
   // wheel visual body
-  var geometry = new THREE.CylinderGeometry( wheel.radius, wheel.radius, 0.4, 32 );
+  var geometry = new THREE.CylinderGeometry( wheel.radius, wheel.radius, 0.4, 40);
   var material = new THREE.MeshPhongMaterial({
     color: wheelColor,
     emissive: wheelColor,
