@@ -119,7 +119,7 @@ export class Track{
 }
 
 class Piece{
-    constructor(x, y, z, width, height, length, direction = "N", rails = [], color = 0xd6D5cd, railColor = 0xFF0000) {
+    constructor(x, y, z, width, height, length, direction = "N", rails = [], color = 0xd6D5cd, railColor = 0x696969) {
         this.x = x
         this.y = y
         this.z = z
@@ -320,9 +320,9 @@ class Checkpoint extends Block{
             this.width = 5
             this.rails = ["N", "S"]
         }
-        this.color = 0xFFFF00
+        this.color = 0xFF8C00
         this.checked = false //true when car goes over it
-        this.checkedColor = 0x0000FF
+        this.checkedColor = 0xFFA07A 
 
         this.name = "Checkpoint"
     }
@@ -355,7 +355,7 @@ class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1
             this.width = 5
             this.rails = ["N", "S"]
         }
-        this.color = 0x005511
+        this.color = 0xD3D3D3
 
         this.name = "Lap"
     }
@@ -381,7 +381,7 @@ class Start extends Block{
         } else if (direction == "E") {
             this.rails =  ["W", "N", "S"]
         }
-        this.color = 0x005511
+        this.color = 0xFFF8DC
         this.name = "Start"
     }
 }
@@ -398,7 +398,7 @@ class Finish extends Block{
         } else if (direction == "E") {
             this.rails =  ["E", "N", "S"]
         }
-        this.color = 0xAA00AA
+        this.color = 0xFF4500
         this.name = "Finish"
     }
 }

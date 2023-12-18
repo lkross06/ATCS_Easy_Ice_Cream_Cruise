@@ -149,7 +149,7 @@ app.post("/submitsignup", (req, res) => {
         // Handle case where username already exists
         res.redirect("/signup"); // Redirect back to signup or another appropriate response
     }
-});
+}); 
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
