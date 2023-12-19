@@ -9,7 +9,7 @@ const WebSocket = require('ws')
 const socket = new WebSocket.Server({ port: 8008 })
 const rel = "./user_data.json"
 const fs = require("fs")
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); //help!
 const saltRounds = 10; // idk the wiki said to do this 
 
 
