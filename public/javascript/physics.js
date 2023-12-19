@@ -22,7 +22,7 @@ const cameraOffset = new THREE.Vector3(0, 4, -10);
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
 // did u know F1 cars are only 100 kg
-var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
+var chassisBody = new CANNON.Body({mass: 150, material: groundMaterial});
 
 chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);

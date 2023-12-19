@@ -355,7 +355,7 @@ class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1
             this.width = 5
             this.rails = ["N", "S"]
         }
-        this.color = 0xD3D3D3
+        this.color = 0xFF8513
 
         this.name = "Lap"
     }
