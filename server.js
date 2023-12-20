@@ -338,24 +338,26 @@ socket.on('connection', (ws) => {
                 })
             }
         } else if (msg.method === "finish-multiplayer"){ //a client just finished game yay!
-            if (!games[msg.code].times.hasOwnProperty(msg.username)){ //do we alr have their time
-                games[msg.code].times[msg.username] = msg.time //nope lol!
-                // { position : username }
-                games[msg.code].positions[String(Object.keys(games[msg.code].times).length)] = msg.username
-            }
-            let packet = {
-                method: "finish-multiplayer",
-                username: msg.username,
-                code: msg.code,
-                times: games[msg.code].times,
-                positions: games[msg.code].positions
-            }
-            
-            socket.clients.forEach((client) => {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify(packet))
+            if (games.hasOwnProperty(msg.code)){ //does the game exist..
+                if (!games[msg.code].times.hasOwnProperty(msg.username)){ //do we alr have their time
+                    games[msg.code].times[msg.username] = msg.time //nope lol!
+                    // { position : username }
+                    games[msg.code].positions[String(Object.keys(games[msg.code].times).length)] = msg.username
                 }
-            })
+                let packet = {
+                    method: "finish-multiplayer",
+                    username: msg.username,
+                    code: msg.code,
+                    times: games[msg.code].times,
+                    positions: games[msg.code].positions
+                }
+                
+                socket.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(packet))
+                    }
+                })
+            }
         } else if (msg.method === "render") {
             // send to each user with the code the position of the player who just send their thingamabob.
             let packet = {
