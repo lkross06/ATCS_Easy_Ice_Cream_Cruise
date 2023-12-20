@@ -55,21 +55,11 @@
         button[type="submit"]{
             width: 20vw;
         }
-
-        .modal-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: -20vh; /* negative half of the height to offset top: 50% */
-            margin-left: -20vw;
-            width: 40vw;
-            height: 40vh;
-        }
     </style>
 </head>
 <body>
     <div id="error1" class="modal">
-        <div class="modal-content">
+        <div class="error-modal-content">
             <img onclick="closeModal(1)" class="close-menu" src="./res/close.png">
             <h3 class="title3">Incorrect username or password!</h3>
         </div>

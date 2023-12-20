@@ -171,9 +171,40 @@
             font-size: var(--font-size-4);
         }
 
+        #start-multiplayer-button {
+            display: none;
+        }
+
+        #join-lobby {
+            display: none;
+            border-top: 1px solid var(--bg-dark-grey);
+            border-left: 1px solid var(--bg-dark-grey);
+            background-color: var(--bg-white);
+            /* this works for any element that you want centered */
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30vw;
+            height: 50vh;
+            z-index: 99;
+        }
     </style>
 </head>
 <body id="body">
+    <div id="error1" class="modal">
+        <div class="error-modal-content">
+            <img onclick="closeModal(1)" class="close-menu" src="./res/close.png">
+            <h3 class="title3">Game [<span id="error1-code"></span>] does not exist!</h3>
+        </div>
+    </div>
+    <div id="join-lobby">
+            <!-- notice: no close button -->
+            <h2 class="title2" id="join-lobby-code"></h2>
+            <h3 class="title3" id="join-lobby-track"></h3>
+            <div id="join-lobby-list">
+            </div>
+            <button class="submit-button" id="start-multiplayer-button">Start Game</button>
+    </div>
     <div id="chat-container">
         <span id="chat-log">
         </span>
@@ -191,7 +222,7 @@
     <h1 class="title1">Easy Ice Cream Cruise</h1>
 
     <div id="game-selection-buttons">
-        <button id="singleplayer-button" class="title3 game-selection-choice submit-button" onclick="resetCode()">Singleplayer</button>
+        <button id="singleplayer-button" class="title3 game-selection-choice submit-button">Singleplayer</button>
         <button id="multiplayer-button" class="title3 game-selection-choice submit-button game-selection-unchecked">Multiplayer</button>
     </div>
 
@@ -277,8 +308,6 @@
             return b
         }
 
-        let mickey = "haha"
-
         // womp womp the user tried to hack the system and bypass login :(
         if(sessionStorage.getItem("username") === null) {
             // Ensure the redirect URL is correctly formed
@@ -304,27 +333,29 @@
             ws.onmessage = message => {
                 message = JSON.parse(message.data)
 
-                //get this user's pbs
-                for (let num = 1; num < 9; num++){
-                    sessionStorage.setItem("track" + String(num) + "pb", message[username]["pbs"]["track" + String(num)])
-                } 
+                if (message.method = "user_read"){
+                    //get this user's pbs
+                    for (let num = 1; num < 9; num++){
+                        sessionStorage.setItem("track" + String(num) + "pb", message[username]["pbs"]["track" + String(num)])
+                    } 
 
-                //now get the top 8 scores on each track
-                for (let num = 1; num < 9; num++){
-                    for (let user in message){
-                        //console.log(message[user]["pbs"]["track" + String(num)])
+                    //now get the top 8 scores on each track
+                    for (let num = 1; num < 9; num++){
+                        for (let user in message){
+                            //console.log(message[user]["pbs"]["track" + String(num)])
+                        }
+                    }
+
+                    //get their keybinds if they haven't been initialized already
+                    if (sessionStorage.getItem("forwardKey") == null){
+                        sessionStorage.setItem("forwardKey", String(message[username]["keybinds"]["forward"]))
+                        sessionStorage.setItem("backwardKey", String(message[username]["keybinds"]["backward"]))
+                        sessionStorage.setItem("leftKey", String(message[username]["keybinds"]["left"]))
+                        sessionStorage.setItem("rightKey", String(message[username]["keybinds"]["right"]))
                     }
                 }
 
-                //get their keybinds if they haven't been initialized already
-                if (sessionStorage.getItem("forwardKey") == null){
-                    sessionStorage.setItem("forwardKey", String(message[username]["keybinds"]["forward"]))
-                    sessionStorage.setItem("backwardKey", String(message[username]["keybinds"]["backward"]))
-                    sessionStorage.setItem("leftKey", String(message[username]["keybinds"]["left"]))
-                    sessionStorage.setItem("rightKey", String(message[username]["keybinds"]["right"]))
-                }
-                
-
+                ws.close()
             }   
 
         }
@@ -334,19 +365,20 @@
         }
     </script>
     <script>
-        function resetCode() {
-            sessionStorage.setItem("code", null)
+        function closeModal(errorCode) {
+            document.getElementById("error" + String(errorCode)).style.display = "none"
         }
         document.getElementById("ecvil").innerText = sessionStorage.getItem("username")
         let sp_content = document.getElementById("singleplayer-container")
         let mp_content = document.getElementById("multiplayer-container")
 
         document.getElementById("singleplayer-button").addEventListener("click", function(e){
-            sp_content.style.display = "grid";
-            mp_content.style.display = "none";
-            this.classList.remove("game-selection-unchecked")
-            document.getElementById("multiplayer-button").classList.add("game-selection-unchecked")
-
+            if (sessionStorage.getItem("code") == null){ //only access singleplayer if user hasn't joined game
+                sp_content.style.display = "grid";
+                mp_content.style.display = "none";
+                this.classList.remove("game-selection-unchecked")
+                document.getElementById("multiplayer-button").classList.add("game-selection-unchecked")
+            }
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){
             sp_content.style.display = "none";
@@ -495,10 +527,9 @@
         }
 
         window.onclick = function(e){
-            let modal = document.getElementById("modal")
             let close = document.getElementById("close-button")
-            if (e.target == modal || e.target == close){
-                modal.remove()
+            if (e.target == close){
+                document.getElementById("modal").remove()
             }
         }
     </script>

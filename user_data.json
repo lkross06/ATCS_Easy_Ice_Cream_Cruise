@@ -38,5 +38,65 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"grr": {
+		"password": "$2b$10$9RuBeU37uPDO1ahSuSv3LOmKZbfvO/SaYjL6WiBW3yxEDvDT9kUQu",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"newacc1": {
+		"password": "$2b$10$MUxYbLMSIeOnbRxhP9SMjuAmVfri5/lSTPcc6SWfIxnvzE2rI9Mo6",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"new2": {
+		"password": "$2b$10$97CvQkpezm8llXhu9bg3yePdf.o2MVNe2PFhshHdHSB.MOiQRyuBi",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }

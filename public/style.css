@@ -67,6 +67,22 @@ body {
     height: 50vh;
 }
 
+.error-modal-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--bg-dark-grey);
+    background-color: var(--bg-white);
+    /* this works for any element that you want centered */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -20vh; /* negative half of the height to offset top: 50% */
+    margin-left: -20vw;
+    width: 40vw;
+    height: 40vh;
+}
+
 .close-menu {
     position: absolute;
     top: 0;

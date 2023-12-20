@@ -12,7 +12,6 @@ const fs = require("fs")
 const bcrypt = require('bcrypt'); //help!
 const saltRounds = 10; // idk the wiki said to do this 
 
-
 function writeData(data, username = null, info1 = null, info2 = null){ //username/info1/info2 are for finding path to data
     let json = readData()
 
@@ -215,14 +214,14 @@ socket.on('connection', (ws) => {
             {
                 D0f2fF: {
                     track: track 1
-                    users: [lucas, everett] // if finn isnt in the room yet
+                    users: [finn, lucas, everett] // if finn isnt in the room yet
                     host: finn
                 }
             }
             */
             games[code] = {
                 "track": msg.track.replace(/\s/g, ""), // clear spaces
-                "users": [],
+                "users": [msg.username],
                 "host": msg.username
             }
             socket.clients.forEach((client) => {
@@ -238,7 +237,9 @@ socket.on('connection', (ws) => {
                 }
                 packet = {
                     method: "join",
+                    host: games[msg.code].host,
                     username: msg.username,
+                    users: games[msg.code].users,
                     track: games[msg.code].track,
                     code: msg.code
                 }
@@ -250,6 +251,46 @@ socket.on('connection', (ws) => {
             } else { // no we dont
                 packet = {
                     method: "join",
+                    username: msg.username,
+                    track: "ERROR",
+                    code: msg.code
+                }
+                socket.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify(packet))
+                    }
+                })
+            }
+        } else if (msg.method === "start-multiplayer"){ //this is when the host presses the start-game button
+            // do we have that code?
+            if (games.hasOwnProperty(msg.code)) { // yes we do
+                if (games[msg.code].host === msg.username){ //make sure the host is starting the game
+                    packet = {
+                        method: "start-multiplayer",
+                        username: msg.username,
+                        code: msg.code,
+                        track: games[msg.code].track
+                    }
+                    socket.clients.forEach((client) => {
+                        if (client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify(packet))
+                        }
+                    })
+                } else {
+                    packet = {
+                        method: "start-multiplayer",
+                        username: msg.username,
+                        track: "ERROR"
+                    }
+                    socket.clients.forEach((client) => {
+                        if (client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify(packet))
+                        }
+                    })
+                }
+            } else { // no we dont
+                packet = {
+                    method: "start-multiplayer",
                     username: msg.username,
                     track: "ERROR"
                 }
@@ -278,6 +319,7 @@ socket.on('connection', (ws) => {
             writeData(msg.data, msg.username, msg.info1, msg.info2)
         } else if (msg.method === "user_read"){ //return le user data
             let packet = readData(msg.username, msg.info1, msg.info2)
+            packet["method"] = "user_read"
 
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
