@@ -100,12 +100,16 @@ app.post('/submitlogin', (req, res) => {
                 res.redirect("/menu");
             } else {
                 // passwords don't match or error occurred
-                res.redirect("/login");
+                if (err) {
+                    res.redirect("/login?error=2") //error occured
+                } else {
+                    res.redirect("/login?error=1"); //pwd dont match
+                }
             }
         });
     } else {
         // username does not exist
-        res.redirect("/login");
+        res.redirect("/login?error=1");
     }
 });
 
@@ -118,7 +122,7 @@ app.post("/submitsignup", (req, res) => {
         bcrypt.hash(pswd, saltRounds, function(err, hash) {
             if (err) {
                 // Handle error
-                alert("Error, please try again.")
+                res.redirect("/?error=1"); 
             } else {
                 // save the user with the hashed password
                 users[username] = {
@@ -147,7 +151,7 @@ app.post("/submitsignup", (req, res) => {
         });
     } else {
         // Handle case where username already exists
-        res.redirect("/signup"); // Redirect back to signup or another appropriate response
+        res.redirect("/?error=1"); // Redirect back to signup or another appropriate response
     }
 }); 
 

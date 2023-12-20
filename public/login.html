@@ -55,9 +55,31 @@
         button[type="submit"]{
             width: 20vw;
         }
+
+        .modal-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -20vh; /* negative half of the height to offset top: 50% */
+            margin-left: -20vw;
+            width: 40vw;
+            height: 40vh;
+        }
     </style>
 </head>
 <body>
+    <div id="error1" class="modal">
+        <div class="modal-content">
+            <img onclick="closeModal(1)" class="close-menu" src="./res/close.png">
+            <h3 class="title3">Incorrect username or password!</h3>
+        </div>
+    </div>
+    <div id="error2" class="modal">
+        <div class="modal-content">
+            <img onclick="closeModal(2)" class="close-menu" src="./res/close.png">
+            <h3 class="title3">An error occured while logging in. Please try again.</h3>
+        </div>
+    </div>
     <div class="spacer1"></div>
     <h1 class="title1">Easy Ice Cream Cruise</h1>
     <h3 class="title3">Lucas Ross, Finn Taylor, Everett Villiger</h3>
@@ -83,6 +105,16 @@
             <button type="submit" class="submit-button" id="submit-button" onclick="getUsername()">Log In</button>
         </form>
     </div>
+    <script type="module">
+        const params = new URLSearchParams(window.location.search);
+        var error = params.get('error')
+
+        if (error == "1"){
+            document.getElementById("error1").style.display = "block"
+        } else if (error == "2"){
+            document.getElementById("error2").style.display = "block"
+        }
+    </script>
     <script>
         let username = ""
         function validateInput() {
@@ -99,9 +131,14 @@
                 alert('Only a-z, A-Z, and 0-9 are allowed.')
             }
         }
+
         function getUsername() {
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)
+        }
+
+        function closeModal(errorCode) {
+            document.getElementById("error" + String(errorCode)).style.display = "none"
         }
     </script>
 </body>
