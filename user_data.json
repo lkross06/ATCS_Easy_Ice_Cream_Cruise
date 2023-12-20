@@ -1,6 +1,6 @@
 {
 	"lucas": {
-		"password": "h",
+		"password": "$2b$10$7L8pbtVLtCp0QU94CA40Lu.Ykb6lDzxtRxjqUFWHx9B9r38xeH4e.",
 		"friends": [],
 		"pbs": {
 			"track1": "0:19.87",
@@ -20,10 +20,10 @@
 		}
 	},
 	"ecvil": {
-		"password": "h",
+		"password": "$2b$10$9eslDgNz/0k7DqvGaePeA.Hik71qXTumHHaOOMR8G.oOF0.6Irc9u",
 		"friends": [],
 		"pbs": {
-			"track1": "0:35.47",
+			"track1": "--",
 			"track2": "--",
 			"track3": "--",
 			"track4": "--",
@@ -33,30 +33,10 @@
 			"track8": "--"
 		},
 		"keybinds": {
-			"forward": 87,
-			"backward": 83,
-			"left": 65,
-			"right": 68
-		}
-	},
-	"test123": {
-		"password": "$2b$10$Nl9NHe1m4ayLlBdHk6X3Pu4Q9itC.bm40R0/q0GevV1yoCH38yDCC",
-		"friends": [],
-		"pbs": {
-			"track1": "0:41.27",
-			"track2": "0:32.70",
-			"track3": "--",
-			"track4": "--",
-			"track5": "--",
-			"track6": "--",
-			"track7": "--",
-			"track8": "--"
-		},
-		"keybinds": {
-			"forward": 87,
-			"backward": 83,
-			"left": 65,
-			"right": 68
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
 		}
 	}
 }
