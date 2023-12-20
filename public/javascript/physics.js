@@ -428,7 +428,8 @@ var total_renders = 0 //total number of times render() was run
 
 function render(timestamp) {
   total_renders += 1
-  document.getElementById("refresh-rate").innerText = String(getRefreshRate(timestamp)) + "ms"
+  //TODO: refresh rate is given by getRefreshRate()
+  
   // timestamp should == the refresh rate 
   // add up diff of timestamps
   // then do a game tick - increase accell, move car, etc
