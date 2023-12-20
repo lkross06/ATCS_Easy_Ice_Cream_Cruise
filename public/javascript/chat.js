@@ -17,11 +17,11 @@ function new_chat_message(message, username){ //creates and returns a new chat e
     
     let spanuser = document.createElement("span")
     spanuser.setAttribute("class", "username")
-    spanuser.innerText = username
+    spanuser.innerText = username + " "
 
     let spancontent = document.createElement("span")
     spancontent.setAttribute("class", "chat-message-content")
-    spancontent.innerText = " " + message
+    spancontent.innerText = message
 
     p.appendChild(spanuser)
     p.appendChild(spancontent)
@@ -142,19 +142,26 @@ ws.onmessage = message => {
                 document.getElementById("error2-code").innerText = res.code
                 document.getElementById("error2-limit").innerText = res.limit
             } else {
-                sessionStorage.setItem("code", res.code)
-                //lets show that lobby modal
-                document.getElementById("join-lobby").style.display = "block"
-                document.getElementById("join-lobby-code").innerText = res.code
-                document.getElementById("join-lobby-track").innerText = res.track
-                
-                //add all the usernames (including this user!)
-                for (let user of res.users){
-                    addPlayerToJoinLobby(user)
-                }
-                if (res.host === sessionStorage.getItem("username")){
-                    //we're the host, so we gotta show a button with the option to start the game
-                    document.getElementById("start-multiplayer-button").style.display = "block"
+                if (res.ingame == 0){
+                    //game hasn't started yet, show the modal
+                    sessionStorage.setItem("code", res.code)
+                    //lets show that lobby modal
+                    document.getElementById("join-lobby").style.display = "block"
+                    document.getElementById("join-lobby-code").innerText = res.code
+                    document.getElementById("join-lobby-track").innerText = res.track
+                    
+                    //add all the usernames (including this user!)
+                    for (let user of res.users){
+                        addPlayerToJoinLobby(user)
+                    }
+                    if (res.host === sessionStorage.getItem("username")){
+                        //we're the host, so we gotta show a button with the option to start the game
+                        document.getElementById("start-multiplayer-button").style.display = "block"
+                    }
+                } else {
+                    //game already started, join it
+                    let n = res.track.split("k")[1] //dont bother convert to number, its going in a string
+                    window.location.href = "http://"+domainName+":3000/track.html?track=" + n + "&joincode=" + res.code    
                 }
             }
         } else if (res.code === sessionStorage.getItem("code")){

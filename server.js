@@ -223,7 +223,8 @@ socket.on('connection', (ws) => {
             games[code] = {
                 "track": msg.track.replace(/\s/g, ""), // clear spaces
                 "users": [msg.username],
-                "host": msg.username
+                "host": msg.username,
+                "ingame": false //0 for lobby, 1 for in-game
             }
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
@@ -261,7 +262,8 @@ socket.on('connection', (ws) => {
                         username: msg.username,
                         users: games[msg.code].users,
                         track: games[msg.code].track,
-                        code: msg.code
+                        code: msg.code,
+                        ingame: games[msg.code].ingame
                     }
                     socket.clients.forEach((client) => {
                         if (client.readyState === WebSocket.OPEN) {
@@ -286,6 +288,9 @@ socket.on('connection', (ws) => {
             // do we have that code?
             if (games.hasOwnProperty(msg.code)) { // yes we do
                 if (games[msg.code].host === msg.username){ //make sure the host is starting the game
+                    //"start" the game
+                    games[msg.code].ingame = 1
+
                     packet = {
                         method: "start-multiplayer",
                         username: msg.username,
