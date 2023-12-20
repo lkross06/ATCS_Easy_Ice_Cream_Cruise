@@ -5,11 +5,11 @@ import {domainName} from "../globalVars.js"
 // doesnt have a negative effect, so lo prior. 
 let ws = new WebSocket("ws://"+domainName+":8008")
 
+var isMultiplayer = true //are we playing a multiplayer game?
 if (sessionStorage.getItem("code") === "null") {
-  // close websocket
-  //ws.close()
-  console.log(ws)
+  isMultiplayer = false
 }
+
 var container = document.querySelector('body'),
     w = container.clientWidth,
     h = container.clientHeight,
@@ -81,7 +81,6 @@ const params = new URLSearchParams(window.location.search);
 var trackValue = params.get('track')
 //if the parameter is invalid or doesn't exist, send to
 trackValue = (!isNaN(parseInt(trackValue)))? parseInt(trackValue) : 0
-
 
 loadTrack(trackValue)
 
@@ -476,6 +475,29 @@ function render(timestamp) {
           //if you can also do this for wheels that would be great!
 
         }
+      } else if (msg.method === "finish-multiplayer"){ 
+        //the only reason im redrawing the entire leaderboard after someone finishes
+        //is in-case a user joins late and beats several times
+        if (msg.code === sessionStorage.getItem("code")){
+          
+          console.log(msg.times)
+          console.log(msg.positions)
+
+          //destroy leaderboard children
+          let leaderboard = document.getElementById("multi-track-leaderboard")
+          while (leaderboard.hasChildNodes()){
+            leaderboard.removeChild(leaderboard.firstChild)
+          }
+
+          let len = Object.keys(msg.positions).length
+
+          for (let i = 1; i <= len; i ++){ //get the players in the order they finished
+            let player = msg.positions[String(i)]
+            let time = msg.times[player]
+
+            addPlayerToLobbyLeaderboard(player, time)
+          }
+        }
       }
     }
   }
@@ -632,6 +654,90 @@ function updateCheckpoints(){
   }
 }
 
+function addPlayerToLobbyLeaderboard(user, time){
+  let div_container = document.createElement("div")
+
+  let user_span = document.createElement("span")
+  user_span.setAttribute("class", "multi-track-leaderboard-user username")
+  user_span.innerText = user + " "
+  div_container.append(user_span)
+
+  let time_span = document.createElement("span")
+  time_span.setAttribute("class", "multi-track-leaderboard-time")
+  time_span.innerText = time
+  div_container.append(time_span)
+
+  document.getElementById("multi-track-leaderboard").append(div_container)
+}
+
+function endGame(){ //run this function when the game ends for this client
+  track.finish = Date.now()
+
+  //stop vehicle from accelerating and disable key presses
+  for (let key in keys_pressed){
+    keys_pressed[key] = false;
+  }
+
+  vehicle.applyEngineForce(0, 0)
+  vehicle.applyEngineForce(0, 1)
+  vehicle.applyEngineForce(0, 2)
+  vehicle.applyEngineForce(0, 3)
+
+  document.getElementById('modal').style.display = "block"
+  document.getElementById("esc-menu").style.display = "none"
+  document.getElementById("settings-menu").style.display = "none"
+  
+  //check for new pb
+  let ss_path = "track" + String(trackValue) + "pb"
+  let stored_pb = sessionStorage.getItem(ss_path)
+  let new_pb = getTimeElapsed()
+
+  let stored_min = parseInt(stored_pb.slice(0,1))
+  let stored_sec = parseFloat(stored_pb.slice(2))
+  let new_min = parseInt(new_pb.slice(0,1))
+  let new_sec = parseFloat(new_pb.slice(2))
+
+  if (new_min < stored_min || (new_min == stored_min && new_sec < stored_sec) || stored_pb.length != 7){
+    //we have a new personal best ladies and gentlemen!
+
+    document.getElementById("new_pb").style.display = "block"
+    sessionStorage.setItem(ss_path, new_pb)
+
+    if (ws.readyState === WebSocket.OPEN){ //rewrite user_data with new pb!
+      let packet = {
+        method: "user_write",
+        data: new_pb,
+        username: sessionStorage.getItem("username"),
+        info1: "pbs",
+        info2: "track" + String(trackValue)
+      } 
+      ws.send(JSON.stringify(packet))
+    }
+  }
+
+  if (!isMultiplayer){
+    //show the singleplayer modal
+    document.getElementById("single-track-finish").style.display = "flex"
+    document.getElementById("multi-track-finish").style.display = "none"
+
+    document.getElementById("track-finish-time").innerText = getTimeElapsed()
+    document.getElementById("track-finish-track-name").innerText = track.name
+  } else {
+    document.getElementById("multi-track-finish").style.display = "flex"
+    document.getElementById("single-track-finish").style.display = "none"
+
+    if (ws.readyState === WebSocket.OPEN){
+      let packet = {
+        method: "finish-multiplayer",
+        code : sessionStorage.getItem("code"),
+        username : sessionStorage.getItem("username"),
+        time : getTimeElapsed()
+      }
+      ws.send(JSON.stringify(packet))
+    }
+  }
+}
+
 function checkFinish(){
   if (track.pieces.length > 0){ //only check if there is a track and its been loaded
     let result = [];
@@ -650,56 +756,7 @@ function checkFinish(){
         }
       }
       if (track.curr_lap > track.laps - 1){
-        //we know that we finished the track yay!
-        track.finish = Date.now()
-
-        //stop vehicle from accelerating and disable key presses
-        for (let key in keys_pressed){
-          keys_pressed[key] = false;
-        }
-
-        vehicle.applyEngineForce(0, 0)
-        vehicle.applyEngineForce(0, 1)
-        vehicle.applyEngineForce(0, 2)
-        vehicle.applyEngineForce(0, 3)
-
-        document.getElementById('modal').style.display = "block"
-        document.getElementById("track-finish").style.display = "flex"
-        document.getElementById("esc-menu").style.display = "none"
-        document.getElementById("settings-menu").style.display = "none"
-        
-        //check for new pb
-        let ss_path = "track" + String(trackValue) + "pb"
-        let stored_pb = sessionStorage.getItem(ss_path)
-        let new_pb = getTimeElapsed()
-
-        let stored_min = parseInt(stored_pb.slice(0,1))
-        let stored_sec = parseFloat(stored_pb.slice(2))
-        let new_min = parseInt(new_pb.slice(0,1))
-        let new_sec = parseFloat(new_pb.slice(2))
-
-        if (new_min < stored_min || (new_min == stored_min && new_sec < stored_sec) || stored_pb.length != 7){
-          //we have a new personal best ladies and gentlemen!
-
-          document.getElementById("new_pb").style.display = "block"
-          sessionStorage.setItem(ss_path, new_pb)
-
-          if (ws.readyState === WebSocket.OPEN){ //rewrite user_data with new pb!
-            let packet = {
-              method: "user_write",
-              data: new_pb,
-              username: sessionStorage.getItem("username"),
-              info1: "pbs",
-              info2: "track" + String(trackValue)
-            } 
-            ws.send(JSON.stringify(packet))
-          }
-        }
-
-        document.getElementById("track-finish-time").innerText = getTimeElapsed()
-        document.getElementById("track-finish-track-name").innerText = track.name
-
-        //TODO: also, if this is multiplayer, can you somehow indicate that this user finished the track
+        endGame() //game over yay!!!
       } else {
         track.addLap()
         for (let cp of checkpoints){ //uncheck all checkpoints
@@ -825,4 +882,4 @@ window.addEventListener('keyup', handleKeyPress)
 var countdown = 3
 var last_countdown_update = Date.now()
 
-render();
+render()

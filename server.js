@@ -216,7 +216,16 @@ socket.on('connection', (ws) => {
                 D0f2fF: {
                     track: track 1
                     users: [finn, lucas, everett] // if finn isnt in the room yet
-                    host: finn
+                    host: finn,
+                    ingame: false,
+                    times: {
+                        finn: 0:01.11,
+                        lucas: 0:04.56
+                    },
+                    positions: {
+                        1: finn, //hes in first place
+                        2: lucas //second place
+                    }
                 }
             }
             */
@@ -224,7 +233,9 @@ socket.on('connection', (ws) => {
                 "track": msg.track.replace(/\s/g, ""), // clear spaces
                 "users": [msg.username],
                 "host": msg.username,
-                "ingame": false //0 for lobby, 1 for in-game
+                "ingame": false, //0 for lobby, 1 for in-game
+                "times": {}, //see above 
+                "positions": {} //see above
             }
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
@@ -326,6 +337,25 @@ socket.on('connection', (ws) => {
                     }
                 })
             }
+        } else if (msg.method === "finish-multiplayer"){ //a client just finished game yay!
+            if (!games[msg.code].times.hasOwnProperty(msg.username)){ //do we alr have their time
+                games[msg.code].times[msg.username] = msg.time //nope lol!
+                // { position : username }
+                games[msg.code].positions[String(Object.keys(games[msg.code].times).length)] = msg.username
+            }
+            let packet = {
+                method: "finish-multiplayer",
+                username: msg.username,
+                code: msg.code,
+                times: games[msg.code].times,
+                positions: games[msg.code].positions
+            }
+            
+            socket.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(packet))
+                }
+            })
         } else if (msg.method === "render") {
             // send to each user with the code the position of the player who just send their thingamabob.
             let packet = {
