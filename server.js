@@ -11,6 +11,7 @@ const rel = "./user_data.json"
 const fs = require("fs")
 const bcrypt = require('bcrypt'); //help!
 const saltRounds = 10; // idk the wiki said to do this 
+const maxGameCapacity = 15; //maximum amount of players per game
 
 function writeData(data, username = null, info1 = null, info2 = null){ //username/info1/info2 are for finding path to data
     let json = readData()
@@ -232,27 +233,47 @@ socket.on('connection', (ws) => {
         } else if (msg.method === "join") {
             // do we have that code?
             if (games.hasOwnProperty(msg.code)) { // yes we do
+                let canJoin = true
+
                 if (!games[msg.code].users.includes(msg.username)) {
-                    games[msg.code].users.push(msg.username)
-                }
-                packet = {
-                    method: "join",
-                    host: games[msg.code].host,
-                    username: msg.username,
-                    users: games[msg.code].users,
-                    track: games[msg.code].track,
-                    code: msg.code
-                }
-                socket.clients.forEach((client) => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify(packet))
+                    if (games[msg.code].users.length >= maxGameCapacity){ //too many players, cant join
+                        canJoin = false
+                        packet = {
+                            method: "join",
+                            username: msg.username,
+                            track: "ERROR2",
+                            limit: maxGameCapacity,
+                            code: msg.code
+                        }
+                        socket.clients.forEach((client) => {
+                            if (client.readyState === WebSocket.OPEN) {
+                                client.send(JSON.stringify(packet))
+                            }
+                        })
+                    } else {
+                        games[msg.code].users.push(msg.username)
                     }
-                })
+                }
+                if (canJoin){
+                    packet = {
+                        method: "join",
+                        host: games[msg.code].host,
+                        username: msg.username,
+                        users: games[msg.code].users,
+                        track: games[msg.code].track,
+                        code: msg.code
+                    }
+                    socket.clients.forEach((client) => {
+                        if (client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify(packet))
+                        }
+                    })
+                }
             } else { // no we dont
                 packet = {
                     method: "join",
                     username: msg.username,
-                    track: "ERROR",
+                    track: "ERROR1",
                     code: msg.code
                 }
                 socket.clients.forEach((client) => {

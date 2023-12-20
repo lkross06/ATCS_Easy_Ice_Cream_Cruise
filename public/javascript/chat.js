@@ -134,9 +134,13 @@ ws.onmessage = message => {
         // then redir. (look at that enjambment!)
         if (res.username === sessionStorage.getItem("username")) {
             // dingdingding we gotchu fam
-            if (res.track === "ERROR") {
+            if (res.track === "ERROR1") {
                 document.getElementById("error1").style.display = "block"
                 document.getElementById("error1-code").innerText = res.code
+            } else if (res.track === "ERROR2") {
+                document.getElementById("error2").style.display = "block"
+                document.getElementById("error2-code").innerText = res.code
+                document.getElementById("error2-limit").innerText = res.limit
             } else {
                 sessionStorage.setItem("code", res.code)
                 //lets show that lobby modal
@@ -154,8 +158,10 @@ ws.onmessage = message => {
                 }
             }
         } else if (res.code === sessionStorage.getItem("code")){
-            //another player just joined our lobby! let's update the modal
-            addPlayerToJoinLobby(res.username)
+            if (res.track != "ERROR1" && res.track != "ERROR2"){
+                //another player just joined our lobby! let's update the modal
+                addPlayerToJoinLobby(res.username)
+            }
         }
     } else if (res.method === "start-multiplayer") {
         // confirm that user has actually put in a good code, 

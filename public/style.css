@@ -176,6 +176,11 @@ a:hover {
     word-wrap: break-word;
 }
 
+.chat-message-content {
+    /* so people can copy join codes */
+    user-select: all; 
+}
+
 #chat-log {
     height: 90%;
 }

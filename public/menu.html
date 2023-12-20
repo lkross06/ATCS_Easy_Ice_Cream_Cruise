@@ -173,6 +173,8 @@
 
         #start-multiplayer-button {
             display: none;
+            align-self: center;
+            justify-self: center;
         }
 
         #join-lobby {
@@ -184,9 +186,24 @@
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 30vw;
+            width: 28vw;
             height: 50vh;
             z-index: 99;
+        }
+
+        #join-lobby-list {
+            padding: 2%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+        }
+
+        #join-lobby-centered-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
@@ -197,13 +214,20 @@
             <h3 class="title3">Game [<span id="error1-code"></span>] does not exist!</h3>
         </div>
     </div>
+    <div id="error2" class="modal">
+        <div class="error-modal-content">
+            <img onclick="closeModal(2)" class="close-menu" src="./res/close.png">
+            <h3 class="title3">Game [<span id="error2-code"></span>] has reached <span id="error2-limit"></span>-player limit.</h3>
+        </div>
+    </div>
     <div id="join-lobby">
-            <!-- notice: no close button -->
             <h2 class="title2" id="join-lobby-code"></h2>
             <h3 class="title3" id="join-lobby-track"></h3>
             <div id="join-lobby-list">
             </div>
-            <button class="submit-button" id="start-multiplayer-button">Start Game</button>
+            <span id="join-lobby-centered-content">
+                <button class="submit-button" id="start-multiplayer-button">Start Game</button>
+            </span>
     </div>
     <div id="chat-container">
         <span id="chat-log">
