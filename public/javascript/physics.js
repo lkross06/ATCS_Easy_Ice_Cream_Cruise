@@ -669,9 +669,12 @@ function confetti() {
   const confettiCount = 1000;
   const confetti = [];
 
+  const colors = ["blue", "red", "purple", "pink", "orange", "yellow", "green"]
+
   for (let i = 0; i < confettiCount; i++) {
     const el = document.createElement('div');
     el.classList.add('confetti');
+    el.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
     el.style.left = `${Math.random() * 100}vw`;
     el.style.animation = `confetti-animation ${Math.random() * 3 + 2}s linear forwards`;
     document.body.appendChild(el);

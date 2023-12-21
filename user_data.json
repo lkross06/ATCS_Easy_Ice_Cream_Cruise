@@ -58,5 +58,25 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"gasdf": {
+		"password": "$2b$10$wKfKo4Wn3KkTlMb/E9VB0esIfnr8LgNo2je4hm6N9pjUxobbQElgu",
+		"friends": [],
+		"pbs": {
+			"track1": "0:23.69",
+			"track2": "0:14.19",
+			"track3": "--",
+			"track4": "1:46.14",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 87,
+			"backward": 83,
+			"left": 65,
+			"right": 68
+		}
 	}
 }
