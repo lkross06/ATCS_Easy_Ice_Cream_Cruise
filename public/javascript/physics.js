@@ -1,12 +1,10 @@
 import { Track } from "./track.js"
 import {domainName} from "../globalVars.js"
 
-// TODO: error in console about websocket in single player.
-// doesnt have a negative effect, so lo prior. 
 let ws = new WebSocket("ws://"+domainName+":8008")
 
 var isMultiplayer = true //are we playing a multiplayer game?
-if (sessionStorage.getItem("code") === "null") {
+if (sessionStorage.getItem("code") === null) {
   isMultiplayer = false
 }
 
@@ -22,7 +20,7 @@ const cameraOffset = new THREE.Vector3(0, 4, -10);
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
 // did u know F1 cars are only 100 kg
-var chassisBody = new CANNON.Body({mass: 150, material: groundMaterial});
+var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
 
 chassisBody.addShape(chassisShape);
 chassisBody.position.set(0, 2, 0);
@@ -429,7 +427,7 @@ var total_renders = 0 //total number of times render() was run
 function render(timestamp) {
   total_renders += 1
   //TODO: refresh rate is given by getRefreshRate()
-  
+
   // timestamp should == the refresh rate 
   // add up diff of timestamps
   // then do a game tick - increase accell, move car, etc
@@ -444,7 +442,7 @@ function render(timestamp) {
   // here should go the ws stuff i belive
   // this packet is this client's data. x, y, z, quaterion(?) etc.
   // make sure the user is in a multiplayer game
-  if (sessionStorage.getItem("code") !== "null" && ws.readyState === WebSocket.OPEN) {
+  if (sessionStorage.getItem("code") !== null && ws.readyState === WebSocket.OPEN) {
     let packet = {
       method: "render",
       username: sessionStorage.getItem("username"),
@@ -480,10 +478,6 @@ function render(timestamp) {
         //the only reason im redrawing the entire leaderboard after someone finishes
         //is in-case a user joins late and beats several times
         if (msg.code === sessionStorage.getItem("code")){
-          
-          console.log(msg.times)
-          console.log(msg.positions)
-
           //destroy leaderboard children
           let leaderboard = document.getElementById("multi-track-leaderboard")
           while (leaderboard.hasChildNodes()){

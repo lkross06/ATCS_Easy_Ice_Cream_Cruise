@@ -38,5 +38,25 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"hah": {
+		"password": "$2b$10$Y1LwRRN2x092pBCmnIzhg.JG9tYI/9EnKPHKGmCvIGwIuZiGfhsEe",
+		"friends": [],
+		"pbs": {
+			"track1": "0:20.69",
+			"track2": "0:15.24",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }

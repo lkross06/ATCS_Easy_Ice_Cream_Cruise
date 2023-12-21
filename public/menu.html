@@ -385,7 +385,7 @@
 
         }
 
-        if(sessionStorage.getItem("code") != "null") { //keep their last game in the pocket
+        if(sessionStorage.getItem("code") != null) { //keep their last game in the pocket
             document.getElementById("multiplayer-join-code").value = sessionStorage.getItem("code")
         }
     </script>
@@ -398,11 +398,13 @@
         let mp_content = document.getElementById("multiplayer-container")
 
         document.getElementById("singleplayer-button").addEventListener("click", function(e){
-            if (sessionStorage.getItem("code") == null){ //only access singleplayer if user hasn't joined game
+            if (sessionStorage.getItem("code") == null){ //only access singleplayer if user hasn't joined game lobby
                 sp_content.style.display = "grid";
                 mp_content.style.display = "none";
                 this.classList.remove("game-selection-unchecked")
                 document.getElementById("multiplayer-button").classList.add("game-selection-unchecked")
+                
+                sessionStorage.removeItem("code")
             }
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){

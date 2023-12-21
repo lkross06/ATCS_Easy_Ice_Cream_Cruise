@@ -96,6 +96,9 @@
         </form>
     </div>
     <script type="module">
+        //clear all session storage
+        sessionStorage.clear()
+        
         const params = new URLSearchParams(window.location.search);
         var error = params.get('error')
 
