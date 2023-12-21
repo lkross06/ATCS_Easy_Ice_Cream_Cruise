@@ -665,6 +665,33 @@ function addPlayerToLobbyLeaderboard(user, time){
   document.getElementById("multi-track-leaderboard").append(div_container)
 }
 
+function confetti() {
+  const confettiCount = 1000;
+  const confetti = [];
+
+  for (let i = 0; i < confettiCount; i++) {
+    const el = document.createElement('div');
+    el.classList.add('confetti');
+    el.style.left = `${Math.random() * 100}vw`;
+    el.style.animation = `confetti-animation ${Math.random() * 3 + 2}s linear forwards`;
+    document.body.appendChild(el);
+    confetti.push(el);
+  }
+
+  // Remove confetti after animation ends
+  setTimeout(() => {
+    confetti.forEach(el => document.body.removeChild(el));
+  }, 5000); // Adjust timeout to match longest animation duration
+}
+
+// Keyframes for confetti animation
+document.head.appendChild(document.createElement('style')).textContent = `
+  @keyframes confetti-animation {
+    0% { top: -10%; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+`;
+
 function endGame(){ //run this function when the game ends for this client
   track.finish = Date.now()
 
@@ -697,6 +724,7 @@ function endGame(){ //run this function when the game ends for this client
 
     document.getElementById("new_pb").style.display = "block"
     sessionStorage.setItem(ss_path, new_pb)
+    confetti()
 
     if (ws.readyState === WebSocket.OPEN){ //rewrite user_data with new pb!
       let packet = {
