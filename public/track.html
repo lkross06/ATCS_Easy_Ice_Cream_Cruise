@@ -141,6 +141,20 @@
       #volume-slider {
         margin: 10px;
       }    
+
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: var(--confetti-color, #f0f);
+        animation: confetti-animation 1.5s linear infinite;
+      }
+      
+      @keyframes confetti-animation {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+      }
+      
     </style>
   </head>
   <body>
@@ -231,6 +245,7 @@
         <h2 class="title2"><span id="track-finish-track-name"></span> Complete!</h2>
         <h3 class="title3" id="track-finish-time">-:--.--</h3>
         <h5 id="new_pb">NEW PERSONAL BEST!</h5>
+        <button onclick="createConfetti()">Celebrate New Personal Best</button>
         <br>
         <button id="restart-button" class="submit-button">Restart</button>
         <br>
@@ -246,5 +261,20 @@
         <button class="submit-button home-button">Home</button>
       </div>
     </div>
+
+    <script>
+      function createConfetti() {
+        const colors = ['#ff0', '#f0f', '#0ff', '#0f0', '#00f', '#f00'];
+        for (let i = 0; i < 100; i++) {
+          const confetti = document.createElement('div');
+          confetti.classList.add('confetti');
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.animationDuration = Math.random() * 2 + 1 + 's';
+          confetti.style.animationDelay = Math.random() + 's';
+          document.body.appendChild(confetti);
+        }
+      }
+    </script>
   </body>
 </html>

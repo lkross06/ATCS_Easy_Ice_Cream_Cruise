@@ -61,10 +61,10 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -25vh; /* negative half of the height to offset top: 50% */
-    margin-left: -25vw;
-    width: 50vw;
-    height: 50vh;
+    margin-top: -35vh;
+    margin-left: -35vw;
+    height: 70vh;
+    width: 70vw;
 }
 
 .error-modal-content {
