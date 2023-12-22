@@ -210,6 +210,7 @@
     </style>
 </head>
 <body id="body">
+    <!-- modals -->
     <div id="error1" class="modal">
         <div class="error-modal-content">
             <img onclick="closeModal(1)" class="close-menu" src="./res/close.png">
@@ -222,6 +223,199 @@
             <h3 class="title3">Game [<span id="error2-code"></span>] has reached <span id="error2-limit"></span>-player limit.</h3>
         </div>
     </div>
+    <div id="track1modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button1" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track1.png" class="modal-preview">
+                <p class="modal-difficulty">★☆☆☆☆</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 1</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb1">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=1">Play</a>
+        </div>
+    </div>
+    <div id="track2modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button2" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track2.png" class="modal-preview">
+                <p class="modal-difficulty">★☆☆☆☆</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 2</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb2">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=2">Play</a>
+        </div>
+    </div>
+    <div id="track3modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button3" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track3.png" class="modal-preview">
+                <p class="modal-difficulty">★★☆☆☆</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 3</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb3">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=3">Play</a>
+        </div>
+    </div>
+    <div id="track4modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button4" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track4.png" class="modal-preview">
+                <p class="modal-difficulty">★★★☆☆</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 4</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb4">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=4">Play</a>
+        </div>
+    </div>
+    <div id="track5modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button5" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track5.png" class="modal-preview">
+                <p class="modal-difficulty">★★★★☆</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 5</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb5">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=5">Play</a>
+        </div>
+    </div>
+    <div id="track6modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button6" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track6.png" class="modal-preview">
+                <p class="modal-difficulty">★★★★☆</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 6</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb6">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=6">Play</a>
+        </div>
+    </div>
+    <div id="track7modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button7" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track7.png" class="modal-preview">
+                <p class="modal-difficulty">★★★★★</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 7</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb7">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=7">Play</a>
+        </div>
+    </div>
+    <div id="track8modal" class="modal">
+        <div class="modal-content track-modal">
+            <img class="close-menu" id="close-button8" src="./res/close.png">
+            <div class="modal-img-div">
+                <img src="../res/previews/track8.png" class="modal-preview">
+                <p class="modal-difficulty">★★★★★</p>
+            </div>
+            <span>
+                <h3 class="title2 track-title">Track 8</h3>
+                <ol class="track-leaderboard">
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                    <li><span class="username">--</span><span> --</span></li>
+                </ol>
+            </span>
+            <span class="track-pb title3" id="pb8">--</span>
+            <a class="play-track-button submit-button title3" href="./track.html?track=8">Play</a>
+        </div>
+    </div>
+    <!-- other tabs -->
     <div id="join-lobby">
             <h2 class="title2" id="join-lobby-code"></h2>
             <h3 class="title3" id="join-lobby-track"></h3>
@@ -316,12 +510,16 @@
     <script type="module">
         import {domainName} from "../globalVars.js"
 
-        function getSmallestTime(a, b){ //compares two strings in format "m:ss.ss"
-            if (a == "--"){
-                return b
-            } else if (b == "--"){
-                return a
-            } //even if both are "--" it returns "--"
+        //compares two strings in format "m:ss.ss", returns [username, pb] with the lowest pb
+        function getSmallestTime(user_a, a, user_b, b){ 
+            
+            if (a == "--" && b != "--"){
+                return [user_b, b]
+            } else if (a != "--" && b == "--"){
+                return [user_a, a]
+            } else if (a == "--" && b == "--"){
+                return ["--", "--"]
+            }
 
             let a_min = parseInt(a.slice(0,1))
             let a_sec = parseFloat(a.slice(2))
@@ -329,9 +527,9 @@
             let b_sec = parseFloat(b.slice(2))
 
             if (a_min < b_min || (a_min == b_min && a_sec < b_sec)){
-                return a
+                return [user_a, a]
             }
-            return b
+            return [user_b, b]
         }
 
         // womp womp the user tried to hack the system and bypass login :(
@@ -360,16 +558,74 @@
                 message = JSON.parse(message.data)
 
                 if (message.method = "user_read"){
+                    delete message.method //yay!
                     //get this user's pbs
                     for (let num = 1; num < 9; num++){
-                        sessionStorage.setItem("track" + String(num) + "pb", message[username]["pbs"]["track" + String(num)])
+                        document.getElementById("pb" + String(num)).innerText = message[username]["pbs"]["track" + String(num)] //html
                     } 
 
                     //now get the top 8 scores on each track
-                    for (let num = 1; num < 9; num++){
-                        for (let user in message){
-                            //console.log(message[user]["pbs"]["track" + String(num)])
+
+                    /**
+                     * shall look as thus
+                     * 
+                     * {
+                     *      "track1": {
+                     *          1: ["finn","0:01.11"],
+                     *          2: ["lucas","0.05.25"],
+                     *          3: ["--","--"],
+                     *          ...
+                     *      },
+                     *      ...
+                     * }
+                     */
+                    let leaderboard = {
+                        "track1": {},
+                        "track2": {},
+                        "track3": {},
+                        "track4": {},
+                        "track5": {},
+                        "track6": {},
+                        "track7": {},
+                        "track8": {}
+                    }
+
+
+                    //first we gotta find the top dawgs
+                    for (let num = 1; num < 9; num++){ //each track
+                        let track = "track" + String(num)
+                        for (let i = 1; i < 9; i++){
+                            //fill the json
+                            leaderboard[track][i] = ["--", "--"]
                         }
+                        
+
+                        for (let user in message){
+                            let pos = 9 //lowest position to still be on leaderboard
+                            let pb = message[user]["pbs"][track]
+                            let leaderboard_user = leaderboard[track][pos - 1][0]
+                            let leaderboard_pb = leaderboard[track][pos - 1][1]
+                            while (getSmallestTime(user, pb, leaderboard_user, leaderboard_pb)[0] == user && pos > 1){
+                                pos--
+                                if (pos > 1){
+                                    leaderboard_user = leaderboard[track][pos - 1][0]
+                                    leaderboard_pb = leaderboard[track][pos - 1][1]
+                                }
+                            }
+
+                            if (pos <= 8){
+                                //shift everything down
+                                for (let j = 8; j > pos; j--){
+                                    leaderboard[track][j] = leaderboard[track][j - 1]
+                                }
+
+                                //add it in
+                                leaderboard[track][pos] = [user, pb]
+                            }
+                        }    
+                        
+                        //now we have the complete leaderboard for this track! lets put it into the html
+                        
                     }
 
                     //get their keybinds if they haven't been initialized already
@@ -416,149 +672,17 @@
 
         })
 
-        function getDifficulty(num){
-            let rtn = ""
-
-            switch (num){
-                case 1:
-                    rtn += "★"
-                    break
-                case 2:
-                    rtn += "★★"
-                    break
-                case 3:
-                    rtn += "★★"
-                    break
-                case 4:
-                    rtn += "★★★"
-                    break
-                case 5:
-                    rtn += "★★★★"
-                    break
-                case 6:
-                    rtn += "★★★★"
-                    break
-                case 7:
-                    rtn += "★★★★★"
-                    break
-                case 8:
-                    rtn += "★★★★★"
-                    break
+        for (let i = 1; i < 9; i++){
+            let num = String(i)
+            //open on preview click
+            document.getElementById("track-" + num).onclick = (e) => {
+                document.getElementById("track" + num + "modal").style.display = "block"
             }
 
-            while (rtn.length < 5) rtn += "☆"
-
-            return rtn
-        }
-
-        function create_track_modal(num){
-            leaderboard = [ //TODO: get this from server
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"},
-                {"username":"--","time":"--"}
-            ]
-            pb = sessionStorage.getItem("track" + String(num) + "pb") //TODO: get this user's pb from server
-
-            //level 1
-            let div1 = document.createElement("div")
-            div1.setAttribute("class", "modal")
-            div1.setAttribute("id", "modal")
-
-            //level 2
-            let div2 = document.createElement("div")
-            div2.setAttribute("class", "modal-content track-modal")
-            div1.appendChild(div2)
-
-            //level 3
-
-            let imgclose = document.createElement("img")
-            imgclose.setAttribute("class", "close-menu")
-            imgclose.setAttribute("id", "close-button")
-            imgclose.setAttribute("src", "./res/close.png")
-            div2.appendChild(imgclose)
-
-            /** --- difficulty + preview --- **/
-            let imgdiv = document.createElement("div")
-            imgdiv.setAttribute("class", "modal-img-div")
-            div2.appendChild(imgdiv)
-
-            let img = document.createElement("img")
-            img.setAttribute("src", "../res/previews/track" + String(num) + ".png")
-            img.setAttribute("class", "modal-preview")
-            imgdiv.appendChild(img)
-
-            let difficulty = document.createElement("p")
-            difficulty.innerText = getDifficulty(num)
-            difficulty.setAttribute("class", "modal-difficulty")
-            imgdiv.appendChild(difficulty)
-
-            /** --------------------------- **/
-
-            let span1 = document.createElement("span")
-            span1.setAttribute("class", "track-leaderboard")
-            div2.appendChild(span1)
-
-            let span2 = document.createElement("span")
-            span2.setAttribute("class", "track-pb title3")
-            span2.innerText = pb
-            div2.appendChild(span2)
-            
-            let playButton = document.createElement("a")
-            playButton.setAttribute("class", "play-track-button submit-button title3")
-            playButton.setAttribute("href", "./track.html?track=" + String(num))
-            playButton.innerText = "Play"
-            div2.appendChild(playButton)
-
-            //level 4
-            let h3 = document.createElement("h3")
-            h3.setAttribute("class", "title2 track-title")
-            h3.innerText = "Track " + num
-            span1.appendChild(h3)
-
-            let ol = document.createElement("ol")
-            ol.setAttribute("class", "track-leaderboard")
-            span1.appendChild(ol)
-
-            //level 5
-            for (let i = 0; i < 8; i++){
-                let li = document.createElement("li")
-                ol.appendChild(li)
-
-                let span3 = document.createElement("span")
-                span3.setAttribute("class", "username")
-                span3.innerText = leaderboard[i]["username"]
-                li.appendChild(span3)
-
-                let span4 = document.createElement("span")
-                span4.innerText = " " + leaderboard[i]["time"]
-                li.appendChild(span4)
-            }
-
-            let body = document.getElementById("body")
-            body.insertBefore(div1, body.firstChild)
-            div1.style.display = "block"
-        }
-
-        for (let track of document.getElementsByClassName("track-option")){
-            track.addEventListener("click", function(e){
-                id = String(this.id)
-                number = Number(id.substring(id.length - 1))
-                create_track_modal(number)
-            })
-        }
-
-        window.onclick = function(e){
-            let close = document.getElementById("close-button")
-            if (e.target == close){
-                document.getElementById("modal").remove()
-            }
+            //close on close button click
+            document.getElementById("close-button" + num).onclick = (e) => {
+                document.getElementById("track" + num + "modal").style.display = "none"
+            } 
         }
     </script>
 </body>
