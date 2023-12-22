@@ -1,7 +1,10 @@
 // handle escape menu logic
 let isEscapeMenuVisible = false;
 
-//handle key press events
+/**
+ * handles escape key press
+ * @param {*} e key event
+ */
 function handleKeyPress(e) {
     if (e.keyCode === 27){ 
         isEscapeMenuVisible = !isEscapeMenuVisible
@@ -14,6 +17,10 @@ function handleKeyPress(e) {
     }
 }
 
+/**
+ * shows the escape menu modal
+ * also gets the player's keybinds for the settings modal
+ */
 function showEscapeMenu() {
     document.getElementById('modal').style.display = "block"
 
@@ -37,6 +44,9 @@ function showEscapeMenu() {
     }
 }
 
+/**
+ * hides the escape menu modal
+ */
 function hideEscapeMenu() {
     isEscapeMenuVisible = false
     document.getElementById('modal').style.display = "none"
@@ -44,11 +54,17 @@ function hideEscapeMenu() {
     document.getElementById("settings-menu").style.display = "none"
 }
 
+/**
+ * closes escape menu modal and opens settings menu modal
+ */
 function goToSettingsMenu() {
     document.getElementById("esc-menu").style.display = "none"
     document.getElementById("settings-menu").style.display = "flex"
 }
 
+/**
+ * closes settings menu modal and opens escape menu modal
+ */
 function goToEscMenu() {
     document.getElementById("esc-menu").style.display = "flex"
     document.getElementById("settings-menu").style.display = "none"
@@ -57,8 +73,10 @@ function goToEscMenu() {
 
 window.addEventListener('keydown', handleKeyPress)
 
+/**
+ * saves a set of keybinds (specified in settings menu) to user_data and session storage
+ */
 function saveSettings() {
-    // TODO: save keybinds
     const forwardKey = document.getElementById('forward-key').value.toUpperCase();
     const backwardKey = document.getElementById('backward-key').value.toUpperCase();
     const leftKey = document.getElementById('left-key').value.toUpperCase();
@@ -85,8 +103,6 @@ function saveSettings() {
         }
     }
 }
-
-
 
 // example of capturing key inputs for keybinds
 document.querySelectorAll('.keybind input').forEach(input => {

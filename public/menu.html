@@ -510,7 +510,14 @@
     <script type="module">
         import {domainName} from "../globalVars.js"
 
-        //compares two strings in format "m:ss.ss", returns [username, pb] with the lowest pb
+        /**
+         * compares two strings in format "m:ss.ss" for lowest pb
+         * @param {string} user_a first user
+         * @param {string} a first user's time
+         * @param {string} user_b second user
+         * @param {string} b second user's time
+         * @returns [username, pb] with the lowest pb
+         */
         function getSmallestTime(user_a, a, user_b, b){ 
             
             if (a == "--" && b != "--"){
@@ -653,6 +660,10 @@
         sessionStorage.removeItem("code") //remove it no matter what
     </script>
     <script>
+        /**
+         * closes a specific modal when the close button is pressed
+         * @param {number} errorCode the error number of the modal to close
+         */
         function closeModal(errorCode) {
             document.getElementById("error" + String(errorCode)).style.display = "none"
         }

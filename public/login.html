@@ -110,6 +110,10 @@
     </script>
     <script>
         let username = ""
+
+        /**
+         * makes sure the username is a valid username by removing unnecessary characters
+         */
         function validateInput() {
             var inputField = document.getElementById('username')
             var inputValue = inputField.value
@@ -119,17 +123,20 @@
             inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, '')
 
             inputField.value = inputValue
-
-            if (inputField.value !== inputValue) {
-                alert('Only a-z, A-Z, and 0-9 are allowed.')
-            }
         }
 
+        /**
+         * gets the username from the input field and sets it as session storage
+         */
         function getUsername() {
             username = document.getElementById("username").value
             sessionStorage.setItem("username", username)
         }
 
+        /**
+         * closes a specific modal when the close button is pressed
+         * @param {number} errorCode the error number of the modal to close
+         */
         function closeModal(errorCode) {
             document.getElementById("error" + String(errorCode)).style.display = "none"
         }

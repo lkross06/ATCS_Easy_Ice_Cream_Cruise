@@ -7,6 +7,12 @@ let username = sessionStorage.getItem("username")
 let chatlog = document.getElementById("chat-log")
 let chats = []
 
+/**
+ * creates a new html object on the client's page for a chat message
+ * @param {*} message chat message content
+ * @param {*} username who the chat message was from
+ * @returns if the message has no content
+ */
 function new_chat_message(message, username){ //creates and returns a new chat element with proper attributes
     if (message == ""){
         return
@@ -29,16 +35,22 @@ function new_chat_message(message, username){ //creates and returns a new chat e
     chatlog.appendChild(p)
 }
 
+//send chats to server when send button is clicked
 document.getElementById("chat-send").addEventListener("click", chat_send)
 let ws = new WebSocket("ws://"+domainName+":8008")
 
+//or send chats to server when enter is clicked
 document.addEventListener("keypress", function(event) { //on enter key press
     if (event.key == "Enter") {
         chat_send()
     }
 })
 
-function cleanChatlog(){ //removes excess messages if there are too many / too little
+/**
+ * removes excess messages if there are too many, add extra messages if there aren't enough
+ * (i.e. when window is resized)
+ */
+function cleanChatlog(){
     function getChatlogHeight(){
         let rtn = 0
         for (let chat of chatlog.children){
@@ -52,10 +64,14 @@ function cleanChatlog(){ //removes excess messages if there are too many / too l
     }
 }
 
+// clean the chat when the window is resized
 window.addEventListener("resize", function(event){
     cleanChatlog()
 })
 
+/**
+ * get username and chat content, send chat to server to broadcast to other clients
+ */
 function chat_send(){
     function validInput(input){
         let rtn = 0
@@ -86,6 +102,9 @@ function chat_send(){
     input.value = ""
 }
 
+/**
+ * sends a websocket message to ther server to create a new multiplayer lobby
+ */
 function createGame() {
     let packet = {
         method: "create",
@@ -97,6 +116,9 @@ function createGame() {
 let createButton = document.getElementById("createGame")
 createButton.addEventListener("click", createGame)
 
+/**
+ * sends a websocket message to ther server to join a multiplayer lobby
+ */
 function joinGame() {
     let packet = {
         method: "join",
@@ -106,6 +128,10 @@ function joinGame() {
     ws.send(JSON.stringify(packet))
 }
 
+/**
+ * updates the list of people in a multiplayer lobby with a new person (front-end)
+ * @param {*} user username to add
+ */
 function addPlayerToJoinLobby(user){
     let p = document.createElement("p")
     p.innerText = user
@@ -184,6 +210,7 @@ ws.onmessage = message => {
     }
 }
 
+//tells the server to start the multiplayer game when the host presses the button
 document.getElementById("start-multiplayer-button").addEventListener("click", function (e) {
     let packet = {
         method: "start-multiplayer",
