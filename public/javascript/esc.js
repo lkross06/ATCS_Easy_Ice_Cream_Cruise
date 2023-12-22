@@ -88,7 +88,7 @@ function saveSettings() {
 
 
 
-// Example of capturing key inputs for keybinds
+// example of capturing key inputs for keybinds
 document.querySelectorAll('.keybind input').forEach(input => {
     input.addEventListener('keydown', (event) => {
         // Prevents the default action

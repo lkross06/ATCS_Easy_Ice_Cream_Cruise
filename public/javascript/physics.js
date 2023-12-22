@@ -47,6 +47,7 @@ container.appendChild(renderer.domElement);
 
 var handMaterial = new THREE.MeshPhongMaterial();
 
+//update the camera view when the window is resized
 window.addEventListener('resize', function() {
   w = container.clientWidth;
   h = container.clientHeight;
@@ -55,12 +56,7 @@ window.addEventListener('resize', function() {
   renderer.setSize(w, h);
 })
 
-// var geometry = new THREE.PlaneGeometry(10, 10, 10);
-// var material = new THREE.MeshBasicMaterial({color: 0x808080, side: THREE.DoubleSide});
-// var plane = new THREE.Mesh(geometry, material);
-// plane.rotation.x = Math.PI/2;
-// scene.add(plane);
-
+//so we can see!!!
 var sunlight = new THREE.DirectionalLight(0xffffff, 1.0);
 sunlight.position.set(-10, 10, 0);
 scene.add(sunlight)
@@ -82,9 +78,18 @@ const params = new URLSearchParams(window.location.search);
 var trackValue = params.get('track')
 //if the parameter is invalid or doesn't exist, send to
 trackValue = (!isNaN(parseInt(trackValue)))? parseInt(trackValue) : 0
+if (trackValue < 1 || trackValue > 8){
+  //you tried to change the url-encoded data. back to the lobby kiddo
+  const redirectUrl = "http://" + domainName + ":3000";
+  window.location.href = redirectUrl + "/menu"
+}
 
 loadTrack(trackValue)
 
+/**
+ * Loads a given track into the physics world from resources (.txt file)
+ * @param {number} num track number (1-8) to load
+ */
 function loadTrack(num){
   //where the track is loaded
   track = new Track("Track " + String(num), 1, "../../res/tracks/track"+String(num)+".txt")
@@ -96,7 +101,7 @@ document.getElementById("track-name").innerText = track.getName()
 var last = 0
 var last_reset = 0
 
-
+//physics interaction between vehicle wheels + ground
 var groundMaterial = new CANNON.Material('groundMaterial');
 var wheelMaterial = new CANNON.Material('wheelMaterial');
 var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groundMaterial, {
@@ -150,6 +155,7 @@ vehicle.addToWorld(world);
 // car wheels
 var wheelBodies = [],
     wheelVisuals = [];
+//create each wheel body/mesh
 vehicle.wheelInfos.forEach(function(wheel) {
   var shape = new CANNON.Cylinder(wheel.radius, wheel.radius, wheel.radius / 2, 20);
   var body = new CANNON.Body({mass: 11.5, material: wheelMaterial});
@@ -184,19 +190,13 @@ world.addEventListener('postStep', function() {
     wheelVisuals[i].quaternion.copy(t.quaternion);
   }
 });
-// var q = plane.quaternion;
-
-// var planeBody = new CANNON.Body({
-//   mass: 0, // mass = 0 makes the body static
-//   material: groundMaterial,
-//   shape: new CANNON.Plane(),
-//   quaternion: new CANNON.Quaternion(-q._x, q._y, q._z, q._w)
-// });
-// world.add(planeBody)
-
 
 let skidArr = []
 
+/**
+ * Adds skid marks to ground if necessary
+ * @param {CANNON.RaycastVehicle} vehicle the vehicle body to add skidmarks for
+ */
 function addSkidMarks(vehicle) {
   const skidPositions = getWheelPositions(vehicle); 
   skidPositions.forEach(position => {
@@ -204,6 +204,10 @@ function addSkidMarks(vehicle) {
   });
 }
 
+/**
+ * Creates a skid mark object (two black squares) at a given position
+ * @param {THREE.Vector3} position (x,y,z) vector to create skid mark at
+ */
 function createSkidMarkAtPosition(position) {
   const skidGeometry = new THREE.PlaneGeometry(0.5, 0.5);
   const skidMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
@@ -218,6 +222,11 @@ function createSkidMarkAtPosition(position) {
   skidArr.push(skidMesh)
 }
 
+/**
+ * gets the positions of each wheel for skid marks
+ * @param {CANNON.RaycastVehicle} vehicle vehicle to get wheels from
+ * @returns 4-element array of (x,y,z) vectors for each wheel
+ */
 function getWheelPositions(vehicle) {
   let wheelPositions = [];
   for (let wheel of vehicle.wheelInfos) {
@@ -229,6 +238,10 @@ function getWheelPositions(vehicle) {
   return wheelPositions;
 }
 
+/**
+ * checks to see if skid marks should be displayed, given the vehicle's current state + user inputs
+ * @returns true if we should add skid marks, false otherwise
+ */
 function checkSkid(){
   let speed = Math.abs(vehicle.currentVehicleSpeedKmHour)
   if (vehicle.sliding) return true
@@ -252,6 +265,9 @@ function checkSkid(){
   return false;
 }
 
+/**
+ * deletes oldest skid marks if there are over 1000 on the ground (so we don't destroy gpu)
+ */
 function delSkid() {
   if (skidArr.length > 1000) {
       let oldSkidMark = skidArr.shift();
@@ -259,11 +275,16 @@ function delSkid() {
   }
 }
 
+/**
+ * Checks all interactions between physics bodies in our world and simulates 1/60th of a second
+ */
 function updatePhysics() {
   world.step(1/60);
-  // update the chassis position
+
+  // update the mesh to match the vehicle's new position
   box.position.copy(chassisBody.position);
   box.quaternion.copy(chassisBody.quaternion);
+
   if (track.getFinish() == null){
     navigate()
     updateCheckpoints()
@@ -279,40 +300,17 @@ function updatePhysics() {
     reset(keys_pressed[82])
   }
 }
-// opponents: a json o all the opponents. 
-/*
-var cargeometry = new THREE.BoxGeometry(2, 0.9, 4); // double chasis shape
-var material = new THREE.MeshBasicMaterial({color: LETSPUTLIKEBLUEHERE, side: THREE.DoubleSide});
-var box = new THREE.Mesh(cargeometry, material);
-looks as thus:
-{
-  finn: {
-    3dmodel: 3dmodel
-    x: x
-    y: y
-    z: z
-  }
-}
-car.position = (x, y, z)
-var geometry = new THREE.CylinderGeometry( wheel.radius, wheel.radius, 0.4, 32 );
-var material = new THREE.MeshPhongMaterial({
-  color: wheelColor,
-  emissive: wheelColor,
-  side: THREE.DoubleSide,
-  flatShading: true,
-});
-var cylinder = new THREE.Mesh(geometry, material);
-cylinder.geometry.rotateZ(Math.PI/2);
-wheelVisuals.push(cylinder);
-scene.add(cylinder);
-// wheel.radius = .5
-*/
-let opponents = {
 
-}
+let opponents = {}
+
+/**
+ * initializes + renders a new instance of a multiplayer opponent
+ * @param {string} opp opponent's username
+ * @param {number} xpos current x-position of car
+ * @param {number} ypos current y-position of car
+ * @param {number} zpos current z-position of car
+ */
 function setOpponents(opp, xpos, ypos, zpos) {
-  // TODO: hardcoding :(
-  // also TODO: no wheels rip
   let oppGeo = new THREE.BoxGeometry(2, 0.9, 4)
   let oppMat = new THREE.MeshBasicMaterial({color: oppChassisColor, side: THREE.DoubleSide})
   let oppBox = new THREE.Mesh(oppGeo, oppMat)
@@ -363,6 +361,14 @@ function setOpponents(opp, xpos, ypos, zpos) {
   opponents[opp].backLeft.position.y = ypos - .2
   opponents[opp].backLeft.position.z = zpos - 1.3
 }
+
+/**
+ * redraws the opponent's mesh with updates position
+ * @param {string} opp opponent's username
+ * @param {number} xpos current x-position of car
+ * @param {number} ypos current y-position of car
+ * @param {number} zpos current z-position of car
+ */
 function renderOpp(opp, xpos, ypos, zpos) {
   opponents[opp].car.position.x = xpos
   opponents[opp].car.position.y = ypos
@@ -385,6 +391,11 @@ function renderOpp(opp, xpos, ypos, zpos) {
   opponents[opp].backLeft.position.z = zpos - 1.3
 }
 
+/**
+ * resets the car -- no velocity, starting rotation, starting position
+ * and resets track components if specified
+ * @param {boolean} resetTrack whether or not to reset track components (current lap, time elapsed)
+ */
 function reset(resetTrack = true){
   for (let i = 0; i <= skidArr.length; i++){
     let oldSkidMark1 = skidArr.shift();
@@ -430,24 +441,22 @@ var last_timestamp = 0
 var slowest_refresh_rate = 0 //for multiplayer only
 var last_physics_update = 0 //timestamp for last physics update
 
+/**
+ * updates and re-renders all meshes for our game! runs asyncronously and updates physics world too
+ * @param {number} timestamp the time at which this function was called again
+ */
 function render(timestamp) {
+
+  //for syncing up clients on a multiplayer game. hooray!
   let refresh_rate = Math.round(timestamp - last_timestamp)
   last_timestamp = timestamp
   playerRefreshRate = refresh_rate;
 
-  //TODO: refresh rate is given by getRefreshRate()
-
-  // timestamp should == the refresh rate 
-  // add up diff of timestamps
-  // then do a game tick - increase accell, move car, etc
-  // everyone moves foreward on game tick time, even tho animate is faster. 
-  // gametick -> send timestamp, send position, speed, etc
-  // server keeps ^ and tells all other clients the location of x client
-  // gametick = slowest refresh of the person. tie it to a var
-  // render takes timestamp of last render, and the new timestamp, and the difference = 1 refresh rate. 
-  const relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
+  //readjust the camera
+  var relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
   camera.position.copy(relativeCameraOffset);
   camera.lookAt(box.position);
+
   // here should go the ws stuff i belive
   // this packet is this client's data. x, y, z, quaterion(?) etc.
   // make sure the user is in a multiplayer game
@@ -512,8 +521,7 @@ function render(timestamp) {
     }
   }
   
-  
-
+  //countdown updates
   if (countdown >= 0 && Date.now() - last_countdown_update >= 1000){
     countdown -= 1
     last_countdown_update = Date.now()
@@ -535,6 +543,10 @@ function render(timestamp) {
   requestAnimationFrame(render);
 }
 
+/**
+ * gets the time elapsed in "m:ss.ss" format
+ * @returns time elapsed in given format (as a string)
+ */
 function getTimeElapsed(){
   function getMinutes(ms){
     let mins = Math.floor((Number(ms) / 1000 / 60) % 60)
@@ -561,6 +573,9 @@ function getTimeElapsed(){
   return String(getMinutes(total_elapsed)) + ":" + getSeconds(total_elapsed)
 }
 
+/**
+ * updates the user interface (i.e. 2D text not in the game world)
+ */
 function updateUI(){
 
   let countdown_num = countdown
@@ -650,7 +665,11 @@ var keys_pressed = {} //map of all keys pressed, formatted "keycode:boolean"
 var steeringValue = 0
 
 
-// Function to handle key press events
+/**
+ * handles all key press events with corresponding updates
+ * @param {*} e event
+ * @returns if the event was something other than a key being down or key being up
+ */
 function handleKeyPress(e) {
     //only update if the track is still being played
     if ((e.type !== 'keydown' && e.type !== 'keyup') || track.getFinish() != null) return;
@@ -658,7 +677,9 @@ function handleKeyPress(e) {
     keys_pressed[e.keyCode] = e.type === 'keydown';
 }
 
-
+/**
+ * checks to see which checkpoints contact this client's vehicle wheels
+ */
 function updateCheckpoints(){
   for (let cp of checkpoints){
     let result = [];
@@ -674,6 +695,12 @@ function updateCheckpoints(){
   }
 }
 
+/**
+ * adds a player to the multiplayer lobby leaderboard after they finish the track
+ * (broadcasted from websocket)
+ * @param {string} user username of new player
+ * @param {string} time player's final time
+ */
 function addPlayerToLobbyLeaderboard(user, time){
   let div_container = document.createElement("div")
 
@@ -690,6 +717,9 @@ function addPlayerToLobbyLeaderboard(user, time){
   document.getElementById("multi-track-leaderboard").append(div_container)
 }
 
+/**
+ * creates and renders a confetti animation!
+ */
 function confetti() {
   const confettiCount = 1000;
   const confetti = [];
@@ -720,6 +750,10 @@ document.head.appendChild(document.createElement('style')).textContent = `
   }
 `;
 
+/**
+ * ends the game if the client satisfies all requirements to beat level
+ * (i.e. done all laps or reach finish with all checkpoints checked)
+ */
 function endGame(){ //run this function when the game ends for this client
   track.finish = Date.now()
 
@@ -789,6 +823,10 @@ function endGame(){ //run this function when the game ends for this client
   }
 }
 
+/**
+ * checks to see if player has satisfied all requirements to beat level
+ * @returns true if player has beat level, false otherwise
+ */
 function checkFinish(){
   if (track.pieces.length > 0){ //only check if there is a track and its been loaded
     let result = [];
@@ -816,16 +854,21 @@ function checkFinish(){
       }
     }
   }
-  
-
-  
 }
 
+/**
+ * gets the maximum steering allowed given the vehicle's current speed
+ * @param {number} speed vehicle's current speed
+ * @returns maximum steering allowed
+ */
 function getMaxSteerVal(speed){
   return (Math.PI / (((1/5) * Math.abs(speed)) + 16))
 }
 
-
+/**
+ * applies user inputs to changes in vehicle (i.e. wheel turns, acceleration/deceleration)
+ * (only for movement inputs)
+ */
 function navigate() {
     let scale = idealRefreshRate / playerRefreshRate; // speeding up or slowing down player actions based on a default refresh rate of 12ms (if you refresh faster than 12ms
                                         // you get slowed down, and if you refresh slower you get sped up)
@@ -933,8 +976,7 @@ window.addEventListener('keyup', handleKeyPress)
 
 //run the 3-2-1 sequence
 
-//TODO: wait until everyone loads
 var countdown = 3
 var last_countdown_update = Date.now()
 
-render()
+render() //start the rendering

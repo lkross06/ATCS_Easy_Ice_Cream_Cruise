@@ -1,5 +1,25 @@
+/**
+ * Represents the full track in the scene.
+ * 
+ * @class Track
+ * @property {string} name - The name of the track.
+ * @property {number} laps - The total number of laps in the race.
+ * @property {number} curr_lap - The current lap number.
+ * @property {string} rel - The relative URL to the text file for building the track.
+ * @property {Array<Piece>} pieces - An ordered list of piece objects representing the track.
+ * @property {Array<Checkpoint>} checkpoints - An ordered list of checkpoints on the track.
+ * @property {number} start - The timestamp when the track was started.
+ * @property {number|null} finish - The timestamp when the track was finished, null until completion.
+ */
+
 export class Track{
     //the first block always spawns at (0, 0, 0) so we dont have to move the car. everything is built relative to that
+    /**
+     * Creates an instance of Track.
+     * @param {string} name - Name of the track.
+     * @param {number} [laps=1] - Total number of laps.
+     * @param {string} rel - Relative link to the .txt file to build the track.
+     */
     constructor(name, laps = 1, rel){ //rel is a relative link to the .txt file to build the track
         this.name = name
         this.laps = laps
@@ -12,34 +32,66 @@ export class Track{
         this.start = Date.now() //when the track was started
         this.finish = null //null until the track is finish, then this is the time the track was finished
     }
+
+    /**
+     * Sets the start time of the track.
+     * @param {number} now - The timestamp representing the current time.
+     */
     setStart(now){
         this.start = now
     }
 
+    /**
+     * Increments the current lap number by one.
+     */
     addLap(){
         this.curr_lap += 1
     }
 
+    /**
+     * Gets the start time of the track.
+     * @returns {number} The start timestamp.
+     */
     getStart(){
         return this.start
     }
 
+    /**
+     * Gets the start time of the track.
+     * @returns {number} The finish timestamp.
+     */
     getFinish(){
         return this.finish
     }
 
+    /**
+     * Provides a string representation of the current lap over total laps.
+     * @returns {string} The formatted lap string.
+     */
     sendLaps(){
         return String(this.curr_lap) + " / " + String(this.laps)
     }
 
+    /**
+     * Retrieves the name of the track.
+     * @returns {string} The track's name.
+     */
     getName(){
         return this.name
     }
 
+    /**
+     * Retrieves the list of checkpoints on the track.
+     * @returns {Array<Object>} The list of checkpoints.
+     */
     getCheckpoints(){
         return this.checkpoints
     }
 
+    /**
+     * Finds the first 'Lap' or 'Start' piece and returns its body.
+     * @returns {Object|null} The body of the 'Lap' or 'Start' piece, or null if not found.
+     */
     getStartBody(){
         for (let piece of this.pieces){
             if (piece.name == "Lap" || piece.name == "Start") return piece.body
@@ -47,6 +99,10 @@ export class Track{
         return null
     }
 
+    /**
+     * Finds the first 'Lap' or 'Finish' piece and returns its body.
+     * @returns {Object|null} The body of the 'Lap' or 'Finish' piece, or null if not found.
+     */
     getFinishBody(){ //you can finish on a lap or a finish
         for (let piece of this.pieces){
             if (piece.name == "Lap" || piece.name == "Finish") return piece.body
@@ -54,6 +110,11 @@ export class Track{
         return null
     }
 
+    /**
+     * Builds the track in a given scene and world by fetching and processing a track layout file.
+     * @param {Object} scene - The scene in which the track will be built.
+     * @param {Object} world - The world where the track pieces will exist.
+     */
     build(scene, world){ //builds the track in a given scene / world
         fetch(this.rel) //find the file given relative url
         .then((res) => res.text()) //get the file / resource's text
@@ -118,7 +179,46 @@ export class Track{
     }
 }
 
+
+/**
+ * Represents a basic piece or segment of a track in a racing game.
+ * 
+ * @class Piece
+ * @property {number} x - The X coordinate of the piece.
+ * @property {number} y - The Y coordinate of the piece.
+ * @property {number} z - The Z coordinate of the piece.
+ * @property {number} width - The width of the piece.
+ * @property {number} height - The height of the piece.
+ * @property {number} length - The length of the piece.
+ * @property {string} direction - The direction the piece faces (e.g., 'N', 'S', 'E', 'W').
+ * @property {number} pitch - The pitch (rotation around the X-axis) of the piece.
+ * @property {number} yaw - The yaw (rotation around the Y-axis) of the piece.
+ * @property {number} roll - The roll (rotation around the Z-axis) of the piece.
+ * @property {number} color - The color of the piece.
+ * @property {number} railColor - The color of the rails on the piece.
+ * @property {Array<string>} rails - A list of directions indicating where rails are present.
+ * @property {number} railThick - The thickness of the rails.
+ * @property {number} railHeight - The height of the rails.
+ * @property {string} name - The name of the piece.
+ * @property {Object} body - The physics body of the piece for simulation.
+ * @property {Object} mesh - The graphical representation of the piece.
+ * @property {Object} railBodies - A mapping of rail directions to their physics bodies.
+ * @property {Object} railMeshes - A mapping of rail directions to their graphical meshes.
+ */
 class Piece{
+    /**
+     * Creates an instance of a Piece.
+     * @param {number} x - The X coordinate of the piece.
+     * @param {number} y - The Y coordinate of the piece.
+     * @param {number} z - The Z coordinate of the piece.
+     * @param {number} width - The width of the piece.
+     * @param {number} height - The height of the piece.
+     * @param {number} length - The length of the piece.
+     * @param {string} [direction='N'] - The direction the piece faces.
+     * @param {Array<string>} [rails=[]] - A list of directions where rails are present.
+     * @param {number} [color=0xd6D5cd] - The color of the piece.
+     * @param {number} [railColor=0x696969] - The color of the rails.
+     */
     constructor(x, y, z, width, height, length, direction = "N", rails = [], color = 0xd6D5cd, railColor = 0x696969) {
         this.x = x
         this.y = y
@@ -149,8 +249,23 @@ class Piece{
     }
 }
 
-//all pieces that can be a flat square
-class Block extends Piece{
+/**
+ * Represents a basic block of the track, can only be a flat square. 
+ * 
+ * @class Block
+ * @extends Piece
+ * @property {number} true_size - The actual size of the block, accounting for adjustments like thickness.
+ */class Block extends Piece{
+    /**
+     * Creates an instance of Block.
+     * @param {number} width - The width of the block.
+     * @param {number} height - The height of the block.
+     * @param {number} length - The length of the block.
+     * @param {string} [direction='N'] - The direction the block faces.
+     * @param {number} [size=1] - The size multiplier for the block.
+     * @param {number} [thick_size=1] - The thickness size multiplier for the block.
+     * @param {Array<string>} [rails=[]] - A list of directions for rails.
+     */
     constructor(width, height, length, direction = "N", size = 1, thick_size = 1, rails){
         super(0, 0, 0, width, height, length, direction, rails)
         if (direction == "N" || direction == "S"){
@@ -163,6 +278,12 @@ class Block extends Piece{
         this.name = "Block"
     }
 
+    /**
+     * Sets the position of the block in the track.
+     * @param {number} x - The new X coordinate.
+     * @param {number} y - The new Y coordinate.
+     * @param {number} z - The new Z coordinate.
+     */
     setPosition(x, y, z){
         this.x = x
         this.y = y
@@ -227,6 +348,11 @@ class Block extends Piece{
         }
     }
     
+    /**
+     * Creates the block in a given scene and physics world.
+     * @param {Object} scene - The scene in which the block will be added.
+     * @param {Object} world - The physics world where the block will exist.
+     */
     create(scene, world) {
         //physics
         let shape = new CANNON.Box(new CANNON.Vec3(this.width, this.height, this.length))
@@ -255,6 +381,11 @@ class Block extends Piece{
         }
     }
 
+    /**
+     * Creates the rails for the block in the given scene and physics world.
+     * @param {Object} scene - The scene in which the rails will be added.
+     * @param {Object} world - The physics world where the rails will exist.
+     */
     createRails(scene, world){
         let material = new THREE.MeshPhongMaterial({
             color: this.railColor,
@@ -310,7 +441,21 @@ class Block extends Piece{
     }
 }
 
+
+/**
+ * Represents a checkpoint in a racing track. It extends the Block class and includes specific attributes and behaviors for checkpoints.
+ * 
+ * @class Checkpoint
+ * @extends Block
+ * @property {boolean} checked - Indicates whether the checkpoint has been cleared (true) or not (false).
+ * @property {number} checkedColor - The color of the checkpoint when it has been cleared.
+ */
 class Checkpoint extends Block{
+    /**
+     * Creates an instance of Checkpoint.
+     * @param {string} [direction='N'] - The direction the checkpoint faces.
+     * @param {number} thick_size - The thickness size multiplier for the checkpoint.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N" || direction == "S"){
@@ -327,6 +472,10 @@ class Checkpoint extends Block{
         this.name = "Checkpoint"
     }
 
+    /**
+     * Sets the checkpoint as checked or unchecked.
+     * @param {boolean} checked - The state to set for the checkpoint (true if checked).
+     */
     setChecked(checked){
         this.checked = checked
         if (this.checked){
@@ -339,13 +488,28 @@ class Checkpoint extends Block{
         }
     }
 
+    /**
+     * Retrieves the checked status of the checkpoint.
+     * @returns {boolean} True if the checkpoint has been cleared, false otherwise.
+     */
     getChecked(){
         return this.checked
     }
 
 }
 
+/**
+ * Represents a lap marker on the racing track. 
+ *
+ * @class Lap
+ * @extends Block
+ */
 class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1 if all checkpoints are checked, sets all checkponits to unchecked
+    /**
+     * Creates an instance of Lap.
+     * @param {string} [direction='N'] - The direction the lap marker faces.
+     * @param {number} thick_size - The thickness size multiplier for the lap marker.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N" || direction == "S"){
@@ -359,17 +523,38 @@ class Lap extends Block{ //there should be only 1 per map. incremenets lap by +1
 
         this.name = "Lap"
     }
-
-
 }
 
+
+/**
+ * Represents a flat segment of the racing track. It's a basic type of Block with no special features.
+ *
+ * @class Flat
+ * @extends Block
+ */
 class Flat extends Block{
+    /**
+     * Creates an instance of Flat.
+     * @param {string} [direction='N'] - The direction the flat segment faces.
+     * @param {number} thick_size - The thickness size multiplier for the flat segment.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
     }
 }
 
+/**
+ * Represents the start line of the racing track. It's a specialized Block marking the starting point.
+ *
+ * @class Start
+ * @extends Block
+ */
 class Start extends Block{
+    /**
+     * Creates an instance of Start.
+     * @param {string} [direction='N'] - The direction the start line faces.
+     * @param {number} thick_size - The thickness size multiplier for the start line.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
@@ -386,7 +571,18 @@ class Start extends Block{
     }
 }
 
+/**
+ * Represents the finish line of the racing track. It's a specialized Block marking the end of a lap or race.
+ *
+ * @class Finish
+ * @extends Block
+ */
 class Finish extends Block{
+    /**
+     * Creates an instance of Finish.
+     * @param {string} [direction='N'] - The direction the finish line faces.
+     * @param {number} thick_size - The thickness size multiplier for the finish line.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
@@ -403,7 +599,19 @@ class Finish extends Block{
     }
 }
 
+/**
+ * Represents a straight segment of the racing track. It's a type of Block used for straight paths.
+ *
+ * @class Straight
+ * @extends Block
+ */
 class Straight extends Block{
+    /**
+     * Creates an instance of Straight.
+     * @param {number} [size=1] - The size multiplier for the straight segment.
+     * @param {string} [direction='N'] - The direction the straight segment faces.
+     * @param {number} thick_size - The thickness size multiplier for the straight segment.
+     */
     constructor(size = 1, direction = "N", thick_size){
         super(10, 1, 10, direction, size, thick_size, [])
         if (direction == "N" || direction == "S"){
@@ -415,7 +623,19 @@ class Straight extends Block{
     }
 }
 
+
+/**
+ * Represents a right turn on the racing track. It's a type of Block used for right-angle turns.
+ *
+ * @class RightTurn
+ * @extends Block
+ */
 class RightTurn extends Block{
+    /**
+     * Creates an instance of RightTurn.
+     * @param {string} [direction='N'] - The direction the right turn faces.
+     * @param {number} thick_size - The thickness size multiplier for the right turn.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
@@ -431,7 +651,18 @@ class RightTurn extends Block{
     }
 }
 
+/**
+ * Represents a left turn on the racing track. It's a type of Block used for left-angle turns.
+ *
+ * @class LeftTurn
+ * @extends Block
+ */
 class LeftTurn extends Block{
+    /**
+     * Creates an instance of LeftTurn.
+     * @param {string} [direction='N'] - The direction the left turn faces.
+     * @param {number} thick_size - The thickness size multiplier for the left turn.
+     */
     constructor(direction = "N", thick_size){
         super(10, 1, 10, direction, 1, thick_size, [])
         if (direction == "N"){
@@ -447,8 +678,28 @@ class LeftTurn extends Block{
     }
 }
 
-class Ramp extends Piece {
-    //theta == angle (radians) from x-z plane
+
+/**
+ * Represents a ramp on the racing track. 
+ *
+ * @class Ramp
+ * @extends Piece
+ * @property {number} theta - The angle of inclination of the ramp from the x-z plane, in radians.
+ * @property {number} true_size - The actual size of the ramp, considering the incline.
+ * @property {number} true_height - The actual height of the ramp, accounting for the incline.
+ * @property {number} true_y - The adjusted Y coordinate considering the ramp's inclination.
+ */
+class Ramp extends Piece {    /**
+     * Creates an instance of Ramp.
+     * @param {number} width - The width of the ramp.
+     * @param {number} height - The height of the ramp.
+     * @param {number} length - The length of the ramp.
+     * @param {string} [direction='N'] - The direction the ramp faces.
+     * @param {number} theta - The angle of inclination of the ramp in radians. (On the X-Z plane)
+     * @param {number} [size=1] - The size multiplier for the ramp.
+     * @param {number} [thick_size=1] - The thickness size multiplier for the ramp.
+     * @param {Array<string>} [rails=[]] - A list of directions for rails on the ramp.
+     */
     constructor(width, height, length, direction = "N", theta, size = 1, thick_size = 1, rails){
         super(0, 0, 0, width, height, length, direction, rails)
         if (direction == "N" || direction == "S"){
@@ -486,6 +737,12 @@ class Ramp extends Piece {
         }
     }
 
+    /**
+     * Sets the position of the ramp, adjusting for its inclination.
+     * @param {number} x - The new X coordinate.
+     * @param {number} y - The new Y coordinate.
+     * @param {number} z - The new Z coordinate.
+     */
     setPosition(x, y, z){
         this.x = x
         this.y = y
@@ -556,6 +813,11 @@ class Ramp extends Piece {
         }
     }
     
+    /**
+     * Creates the ramp in a given scene and physics world, including its specific geometry due to the angle of inclination.
+     * @param {Object} scene - The scene in which the ramp will be added.
+     * @param {Object} world - The physics world where the ramp will exist.
+     */
     create(scene, world) {
         //physics
         let shape
@@ -606,6 +868,11 @@ class Ramp extends Piece {
         }
     }
 
+    /**
+     * Creates the rails for the ramp in the given scene and physics world, adjusting for the ramp's inclination.
+     * @param {Object} scene - The scene in which the rails will be added.
+     * @param {Object} world - The physics world where the rails will exist.
+     */
     createRails(scene, world){
         let material = new THREE.MeshPhongMaterial({
             color: this.railColor,
@@ -680,7 +947,22 @@ class Ramp extends Piece {
     }
 }
 
+
+
+/**
+ * Represents an upward inclining ramp on the racing track. It's a specialized form of the Ramp class for ramps that incline upwards.
+ *
+ * @class RampUp
+ * @extends Ramp
+ */
 class RampUp extends Ramp{
+    /**
+     * Creates an instance of RampUp.
+     * @param {number} [theta=15] - The angle of inclination of the ramp in degrees.
+     * @param {number} [size=1] - The size multiplier for the ramp.
+     * @param {string} [direction='N'] - The direction the ramp faces.
+     * @param {number} [thick_size=1] - The thickness size multiplier for the ramp.
+     */
     constructor(theta = 15, size = 1, direction = "N", thick_size){
         //convert degrees to radians
         super(10, 1, 10, direction, theta * (Math.PI/180), size, thick_size, ["W", "E"])
@@ -692,7 +974,20 @@ class RampUp extends Ramp{
     }
 }
 
+/**
+ * Represents a downward inclining ramp on the racing track. It's a specialized form of the Ramp class for ramps that incline downwards.
+ *
+ * @class RampDown
+ * @extends Ramp
+ */
 class RampDown extends Ramp{
+    /**
+     * Creates an instance of RampDown.
+     * @param {number} [theta=15] - The angle of inclination of the ramp in degrees.
+     * @param {number} [size=1] - The size multiplier for the ramp.
+     * @param {string} [direction='N'] - The direction the ramp faces.
+     * @param {number} [thick_size=1] - The thickness size multiplier for the ramp.
+     */
     constructor(theta = 15, size = 1, direction = "N", thick_size){
         //convert degrees to radians
         super(10, 1, 10, direction, theta * -(Math.PI/180), size, thick_size, ["W", "E"])
