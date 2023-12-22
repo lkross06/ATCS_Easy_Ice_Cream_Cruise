@@ -45,8 +45,7 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
 
-var map = THREE.TextureLoader()
-var handMaterial = new THREE.MeshPhongMaterial({map: map});
+var handMaterial = new THREE.MeshPhongMaterial();
 
 window.addEventListener('resize', function() {
   w = container.clientWidth;
