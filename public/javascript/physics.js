@@ -30,7 +30,8 @@ chassisBody.position.set(0, 2, 0);
 chassisBody.angularVelocity.set(0, 0, 0); // initial velocity
 
 // car visual body
-let chassisColor = 0xB30E16
+let chassisColor = 0x00009d
+let oppChassisColor = 0xB30E16
 let wheelColor = 0x43464B
 var cargeometry = new THREE.BoxGeometry(2, 0.75, 4); // double chasis shape
 var material = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.DoubleSide});
@@ -314,7 +315,7 @@ function setOpponents(opp, xpos, ypos, zpos) {
   // TODO: hardcoding :(
   // also TODO: no wheels rip
   let oppGeo = new THREE.BoxGeometry(2, 0.9, 4)
-  let oppMat = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.DoubleSide})
+  let oppMat = new THREE.MeshBasicMaterial({color: oppChassisColor, side: THREE.DoubleSide})
   let oppBox = new THREE.Mesh(oppGeo, oppMat)
   var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.4, 32)
   var material = new THREE.MeshPhongMaterial({
