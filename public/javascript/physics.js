@@ -270,9 +270,10 @@ function updatePhysics() {
     addSkidMarks(vehicle);
     delSkid()
   }
-  //if "r" is pressed or car is below the map or too high above the map
+  //the car "dies" and "respawns"
+  //if "r" is pressed then reset the entire track, otherwise just put the car back at the starting position
   if (keys_pressed[82] || chassisBody.position.y < -20 || chassisBody.position.y > 400){ 
-    reset()
+    reset(keys_pressed[82])
   }
 }
 // opponents: a json o all the opponents. 
@@ -381,7 +382,7 @@ function renderOpp(opp, xpos, ypos, zpos) {
   opponents[opp].backLeft.position.z = zpos - 1.3
 }
 
-function reset(){
+function reset(resetTrack = true){
   for (let i = 0; i <= skidArr.length; i++){
     let oldSkidMark1 = skidArr.shift();
     scene.remove(oldSkidMark1);
@@ -405,11 +406,14 @@ function reset(){
     vehicle.setBrake(10, 3)
 
     //reset track + time
-    track.curr_lap = 1
-    track.start = Date.now()
-    track.finish = null
-    last = track.getStart()
+    if (resetTrack){
+      track.curr_lap = 1
+      track.start = Date.now()
+      track.finish = null
+      last = track.getStart()
+    }
     last_reset = Date.now()
+    
 
     //reset checkpoints
     for (let cp of checkpoints){
@@ -418,14 +422,15 @@ function reset(){
   }
 }
 
-function getRefreshRate(timestamp){ //return this client's refresh rate
-  return Math.round(timestamp / total_renders)
-}
+var last_timestamp = 0
 
-var total_renders = 0 //total number of times render() was run
+var slowest_refresh_rate = 0 //for multiplayer only
+var last_physics_update = 0 //timestamp for last physics update
 
 function render(timestamp) {
-  total_renders += 1
+  let refresh_rate = Math.round(timestamp - last_timestamp)
+  last_timestamp = timestamp
+
   //TODO: refresh rate is given by getRefreshRate()
 
   // timestamp should == the refresh rate 
@@ -449,6 +454,7 @@ function render(timestamp) {
       x: chassisBody.position.x,
       y: chassisBody.position.y,
       z: chassisBody.position.z,
+      rr: refresh_rate,
       code: sessionStorage.getItem("code")
       // add in here the timestamp/refreshrate probs
     } 
@@ -456,23 +462,28 @@ function render(timestamp) {
     ws.onmessage = message => {
       let msg = JSON.parse(message.data)
       if (msg.method === "render") {
-        if (msg.code === sessionStorage.getItem("code") && msg.username !== sessionStorage.getItem("username")) {
-          // the message is from a user in our game
-          if (!opponents.hasOwnProperty(msg.username)) {
-            setOpponents(msg.username, msg.x, msg.y, msg.z)
-          } else {
-            renderOpp(msg.username, msg.x, msg.y, msg.z)
+        if (msg.code === sessionStorage.getItem("code")) {
+          if (msg.username !== sessionStorage.getItem("username")){
+            // the message is from a user in our game
+            if (!opponents.hasOwnProperty(msg.username)) {
+              setOpponents(msg.username, msg.x, msg.y, msg.z)
+            } else {
+              renderOpp(msg.username, msg.x, msg.y, msg.z)
+            }
+            scene.add(opponents[msg.username].car)
+            scene.add(opponents[msg.username].frontRight)
+            scene.add(opponents[msg.username].frontLeft)
+            scene.add(opponents[msg.username].backRight)
+            scene.add(opponents[msg.username].backLeft)
+
+            //TODO: also send chassisBody quaternion and apply it to chassisBody in "renderOpp()"
+            //or somehow make rotation update bc right now its a bunch of blocks sliding around
+            //if you can also do this for wheels that would be great!
           }
-          scene.add(opponents[msg.username].car)
-          scene.add(opponents[msg.username].frontRight)
-          scene.add(opponents[msg.username].frontLeft)
-          scene.add(opponents[msg.username].backRight)
-          scene.add(opponents[msg.username].backLeft)
 
-          //TODO: also send chassisBody quaternion and apply it to chassisBody in "renderOpp()"
-          //or somehow make rotation update bc right now its a bunch of blocks sliding around
-          //if you can also do this for wheels that would be great!
-
+          //update the refresh rate regardless
+          slowest_refresh_rate = msg.slowest_rr
+          
         }
       } else if (msg.method === "finish-multiplayer"){ 
         //the only reason im redrawing the entire leaderboard after someone finishes
@@ -496,7 +507,7 @@ function render(timestamp) {
       }
     }
   }
-  renderer.render(scene, camera);
+  
   
 
   if (countdown >= 0 && Date.now() - last_countdown_update >= 1000){
@@ -504,7 +515,16 @@ function render(timestamp) {
     last_countdown_update = Date.now()
   }
 
-  updatePhysics()
+  if (isMultiplayer){
+    if (slowest_refresh_rate <= timestamp - last_physics_update){
+      updatePhysics()
+      renderer.render(scene, camera);
+      last_physics_update = timestamp
+    }
+  } else {
+    updatePhysics()
+    renderer.render(scene, camera);
+  }
   updateUI()
 
   requestAnimationFrame(render);

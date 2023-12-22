@@ -98,5 +98,125 @@
 			"left": 65,
 			"right": 68
 		}
+	},
+	"STEALYOGURL": {
+		"password": "$2b$10$w.whwW7KZYorq81BmrOn/eANtoS3YLwu02.SJqenHJEuXSCck1uAm",
+		"friends": [],
+		"pbs": {
+			"track1": "1:25.88",
+			"track2": "0:43.07",
+			"track3": "--",
+			"track4": "0:46.79",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 87,
+			"backward": 83,
+			"left": 65,
+			"right": 68
+		}
+	},
+	"asdfdasf": {
+		"password": "$2b$10$rzwBoTC5pfYfqBrz2ZYoHO9pF6dB8l9nPCOi.NlEUQjFzD3OF.n3S",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"help": {
+		"password": "$2b$10$.Wv0L21b29kwxzAbSGzNleNKtxqeYzwcu6VyJ4FVtSyGVpDYHx7DK",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"asfdasdfsdfs": {
+		"password": "$2b$10$IjY3f/NQ6LjEjFTDoH0UCuEH4TaAkiXf3GMDANbCC4TtJIis6Imza",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"hrrh": {
+		"password": "$2b$10$14BDxfNBD1denBUFq3ogAu5lumpZL29ds2GwWQYvumWveJDLQrkJ2",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"yyyy": {
+		"password": "$2b$10$962jW6zjligeB25SseBwVO7Og7Qpi3JQZ9qQLLpSd5x4QveM/X1MK",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }

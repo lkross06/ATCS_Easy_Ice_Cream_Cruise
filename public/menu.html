@@ -650,9 +650,7 @@
 
         }
 
-        if(sessionStorage.getItem("code") != null) { //keep their last game in the pocket
-            document.getElementById("multiplayer-join-code").value = sessionStorage.getItem("code")
-        }
+        sessionStorage.removeItem("code") //remove it no matter what
     </script>
     <script>
         function closeModal(errorCode) {
@@ -668,8 +666,6 @@
                 mp_content.style.display = "none";
                 this.classList.remove("game-selection-unchecked")
                 document.getElementById("multiplayer-button").classList.add("game-selection-unchecked")
-                
-                sessionStorage.removeItem("code")
             }
         })
         document.getElementById("multiplayer-button").addEventListener("click", function(e){

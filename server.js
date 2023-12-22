@@ -55,7 +55,6 @@ function readData(username = null, info1 = null, info2 = null){ //returns json
 //try to read user_data.json. if not, create a new empty file
 let users = readData()
 
-
 // object containing all the running games 
 let games = {}
 // object containing all he chat messages. max len of like 100 lets say. newest at the end. 
@@ -225,6 +224,11 @@ socket.on('connection', (ws) => {
                     positions: {
                         1: finn, //hes in first place
                         2: lucas //second place
+                    },
+                    rrs: {
+                        finn: 8, //takes 8ms for his device to render
+                        lucas: 25,
+                        ...
                     }
                 }
             }
@@ -235,7 +239,8 @@ socket.on('connection', (ws) => {
                 "host": msg.username,
                 "ingame": false, //0 for lobby, 1 for in-game
                 "times": {}, //see above 
-                "positions": {} //see above
+                "positions": {}, //see above
+                "rrs": {} //see above
             }
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
@@ -360,13 +365,25 @@ socket.on('connection', (ws) => {
             }
         } else if (msg.method === "render") {
             // send to each user with the code the position of the player who just send their thingamabob.
+            
+            //update this player's refresh rate
+            games[msg.code]["rrs"][msg.username] = msg.rr
+
+
+            let slow_rr = 0
+            for (let user in games[msg.code]["rrs"]){ //find the slowest refresh rate
+                let this_rr = games[msg.code]["rrs"][user]
+                if (this_rr > slow_rr) slow_rr = this_rr
+            }
+            
             let packet = {
                 method: "render",
                 username: msg.username,
                 code: msg.code,
                 x: msg.x,
                 y: msg.y,
-                z: msg.z
+                z: msg.z,
+                slowest_rr: slow_rr
             }
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
