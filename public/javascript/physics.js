@@ -3,6 +3,9 @@ import {domainName} from "../globalVars.js"
 
 let ws = new WebSocket("ws://"+domainName+":8008")
 
+var playerRefreshRate = 0; // default value
+var idealRefreshRate = 12 // for movement scaling
+
 var isMultiplayer = true //are we playing a multiplayer game?
 if (sessionStorage.getItem("code") === null) {
   isMultiplayer = false
@@ -430,6 +433,7 @@ var last_physics_update = 0 //timestamp for last physics update
 function render(timestamp) {
   let refresh_rate = Math.round(timestamp - last_timestamp)
   last_timestamp = timestamp
+  playerRefreshRate = refresh_rate;
 
   //TODO: refresh rate is given by getRefreshRate()
 
@@ -821,7 +825,12 @@ function getMaxSteerVal(speed){
   return (Math.PI / (((1/5) * Math.abs(speed)) + 16))
 }
 
+
 function navigate() {
+  console.log(playerRefreshRate)
+    let scale = idealRefreshRate / playerRefreshRate; // speeding up or slowing down player actions based on a default refresh rate of 12ms (if you refresh faster than 12ms
+                                        // you get slowed down, and if you refresh slower you get sped up)
+
     let speed = vehicle.currentVehicleSpeedKmHour
 
     let forward_key = parseInt(sessionStorage.getItem("forwardKey"))
@@ -846,7 +855,7 @@ function navigate() {
       //y = -4x + 1200 but absolute value
       //at speed = 0, eF = 600
       //at speed = 150 or -150, eF = 0
-      let engineForce = (-4 * Math.abs(speed)) + 1200
+      let engineForce = ((-4 * Math.abs(speed)) + 1200) * scale;
       if (engineForce > 1200) engineForce = 1200 //cap
       if (engineForce < 0) engineForce = 0
 
@@ -899,10 +908,10 @@ function navigate() {
       }
       
       //between pi/16 and pi/64 when speed is between (0, 250)
-      let maxSteerVal = getMaxSteerVal(speed)
+      let maxSteerVal = getMaxSteerVal(speed);
 
       //functional based increment between 0.006 and 0.0001 when the speed is between (0, 250)
-      let steeringIncrement = (-(1/55555) * Math.abs(speed)) + 0.006
+      let steeringIncrement = ((-(1/55555) * Math.abs(speed)) + 0.006);
       if (steeringIncrement < 0.0001) steeringIncrement = 0.0001
 
       if (turn_left && !turn_right){ //left
