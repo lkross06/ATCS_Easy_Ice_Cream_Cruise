@@ -218,5 +218,25 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"soysaucy": {
+		"password": "$2b$10$YrM/q/Hg3oNKqK9F0SdXbe8fj.J2ID73TYbneTdIZH5ZeTPWBkcKO",
+		"friends": [],
+		"pbs": {
+			"track1": "1:28.42",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 87,
+			"backward": 83,
+			"left": 65,
+			"right": 68
+		}
 	}
 }

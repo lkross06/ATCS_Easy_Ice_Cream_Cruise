@@ -447,7 +447,7 @@ function render(timestamp) {
   // here should go the ws stuff i belive
   // this packet is this client's data. x, y, z, quaterion(?) etc.
   // make sure the user is in a multiplayer game
-  if (sessionStorage.getItem("code") !== null && ws.readyState === WebSocket.OPEN) {
+  if (isMultiplayer && ws.readyState === WebSocket.OPEN) {
     let packet = {
       method: "render",
       username: sessionStorage.getItem("username"),
@@ -525,6 +525,7 @@ function render(timestamp) {
     updatePhysics()
     renderer.render(scene, camera);
   }
+
   updateUI()
 
   requestAnimationFrame(render);
