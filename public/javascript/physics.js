@@ -542,7 +542,7 @@ function updateUI(){
   if (countdown == 1){
     track.setStart(Date.now())
   } else if (countdown == 0){
-    countdown_num = ""
+    countdown_num = "GO!"
   } else if (countdown == -1){
     document.getElementById("countdown").style.display = "none"
   }

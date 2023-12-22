@@ -136,8 +136,8 @@ class Piece{
         this.railColor = railColor
 
         this.rails = rails //list of directions to make rails in (NSEW)
-        this.railThick = 0.2
-        this.railHeight = 0.6
+        this.railThick = 0.4
+        this.railHeight = 0.8
 
         this.name = "Piece"
 
