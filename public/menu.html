@@ -232,7 +232,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 1</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-1" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -256,7 +256,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 2</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-2" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -280,7 +280,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 3</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-3" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -304,7 +304,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 4</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-4" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -328,7 +328,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 5</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-5" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -352,7 +352,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 6</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-6" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -376,7 +376,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 7</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-7" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -400,7 +400,7 @@
             </div>
             <span>
                 <h3 class="title2 track-title">Track 8</h3>
-                <ol class="track-leaderboard">
+                <ol id="leaderboard-8" class="track-leaderboard">
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
                     <li><span class="username">--</span><span> --</span></li>
@@ -561,7 +561,9 @@
                     delete message.method //yay!
                     //get this user's pbs
                     for (let num = 1; num < 9; num++){
-                        document.getElementById("pb" + String(num)).innerText = message[username]["pbs"]["track" + String(num)] //html
+                        let pb = message[username]["pbs"]["track" + String(num)]
+                        sessionStorage.setItem("track" + String(num) + "pb", pb)
+                        document.getElementById("pb" + String(num)).innerText = pb //html
                     } 
 
                     //now get the top 8 scores on each track
@@ -625,7 +627,13 @@
                         }    
                         
                         //now we have the complete leaderboard for this track! lets put it into the html
-                        
+                        let children = document.getElementById("leaderboard-" + String(num)).children
+                        let pos = 1
+                        for (let child of children){
+                            child.children[0].innerText = leaderboard[track][pos][0]
+                            child.children[1].innerText = " " + leaderboard[track][pos][1]
+                            pos += 1
+                        }
                     }
 
                     //get their keybinds if they haven't been initialized already
