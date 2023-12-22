@@ -827,7 +827,6 @@ function getMaxSteerVal(speed){
 
 
 function navigate() {
-  console.log(playerRefreshRate)
     let scale = idealRefreshRate / playerRefreshRate; // speeding up or slowing down player actions based on a default refresh rate of 12ms (if you refresh faster than 12ms
                                         // you get slowed down, and if you refresh slower you get sped up)
 
