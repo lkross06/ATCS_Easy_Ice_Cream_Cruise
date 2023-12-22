@@ -33,10 +33,10 @@
 			"track8": "--"
 		},
 		"keybinds": {
-			"forward": 38,
-			"backward": 40,
-			"left": 37,
-			"right": 39
+			"forward": 87,
+			"backward": 83,
+			"left": 65,
+			"right": 68
 		}
 	},
 	"hah": {
