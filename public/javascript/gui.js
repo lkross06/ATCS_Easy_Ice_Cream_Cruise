@@ -77,7 +77,7 @@ class GUI {
         this.last = 0 //last time UI was updated
 
         //make our logic object
-        this.logic = new Logic()
+        this.logic = new Logic(this.scene)
 
         //TODO: put track creation stuff here
 
@@ -332,9 +332,9 @@ class GUI {
         this.logic.playerRefreshRate = refresh_rate;
 
         //readjust the camera
-        var relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(box.matrixWorld);
-        camera.position.copy(relativeCameraOffset);
-        camera.lookAt(box.position);        
+        var relativeCameraOffset = new THREE.Vector3(0, 4, -10).applyMatrix4(this.box.matrixWorld);
+        this.camera.position.copy(relativeCameraOffset);
+        this.camera.lookAt(this.box.position);        
         
         // here should go the ws stuff i belive
         // this packet is this client's data. x, y, z, quaterion(?) etc.

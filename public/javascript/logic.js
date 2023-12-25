@@ -102,17 +102,17 @@ export class Logic {
         this.vehicle.addToWorld(this.world);
 
         this.wheelBodies = [] //physics bodies for our wheels
-        this.wheelVisuals = []
+        this.wheelVisuals = [] //graphical bodies for our wheels
 
         //create each wheel body/mesh
-        this.vehicle.wheelInfos.forEach((wheel) => this.createWheel(scene, wheel));
+        this.vehicle.wheelInfos.forEach((wheel) => this.createWheel(wheel));
 
         for (let mesh in this.wheelVisuals){
             scene.add(mesh)
         }
 
         // update the wheels to match the physics
-        world.addEventListener('postStep', function() {
+        this.world.addEventListener('postStep', function() {
             for (let i = 0; i < this.vehicle.wheelInfos.length; i++) {
             this.vehicle.updateWheelTransform(i);
             var t = this.vehicle.wheelInfos[i].worldTransform;
