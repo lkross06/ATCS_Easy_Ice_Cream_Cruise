@@ -152,11 +152,9 @@
         z-index: 99;
       }
       
-      
-      
       @keyframes confetti-animation {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+        0% { transform: translateY(0) rotate(0deg); top: -10%; opacity: 1; }
+        100% { transform: translateY(500px) rotate(720deg); top: 100%; opacity: 0; }
       }
       
     </style>
@@ -208,7 +206,7 @@
 
 
     <script defer src="/javascript/esc.js"></script>
-    <script defer type="module" src="/javascript/physics.js"></script>
+    <script defer type="module" src="/javascript/gui.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.js'></script>
     <div id="modal" class="modal hidden">
