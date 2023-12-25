@@ -295,9 +295,9 @@ function updatePhysics() {
     delSkid()
   }
   //the car "dies" and "respawns"
-  //if "r" is pressed then reset the entire track, otherwise just put the car back at the starting position
+  //if "r" is pressed then reset the entire track
   if (keys_pressed[82] || chassisBody.position.y < -20 || chassisBody.position.y > 400){ 
-    reset(keys_pressed[82])
+    reset()
   }
 }
 
@@ -392,11 +392,10 @@ function renderOpp(opp, xpos, ypos, zpos) {
 }
 
 /**
- * resets the car -- no velocity, starting rotation, starting position
- * and resets track components if specified
- * @param {boolean} resetTrack whether or not to reset track components (current lap, time elapsed)
+ * sets the car to no velocity, destroys all skid marks, spawns at last checkpoint
+ * or beginning if they haven't checked any yet
  */
-function reset(resetTrack = true){
+function reset(){
   for (let i = 0; i <= skidArr.length; i++){
     let oldSkidMark1 = skidArr.shift();
     scene.remove(oldSkidMark1);
@@ -404,9 +403,7 @@ function reset(resetTrack = true){
   let ms_elapsed = Date.now() - last_reset
   if (ms_elapsed > 500){
 
-    //bring car back to start, make it not move
-    chassisBody.position.set(0, 2, 0);
-    vehicle.chassisBody.quaternion.set(0, 0, 0, 1)
+    //make car not move
     vehicle.chassisBody.velocity.set(0, 0, 0);
 
     vehicle.applyEngineForce(0, 0)
@@ -419,19 +416,39 @@ function reset(resetTrack = true){
     vehicle.setBrake(10, 2)
     vehicle.setBrake(10, 3)
 
-    //reset track + time
-    if (resetTrack){
-      track.curr_lap = 1
-      track.start = Date.now()
-      track.finish = null
-      last = track.getStart()
-    }
-    last_reset = Date.now()
-    
+    last_reset = Date.now()    
 
-    //reset checkpoints
-    for (let cp of checkpoints){
-      cp.setChecked(false)
+    //spawn them at the last checkpoint
+    let cps = track.getCheckpoints()
+    let index = 0
+
+    //NOTE: even if they check the checkpoints out of order, we are
+    //intentionally only checking from the beginning onwards to
+    //promote actually following the track.
+
+    if (!cps[0].getChecked()){ //they haven't checked any cps, just go to beginning
+      vehicle.chassisBody.position.set(0, 2, 0)
+      vehicle.chassisBody.quaternion.set(0, 0, 0, 1)
+    } else {
+      while (index < cps.length && cps[index].getChecked()){
+        index++
+      }
+  
+      let curr_cp = cps[index - 1] //go one back to the last consecutively-checked cp
+      
+      vehicle.chassisBody.position.set(curr_cp.x, curr_cp.y + 2, curr_cp.z)
+  
+      //also set the rotation
+      if (curr_cp.direction == "N"){
+        vehicle.chassisBody.quaternion.set(0, 0, 0, 1)
+      } else if (curr_cp.direction == "S") {
+        vehicle.chassisBody.quaternion.set(0, 1, 0, 0)
+      } else if (curr_cp.direction == "E"){
+        vehicle.chassisBody.quaternion.set(0, -1, 0, 1)
+      } else if (curr_cp.direction == "W"){
+        vehicle.chassisBody.quaternion.set(0, 1, 0, 1)
+      }
+      
     }
   }
 }
