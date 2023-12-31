@@ -207,6 +207,14 @@ ws.onmessage = message => {
                 window.location.href = "http://"+domainName+":3000/track.html?track=" + n + "&joincode=" + res.code
             }
         }
+    } else if (res.method === "chat_read" && chats.length == 0){
+        //we only want to load the existing chats when we first load the page
+        chats = res.chats
+        for (let chat of chats){
+            let user = chat[0]
+            let msg = chat[1]
+            new_chat_message(msg, user)
+        }
     }
 }
 

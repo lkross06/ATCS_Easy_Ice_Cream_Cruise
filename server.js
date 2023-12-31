@@ -58,7 +58,7 @@ let users = readData()
 // object containing all the running games 
 let games = {}
 // object containing all he chat messages. max len of like 100 lets say. newest at the end. 
-//let chats = [] //I MOVED THIS TO CHAT.JS.... IF U NEED IT FOR SERVER STUFF USE A DIFFERENT NAME!!!!
+let chatlog = [] //list of all sent chats
 // object containing the game codes so no dupplicates
 let gameCodes = []
 // Serve the static files from the 'public' directory
@@ -180,6 +180,8 @@ socket.on('connection', (ws) => {
 
         let msg = JSON.parse(message)
         if (msg.method === "chat") {
+            chatlog.push([msg.username, msg.message]) //add to all chats
+
             let packet = {
                 "method": "chat",
                 "username": msg.username,
@@ -392,9 +394,32 @@ socket.on('connection', (ws) => {
             })
         } else if (msg.method === "user_write"){ //update le user data
             writeData(msg.data, msg.username, msg.info1, msg.info2)
-        } else if (msg.method === "user_read"){ //return le user data
+        } else if (msg.method === "load_menu"){
+            //first, return le user data
             let packet = readData(msg.username, msg.info1, msg.info2)
             packet["method"] = "user_read"
+
+            socket.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(packet))
+                }
+            })
+
+            //next, return last 50 chats sent
+            let start = chatlog.length - 50 - 1
+            if (start < 0) start = 0
+
+            let chats_to_send = []
+
+            for (let i = start; i < chatlog.length; i++){
+                chats_to_send.push(chatlog[i])
+            }
+
+            packet = {
+                method: "chat_read",
+                chats: chats_to_send,
+                username: msg.username
+            }
 
             socket.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
