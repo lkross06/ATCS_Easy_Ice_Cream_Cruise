@@ -75,8 +75,8 @@ app.get("/menu", (req, res) => {
     res.sendFile(__dirname+"/public/menu.html")
 })
 
-app.get("/track1", (req, res) => {
-    res.sendFile(path.join(__dirname, '/public/track.html'));
+app.get("/game", (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/game.html'));
 });
 
 app.get("/globalVars.js", (req, res) => {

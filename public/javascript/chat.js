@@ -199,12 +199,11 @@ ws.onmessage = message => {
     } else if (res.method === "start-multiplayer") {
         // confirm that user has actually put in a good code, 
         // then redir. (look at that enjambment!)
-        console.log("KRRRA")
         if (res.code === sessionStorage.getItem("code")) {
             // dingdingding we gotchu fam
             if (res.track !== "ERROR") {
                 let n = res.track.split("k")[1] //dont bother convert to number, its going in a string
-                window.location.href = "http://"+domainName+":3000/track.html?track=" + n + "&joincode=" + res.code
+                window.location.href = "http://"+domainName+":3000/game?track=" + n + "&joincode=" + res.code
             }
         }
     } else if (res.method === "chat_read" && chats.length == 0){
