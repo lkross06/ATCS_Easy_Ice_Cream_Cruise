@@ -278,5 +278,45 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"cocksucker": {
+		"password": "$2b$10$OnX98SOd226uJ/ethHIoZejuGsc8AreOlLx0wazj1hPK8FV83EO4K",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
+	},
+	"dick": {
+		"password": "$2b$10$VaIp97dD.RZy6y6Yo15PquZrssAo/974ohq9NBCnL0ioWsSp9xWiC",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }
