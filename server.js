@@ -126,7 +126,6 @@ app.post("/submitsignup", (req, res) => {
                 // save the user with the hashed password
                 users[username] = {
                     "password": hash, // store the hash instead of the plain password
-                    "friends": [],
                     "pbs": {
                         "track1":"--",
                         "track2":"--",
