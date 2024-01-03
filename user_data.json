@@ -278,5 +278,25 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"ILOVEEVERETT": {
+		"password": "$2b$10$u1xhjn59PhnJxItP9Kx98ObspkgSyyDT4aLF71d46LclX/I9T01LW",
+		"friends": [],
+		"pbs": {
+			"track1": "0:40.38",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }
