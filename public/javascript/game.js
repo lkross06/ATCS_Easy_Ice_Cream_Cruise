@@ -420,11 +420,40 @@ function reset(){
 
     last_reset = Date.now()
 
-    //reset checkpoints
-    for (let cp of checkpoints){
-      cp.setChecked(false)
-    }
+    last_reset = Date.now()    
+
+    //spawn them at the last checkpoint
+    let cps = track.getCheckpoints()
+    let index = 0
+
+    //NOTE: even if they check the checkpoints out of order, we are
+    //intentionally only checking from the beginning onwards to
+    //promote actually following the track.
+
+    if (!cps[0].getChecked()){ //they haven't checked any cps, just go to beginning
+      vehicle.chassisBody.position.set(0, 2, 0)
+      vehicle.chassisBody.quaternion.set(0, 0, 0, 1)
+    } else {
+      while (index < cps.length && cps[index].getChecked()){
+        index++
+      }
+
+      let curr_cp = cps[index - 1] //go one back to the last consecutively-checked cp
+
+      vehicle.chassisBody.position.set(curr_cp.x, curr_cp.y + 2, curr_cp.z)
+
+      //also set the rotation
+      if (curr_cp.direction == "N"){
+        vehicle.chassisBody.quaternion.set(0, 0, 0, 1)
+      } else if (curr_cp.direction == "S") {
+        vehicle.chassisBody.quaternion.set(0, 1, 0, 0)
+      } else if (curr_cp.direction == "E"){
+        vehicle.chassisBody.quaternion.set(0, -1, 0, 1)
+      } else if (curr_cp.direction == "W"){
+        vehicle.chassisBody.quaternion.set(0, 1, 0, 1)
+      }
   }
+}
 }
 
 var last_timestamp = 0

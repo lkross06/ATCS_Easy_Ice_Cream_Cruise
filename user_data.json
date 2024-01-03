@@ -1,13 +1,12 @@
 {
 	"lucas": {
 		"password": "$2b$10$7L8pbtVLtCp0QU94CA40Lu.Ykb6lDzxtRxjqUFWHx9B9r38xeH4e.",
-		"friends": [],
 		"pbs": {
 			"track1": "0:19.87",
 			"track2": "0:13.48",
 			"track3": "0:40.06",
 			"track4": "0:46.86",
-			"track5": "--",
+			"track5": "2:16.20",
 			"track6": "--",
 			"track7": "--",
 			"track8": "0:43.11"
@@ -21,7 +20,6 @@
 	},
 	"ecvil": {
 		"password": "$2b$10$D/LDe/AWQr.vDtrCdJ4y.ejh7fXhibsRj6wp9cCrt180M8McaG/G6",
-		"friends": [],
 		"pbs": {
 			"track1": "0:20.55",
 			"track2": "0:12.41",
@@ -41,7 +39,6 @@
 	},
 	"hah": {
 		"password": "$2b$10$Y1LwRRN2x092pBCmnIzhg.JG9tYI/9EnKPHKGmCvIGwIuZiGfhsEe",
-		"friends": [],
 		"pbs": {
 			"track1": "0:20.69",
 			"track2": "0:15.24",
@@ -61,7 +58,6 @@
 	},
 	"gasf": {
 		"password": "$2b$10$wKfKo4Wn3KkTlMb/E9VB0esIfnr8LgNo2je4hm6N9pjUxobbQElgu",
-		"friends": [],
 		"pbs": {
 			"track1": "0:23.69",
 			"track2": "0:14.19",
@@ -81,7 +77,6 @@
 	},
 	"noobmaster69": {
 		"password": "$2b$10$hfhfBkR6p41rkh6xNNuoKeWQJ3K2/9JKuK3aqc9L.ApybLq0u/fMW",
-		"friends": [],
 		"pbs": {
 			"track1": "0:21.42",
 			"track2": "--",
@@ -101,7 +96,6 @@
 	},
 	"STEALYOGURL": {
 		"password": "$2b$10$w.whwW7KZYorq81BmrOn/eANtoS3YLwu02.SJqenHJEuXSCck1uAm",
-		"friends": [],
 		"pbs": {
 			"track1": "1:25.88",
 			"track2": "0:43.07",
@@ -121,7 +115,6 @@
 	},
 	"asdfdasf": {
 		"password": "$2b$10$rzwBoTC5pfYfqBrz2ZYoHO9pF6dB8l9nPCOi.NlEUQjFzD3OF.n3S",
-		"friends": [],
 		"pbs": {
 			"track1": "--",
 			"track2": "--",
@@ -141,7 +134,6 @@
 	},
 	"help": {
 		"password": "$2b$10$.Wv0L21b29kwxzAbSGzNleNKtxqeYzwcu6VyJ4FVtSyGVpDYHx7DK",
-		"friends": [],
 		"pbs": {
 			"track1": "--",
 			"track2": "--",
@@ -161,7 +153,6 @@
 	},
 	"asfdasdfsdfs": {
 		"password": "$2b$10$IjY3f/NQ6LjEjFTDoH0UCuEH4TaAkiXf3GMDANbCC4TtJIis6Imza",
-		"friends": [],
 		"pbs": {
 			"track1": "--",
 			"track2": "--",
@@ -181,7 +172,6 @@
 	},
 	"hrrh": {
 		"password": "$2b$10$14BDxfNBD1denBUFq3ogAu5lumpZL29ds2GwWQYvumWveJDLQrkJ2",
-		"friends": [],
 		"pbs": {
 			"track1": "--",
 			"track2": "--",
@@ -201,7 +191,6 @@
 	},
 	"yyyy": {
 		"password": "$2b$10$962jW6zjligeB25SseBwVO7Og7Qpi3JQZ9qQLLpSd5x4QveM/X1MK",
-		"friends": [],
 		"pbs": {
 			"track1": "--",
 			"track2": "--",
@@ -221,7 +210,6 @@
 	},
 	"soysaucy": {
 		"password": "$2b$10$YrM/q/Hg3oNKqK9F0SdXbe8fj.J2ID73TYbneTdIZH5ZeTPWBkcKO",
-		"friends": [],
 		"pbs": {
 			"track1": "1:28.42",
 			"track2": "--",
@@ -241,7 +229,6 @@
 	},
 	"test123": {
 		"password": "$2b$10$J8Ypi1K0SwO1CENqv4zBLu/s705OVvw7EwAKDZks0q/tToq35lMsu",
-		"friends": [],
 		"pbs": {
 			"track1": "--",
 			"track2": "--",
@@ -261,7 +248,6 @@
 	},
 	"cooldude": {
 		"password": "$2b$10$5RY40QI/PuAepRXZ1bbDVOYYDsg0aN4qWtv6EOc3TGJD1CByXEjDC",
-		"friends": [],
 		"pbs": {
 			"track1": "1:57.86",
 			"track2": "--",
@@ -279,11 +265,10 @@
 			"right": 39
 		}
 	},
-	"cocksucker": {
-		"password": "$2b$10$OnX98SOd226uJ/ethHIoZejuGsc8AreOlLx0wazj1hPK8FV83EO4K",
-		"friends": [],
+	"ILOVEEVERETT": {
+		"password": "$2b$10$u1xhjn59PhnJxItP9Kx98ObspkgSyyDT4aLF71d46LclX/I9T01LW",
 		"pbs": {
-			"track1": "--",
+			"track1": "0:40.38",
 			"track2": "--",
 			"track3": "--",
 			"track4": "--",
@@ -299,8 +284,8 @@
 			"right": 39
 		}
 	},
-	"dick": {
-		"password": "$2b$10$VaIp97dD.RZy6y6Yo15PquZrssAo/974ohq9NBCnL0ioWsSp9xWiC",
+	"ahobsonnn": {
+		"password": "$2b$10$9xUDjmhdDqXYW2YhMB0SbefNcNfcr8UupaD3/c65Teeu1oe4Ty3Iy",
 		"friends": [],
 		"pbs": {
 			"track1": "--",
