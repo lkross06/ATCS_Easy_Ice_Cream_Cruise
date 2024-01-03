@@ -297,7 +297,7 @@ function updatePhysics() {
   //the car "dies" and "respawns"
   //if "r" is pressed then reset the entire track, otherwise just put the car back at the starting position
   if (keys_pressed[82] || chassisBody.position.y < -20 || chassisBody.position.y > 400){ 
-    reset(keys_pressed[82])
+    reset()
   }
 }
 
@@ -393,10 +393,9 @@ function renderOpp(opp, xpos, ypos, zpos) {
 
 /**
  * resets the car -- no velocity, starting rotation, starting position
- * and resets track components if specified
- * @param {boolean} resetTrack whether or not to reset track components (current lap, time elapsed)
+ * and resets track components
  */
-function reset(resetTrack = true){
+function reset(){
   for (let i = 0; i <= skidArr.length; i++){
     let oldSkidMark1 = skidArr.shift();
     scene.remove(oldSkidMark1);
@@ -419,15 +418,7 @@ function reset(resetTrack = true){
     vehicle.setBrake(10, 2)
     vehicle.setBrake(10, 3)
 
-    //reset track + time
-    if (resetTrack){
-      track.curr_lap = 1
-      track.start = Date.now()
-      track.finish = null
-      last = track.getStart()
-    }
     last_reset = Date.now()
-    
 
     //reset checkpoints
     for (let cp of checkpoints){

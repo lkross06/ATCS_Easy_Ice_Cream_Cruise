@@ -258,5 +258,25 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"cooldude": {
+		"password": "$2b$10$5RY40QI/PuAepRXZ1bbDVOYYDsg0aN4qWtv6EOc3TGJD1CByXEjDC",
+		"friends": [],
+		"pbs": {
+			"track1": "1:57.86",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }

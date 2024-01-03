@@ -169,7 +169,7 @@
       <br>
       SPACE to brake
       <br>
-      R to restart
+      R to respawn
       <br>
       ESC to menu
     </div>
@@ -213,6 +213,8 @@
       <div class="modal-content" id="esc-menu">
         <h2 class="title2">Easy Ice Cream Cruise</h2>
         <img onclick="hideEscapeMenu()" class="close-menu" src="./res/close.png">
+        <br>
+        <button id="restart-button" class="submit-button" onclick="window.location.reload()">Restart</button>
         <br>
         <button onclick="goToSettingsMenu()" class="submit-button">Settings</button>
         <br>
