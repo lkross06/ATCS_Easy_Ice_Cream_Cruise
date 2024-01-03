@@ -283,5 +283,25 @@
 			"left": 37,
 			"right": 39
 		}
+	},
+	"ahobsonnn": {
+		"password": "$2b$10$9xUDjmhdDqXYW2YhMB0SbefNcNfcr8UupaD3/c65Teeu1oe4Ty3Iy",
+		"friends": [],
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }
