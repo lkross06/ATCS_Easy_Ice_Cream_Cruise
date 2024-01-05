@@ -322,5 +322,24 @@
 			"left": 65,
 			"right": 68
 		}
+	},
+	"Tenat": {
+		"password": "$2b$10$vuE2GFvvOxVQuXhrOVrAyOxjsbh8zAhnjjoAJX0HhbQ049ld9ptAm",
+		"pbs": {
+			"track1": "--",
+			"track2": "--",
+			"track3": "--",
+			"track4": "--",
+			"track5": "--",
+			"track6": "--",
+			"track7": "--",
+			"track8": "--"
+		},
+		"keybinds": {
+			"forward": 38,
+			"backward": 40,
+			"left": 37,
+			"right": 39
+		}
 	}
 }

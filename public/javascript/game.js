@@ -11,18 +11,19 @@ if (sessionStorage.getItem("code") === null) {
   isMultiplayer = false
 }
 
+// make threejs scene in body of html
 var container = document.querySelector('body'),
     w = container.clientWidth,
     h = container.clientHeight,
     scene = new THREE.Scene(),
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000); // camera creation 
 let renderConfig = {antialias: true, alpha: true},
 renderer = new THREE.WebGLRenderer(renderConfig);
-const cameraOffset = new THREE.Vector3(0, 4, -10);
+const cameraOffset = new THREE.Vector3(0, 4, -10); // camera above and behind the car
 
 // car physics body
 var chassisShape = new CANNON.Box(new CANNON.Vec3(1, 0.5, 2));
-// did u know F1 cars are only 100 kg
+// did u know F1 cars are only 100 kg (finn this is wrong they are 800kg)
 var chassisBody = new CANNON.Body({mass: 100, material: groundMaterial});
 
 chassisBody.addShape(chassisShape);
@@ -38,14 +39,14 @@ var material = new THREE.MeshBasicMaterial({color: chassisColor, side: THREE.Dou
 var box = new THREE.Mesh(cargeometry, material);
 scene.add(box);
 
+// put camera above and behind car
 camera.position.copy(box.position).add(cameraOffset);
+// set it to look at the car (in middle of screen)
 camera.lookAt(box.position);
 scene.add(camera);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(w, h);
 container.appendChild(renderer.domElement);
-
-var handMaterial = new THREE.MeshPhongMaterial();
 
 //update the camera view when the window is resized
 window.addEventListener('resize', function() {
@@ -58,18 +59,21 @@ window.addEventListener('resize', function() {
 
 //so we can see!!!
 var sunlight = new THREE.DirectionalLight(0xffffff, 1.0);
-sunlight.position.set(-10, 10, 0);
+sunlight.position.set(-100, 100, 0); //arbitrary x and y
 scene.add(sunlight)
 
 /**
 * Physics
 **/
 
+// init cannon physics world 
 var world = new CANNON.World();
 world.broadphase = new CANNON.SAPBroadphase(world);
 world.defaultContactMaterial.friction = 0.01;
-world.gravity.set(0, -18, 0);
+world.gravity.set(0, -18, 0); // 2x gravity because it feels better to drive with (game is more fun)
 
+
+// init vars related to the track
 var track
 var checkpoints
 
@@ -83,7 +87,7 @@ if (trackValue < 1 || trackValue > 8){
   const redirectUrl = "http://" + domainName + ":3000";
   window.location.href = redirectUrl + "/menu"
 }
-
+// load track given the track selected by the user
 loadTrack(trackValue)
 
 /**
@@ -109,8 +113,9 @@ var wheelGroundContactMaterial = new CANNON.ContactMaterial(wheelMaterial, groun
   restitution: 0.05,
   contactEquationStiffness: 1000,
 });
-
+// init the contact betweens wheels and ground 
 world.addContactMaterial(wheelGroundContactMaterial);
+
 // parent vehicle object
 let vehicle = new CANNON.RaycastVehicle({
   chassisBody: chassisBody,
@@ -137,7 +142,9 @@ var options = {
   useCustomSlidingRotationalSpeed: true,
 };
 
-var axlewidth = 1.2;
+var axlewidth = 1.2; // wider than car by .2
+
+//set points where wheels can be conncted to axels
 options.chassisConnectionPointLocal.set(axlewidth, 0, -1);
 vehicle.addWheel(options);
 
@@ -191,6 +198,8 @@ world.addEventListener('postStep', function() {
   }
 });
 
+
+// arr to hold all skid marks (for removal)
 let skidArr = []
 
 /**
@@ -275,6 +284,7 @@ function delSkid() {
   }
 }
 
+
 /**
  * Checks all interactions between physics bodies in our world and simulates 1/60th of a second
  */
@@ -300,6 +310,7 @@ function updatePhysics() {
     reset()
   }
 }
+
 
 let opponents = {}
 
@@ -609,7 +620,7 @@ function updateUI(){
       for (let id of json_ids){
 
         let new_bind = parseInt(sessionStorage.getItem(id + "Key"))
-
+        //packet to send through ws
         let packet = {
           method: "user_write",
           data: new_bind,
