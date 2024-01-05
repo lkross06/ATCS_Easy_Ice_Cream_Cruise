@@ -18,6 +18,8 @@ function new_chat_message(message, username){ //creates and returns a new chat e
         return
     }
 
+
+    // HTML elements for chatbox
     let p = document.createElement("p")
     p.setAttribute("class", "chat-message")
     
@@ -141,7 +143,7 @@ function addPlayerToJoinLobby(user){
 
 let joinButton = document.getElementById("joinGame")
 joinButton.addEventListener("click", joinGame)
-// websocket stuff for when the client recieves a message from the server
+// websocket for when the client recieves a message from the server
 ws.onmessage = message => {
     let res = JSON.parse(message.data)
     if (res.method === "chat") {
@@ -198,7 +200,7 @@ ws.onmessage = message => {
         }
     } else if (res.method === "start-multiplayer") {
         // confirm that user has actually put in a good code, 
-        // then redir. (look at that enjambment!)
+        // then redir. (look at that enjambment!) (lucas idk what that means)
         if (res.code === sessionStorage.getItem("code")) {
             // dingdingding we gotchu fam
             if (res.track !== "ERROR") {

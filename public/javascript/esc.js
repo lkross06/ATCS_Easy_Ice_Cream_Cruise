@@ -82,6 +82,7 @@ function saveSettings() {
     const leftKey = document.getElementById('left-key').value.toUpperCase();
     const rightKey = document.getElementById('right-key').value.toUpperCase();
 
+
     let keys = [forwardKey, backwardKey, leftKey, rightKey]
     let ss_keys = ["forwardKey", "backwardKey", "leftKey", "rightKey"]
 
@@ -90,6 +91,7 @@ function saveSettings() {
         let ss_key = ss_keys[i]
         let keycode = key.charCodeAt(0)
 
+        //save to sessionstorage
         if (key == "←") {
             sessionStorage.setItem(ss_key, "37")
         } else if (key == "↑") {
