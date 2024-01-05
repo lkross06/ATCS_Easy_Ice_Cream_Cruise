@@ -384,6 +384,9 @@ socket.on('connection', (ws) => {
                 x: msg.x,
                 y: msg.y,
                 z: msg.z,
+                xrot: msg.xrot,
+                yrot: msg.yrot,
+                zrot: msg.zrot,
                 slowest_rr: slow_rr
             }
             socket.clients.forEach((client) => {

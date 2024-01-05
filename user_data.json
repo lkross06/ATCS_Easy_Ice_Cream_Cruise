@@ -308,7 +308,7 @@
 		"password": "$2b$10$7o3xsCTWFt6eFLAmepddxeQCb1nzCe8eni8fw5O33Wtpt7Yr2mCt.",
 		"pbs": {
 			"track1": "--",
-			"track2": "--",
+			"track2": "0:53.44",
 			"track3": "--",
 			"track4": "--",
 			"track5": "--",
@@ -317,10 +317,10 @@
 			"track8": "--"
 		},
 		"keybinds": {
-			"forward": 38,
-			"backward": 40,
-			"left": 37,
-			"right": 39
+			"forward": 87,
+			"backward": 83,
+			"left": 65,
+			"right": 68
 		}
 	}
 }

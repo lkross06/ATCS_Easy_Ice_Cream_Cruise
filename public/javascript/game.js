@@ -310,56 +310,23 @@ let opponents = {}
  * @param {number} ypos current y-position of car
  * @param {number} zpos current z-position of car
  */
-function setOpponents(opp, xpos, ypos, zpos) {
+function setOpponents(opp, xpos, ypos, zpos, xrot, yrot, zrot) {
   let oppGeo = new THREE.BoxGeometry(2, 0.9, 4)
-  let oppMat = new THREE.MeshBasicMaterial({color: oppChassisColor, side: THREE.DoubleSide})
+  let oppMat = new THREE.MeshBasicMaterial({color: oppChassisColor, side: THREE.DoubleSide, transparent: true, opacity: 0.5,})
   let oppBox = new THREE.Mesh(oppGeo, oppMat)
-  var geometry = new THREE.CylinderGeometry(0.5, 0.5, 0.4, 32)
-  var material = new THREE.MeshPhongMaterial({
-    color: wheelColor,
-    emissive: wheelColor,
-    side: THREE.DoubleSide,
-    flatShading: true,
-  })
-  var cylinder1 = new THREE.Mesh(geometry, material)
-  var cylinder2 = new THREE.Mesh(geometry, material)
-  var cylinder3 = new THREE.Mesh(geometry, material)
-  var cylinder4 = new THREE.Mesh(geometry, material)
-
-  cylinder1.rotation.z = Math.PI / 2;
-  cylinder2.rotation.z = Math.PI / 2;
-  cylinder3.rotation.z = Math.PI / 2;
-  cylinder4.rotation.z = Math.PI / 2;
 
   opponents[opp] = {
     car: oppBox,
-    // ok this is dumb but idk how else to go about adding wheels w/o CANNOn
-    frontRight: cylinder1,
-    frontLeft: cylinder2,
-    backRight: cylinder3,
-    backLeft: cylinder4
   }
   // TODO: duplicated code in here and renderOpp()
   // also hardcoding if we change chassis body dimensions. 
   opponents[opp].car.position.x = xpos
   opponents[opp].car.position.y = ypos
   opponents[opp].car.position.z = zpos
-  // front Right position wheel
-  opponents[opp].frontRight.position.x = xpos + 1.2
-  opponents[opp].frontRight.position.y = ypos - .2
-  opponents[opp].frontRight.position.z = zpos + 1.3
-  // front Left position wheel
-  opponents[opp].frontLeft.position.x = xpos - 1.2
-  opponents[opp].frontLeft.position.y = ypos - .2
-  opponents[opp].frontLeft.position.z = zpos + 1.3
-  // back Right position wheel
-  opponents[opp].backRight.position.x = xpos + 1.2
-  opponents[opp].backRight.position.y = ypos - .2
-  opponents[opp].backRight.position.z = zpos - 1.3
-  // back Left position wheel
-  opponents[opp].backLeft.position.x = xpos - 1.2
-  opponents[opp].backLeft.position.y = ypos - .2
-  opponents[opp].backLeft.position.z = zpos - 1.3
+
+  opponents[opp].car.quaternion.x = xrot
+  opponents[opp].car.quaternion.y = yrot
+  opponents[opp].car.quaternion.z = zrot
 }
 
 /**
@@ -369,26 +336,14 @@ function setOpponents(opp, xpos, ypos, zpos) {
  * @param {number} ypos current y-position of car
  * @param {number} zpos current z-position of car
  */
-function renderOpp(opp, xpos, ypos, zpos) {
+function renderOpp(opp, xpos, ypos, zpos, xrot, yrot, zrot) {
   opponents[opp].car.position.x = xpos
   opponents[opp].car.position.y = ypos
   opponents[opp].car.position.z = zpos
-  // front Right position wheel
-  opponents[opp].frontRight.position.x = xpos + 1.2
-  opponents[opp].frontRight.position.y = ypos - .2
-  opponents[opp].frontRight.position.z = zpos + 1.3
-  // front Left position wheel
-  opponents[opp].frontLeft.position.x = xpos - 1.2
-  opponents[opp].frontLeft.position.y = ypos - .2
-  opponents[opp].frontLeft.position.z = zpos + 1.3
-  // back Right position wheel
-  opponents[opp].backRight.position.x = xpos + 1.2
-  opponents[opp].backRight.position.y = ypos - .2
-  opponents[opp].backRight.position.z = zpos - 1.3
-  // back Left position wheel
-  opponents[opp].backLeft.position.x = xpos - 1.2
-  opponents[opp].backLeft.position.y = ypos - .2
-  opponents[opp].backLeft.position.z = zpos - 1.3
+  // config rotation
+  opponents[opp].car.quaternion.x = xrot
+  opponents[opp].car.quaternion.y = yrot
+  opponents[opp].car.quaternion.z = zrot
 }
 
 /**
@@ -487,6 +442,10 @@ function render(timestamp) {
       x: chassisBody.position.x,
       y: chassisBody.position.y,
       z: chassisBody.position.z,
+      xrot: chassisBody.quaternion.x,
+      yrot: chassisBody.quaternion.y,
+      zrot: chassisBody.quaternion.z,
+
       rr: refresh_rate,
       code: sessionStorage.getItem("code")
       // add in here the timestamp/refreshrate probs
@@ -499,19 +458,11 @@ function render(timestamp) {
           if (msg.username !== sessionStorage.getItem("username")){
             // the message is from a user in our game
             if (!opponents.hasOwnProperty(msg.username)) {
-              setOpponents(msg.username, msg.x, msg.y, msg.z)
+              setOpponents(msg.username, msg.x, msg.y, msg.z, msg.xrot, msg.yrot, msg.zrot)
             } else {
-              renderOpp(msg.username, msg.x, msg.y, msg.z)
+              renderOpp(msg.username, msg.x, msg.y, msg.z, msg.xrot, msg.yrot, msg.zrot)
             }
             scene.add(opponents[msg.username].car)
-            scene.add(opponents[msg.username].frontRight)
-            scene.add(opponents[msg.username].frontLeft)
-            scene.add(opponents[msg.username].backRight)
-            scene.add(opponents[msg.username].backLeft)
-
-            //TODO: also send chassisBody quaternion and apply it to chassisBody in "renderOpp()"
-            //or somehow make rotation update bc right now its a bunch of blocks sliding around
-            //if you can also do this for wheels that would be great!
           }
 
           //update the refresh rate regardless
